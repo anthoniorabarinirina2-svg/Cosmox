@@ -2,99 +2,65 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>COSMOX V32 - PERMANENT ACCESS</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COSMOX V35 - SUPER-NOVA</title>
     <style>
-        :root { --gold: #ffd700; --bg: #020202; --p: #ff007f; --g: #00ff88; }
-        body { background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; margin: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        :root { --gold: #ffd700; --green: #00ff88; --blue: #00d2ff; --pink: #ff007f; --bg: #000; }
+        body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; overflow-x: hidden; }
         
-        /* OVERLAY SÉCURISÉ */
-        #lock-screen { 
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
-            background: radial-gradient(circle, #111 0%, #000 100%); 
-            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; 
-        }
-        .lock-card { 
-            width: 320px; padding: 40px; border: 2px solid var(--gold); 
-            border-radius: 20px; background: #050505; text-align: center;
-            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
-        }
-        .pass-field { 
-            background: #000; border: 1px solid #333; color: var(--gold); 
-            padding: 15px; width: 100%; text-align: center; font-size: 22px; 
-            margin-bottom: 20px; border-radius: 8px; outline: none; box-sizing: border-box;
-        }
-        .pass-field:focus { border-color: var(--gold); }
-        .btn-unlock { 
-            background: var(--gold); color: #000; border: none; padding: 18px; 
-            width: 100%; cursor: pointer; font-family: 'Orbitron'; font-weight: 900; 
-            border-radius: 8px; letter-spacing: 2px;
-        }
+        /* SYSTÈME DE DÉVERROUILLAGE INDESTRUCTIBLE */
+        #FORCED_LOCK { position: fixed; inset: 0; background: #000; z-index: 100000; display: flex; justify-content: center; align-items: center; }
+        .lock-card { border: 2px solid var(--gold); padding: 40px; border-radius: 20px; background: #080808; text-align: center; width: 320px; box-shadow: 0 0 50px rgba(255, 215, 0, 0.1); }
+        .lock-card input { width: 100%; padding: 15px; margin-bottom: 20px; background: #000; border: 1px solid #333; color: var(--gold); font-size: 24px; text-align: center; border-radius: 10px; }
+        #UNLOCK_TRIGGER { width: 100%; padding: 20px; background: var(--gold); color: #000; border: none; font-weight: 900; cursor: pointer; border-radius: 10px; text-transform: uppercase; font-size: 16px; }
 
-        /* INTERFACE PRINCIPALE */
-        .main-app { display: none; width: 100%; max-width: 480px; padding: 20px; }
-        .jackpot-display { 
-            background: #0a0a0a; border: 2px solid var(--gold); border-radius: 15px; 
-            padding: 30px; text-align: center; margin-top: 50px;
-        }
-        .value { font-family: 'Orbitron'; font-size: 65px; color: #fff; text-shadow: 0 0 20px var(--gold); }
+        /* INTERFACE DE PRÉDICTION */
+        #MAIN_INTERFACE { display: none; width: 100%; max-width: 500px; padding: 15px; box-sizing: border-box; }
+        .header { text-align: center; border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 20px; }
+        .input-box { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
+        input[type="number"] { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: var(--green); text-align: center; border-radius: 8px; }
+
+        /* CARDS CIBLES */
+        .target-list { display: flex; flex-direction: column; gap: 12px; }
+        .card { background: #0c0c0c; border: 1px solid #222; padding: 18px; border-radius: 15px; position: relative; border-left: 6px solid #fff; }
+        .c2 { border-left-color: var(--green); }
+        .c5 { border-left-color: var(--blue); }
+        .c10 { border-left-color: var(--pink); }
+        .c_jackpot { border-left-color: var(--gold); background: linear-gradient(90deg, #1a1500, #0c0c0c); border-width: 2px 2px 2px 8px; }
+
+        .tag { font-size: 10px; font-weight: bold; color: #888; text-transform: uppercase; }
+        .val-x { font-size: 36px; font-weight: 900; margin: 5px 0; display: block; }
+        .time-box { display: flex; justify-content: space-between; font-size: 13px; color: #aaa; margin-top: 10px; background: #000; padding: 8px; border-radius: 5px; }
+        .time-box b { color: #fff; }
     </style>
 </head>
 <body>
 
-<div id="lock-screen">
+<div id="FORCED_LOCK">
     <div class="lock-card">
-        <div style="font-family:'Orbitron'; color:var(--gold); margin-bottom:15px; font-size:14px;">SYSTÈME VERROUILLÉ</div>
-        <input type="password" id="passInput" class="pass-field" placeholder="MOT DE PASSE">
-        <button id="unlockBtn" class="btn-unlock">DÉVERROUILLER</button>
-        <div id="error" style="color:red; margin-top:15px; font-size:11px; display:none;">CODE INCORRECT - RÉESSAYEZ</div>
+        <div style="color:var(--gold); font-size: 12px; margin-bottom: 15px; letter-spacing: 2px;">ACCÈS SYSTÈME QUANTUM</div>
+        <input type="password" id="ENTRY_PASS" placeholder="CODE">
+        <button id="UNLOCK_TRIGGER">DÉVERROUILLAGE</button>
     </div>
 </div>
 
-<div class="main-app" id="app">
-    <div class="jackpot-display">
-        <div style="color:var(--gold); font-size:12px; letter-spacing:3px;">PROCHAIN JACKPOT 99%</div>
-        <div class="value" id="val">12.50x</div>
-        <div id="timer" style="margin-top:20px; font-size:20px; color:var(--g);">PRÊT POUR ANALYSE</div>
-        <button onclick="location.reload()" style="margin-top:30px; background:none; border:1px solid #333; color:#555; cursor:pointer; padding:5px 10px;">RE-VERROUILLER</button>
+<div id="MAIN_INTERFACE">
+    <div class="header">
+        <h2 style="margin:0; color:var(--gold);">SUPER-NOVA V35</h2>
+        <div id="LIVE_CLOCK" style="color:#555; font-size:12px;">00:00:00</div>
     </div>
-</div>
 
-<script>
-    const KEY = "COSMOX2026";
-    const btn = document.getElementById('unlockBtn');
-    const input = document.getElementById('passInput');
-    const screen = document.getElementById('lock-screen');
-    const app = document.getElementById('app');
-    const error = document.getElementById('error');
+    <div class="input-box">
+        <div class="tag">Analyse du dernier crash</div>
+        <div class="grid">
+            <input type="number" id="M" placeholder="MIN">
+            <input type="number" id="S" placeholder="SEC">
+            <input type="number" id="V" step="0.01" placeholder="COTE">
+        </div>
+        <button onclick="calculateNova()" style="width:100%; padding:18px; background:var(--gold); color:#000; border:none; border-radius:8px; margin-top:15px; font-weight:bold; cursor:pointer;">SCANNER LES BRÈCHES</button>
+    </div>
 
-    // FONCTION DE DÉVERROUILLAGE SANS DÉFAUT
-    function performUnlock() {
-        if (input.value === KEY) {
-            screen.style.opacity = "0";
-            setTimeout(() => {
-                screen.style.display = "none";
-                app.style.display = "block";
-            }, 300);
-        } else {
-            error.style.display = "block";
-            input.value = "";
-            input.focus();
-        }
-    }
-
-    // ÉCOUTEUR CLIC BOUTON
-    btn.addEventListener('click', performUnlock);
-
-    // ÉCOUTEUR TOUCHE ENTRÉE
-    input.addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            performUnlock();
-        }
-    });
-
-    // AUTO-FOCUS AU CHARGEMENT
-    window.onload = () => input.focus();
-</script>
-</body>
-</html>
+    <div id="RESULTS" class="target-list" style="display:none;">
+        <div class="card c2">
+            <span class="tag">
