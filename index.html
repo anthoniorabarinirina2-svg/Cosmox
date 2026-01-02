@@ -2,122 +2,99 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>COSMOX V31 - JACKPOT HUNTER</title>
+    <title>COSMOX V32 - PERMANENT ACCESS</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        :root { --gold: #ffd700; --bg: #030303; --p: #ff007f; --g: #00ff88; }
-        body { background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; margin: 0; display: flex; justify-content: center; }
-        .panel { width: 100%; max-width: 480px; background: #080808; border: 1px solid #1a1a1a; padding: 15px; min-height: 100vh; border-top: 5px solid var(--gold); }
+        :root { --gold: #ffd700; --bg: #020202; --p: #ff007f; --g: #00ff88; }
+        body { background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; margin: 0; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
         
-        #lock-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #000; z-index: 999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .lock-box { width: 280px; text-align: center; border: 1px solid var(--gold); padding: 25px; border-radius: 10px; }
-        
-        .header { text-align: center; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 20px; }
-        .title { font-family: 'Orbitron'; color: var(--gold); font-size: 20px; text-shadow: 0 0 10px rgba(255,215,0,0.5); }
+        /* OVERLAY SÉCURISÉ */
+        #lock-screen { 
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: radial-gradient(circle, #111 0%, #000 100%); 
+            z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; 
+        }
+        .lock-card { 
+            width: 320px; padding: 40px; border: 2px solid var(--gold); 
+            border-radius: 20px; background: #050505; text-align: center;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.2);
+        }
+        .pass-field { 
+            background: #000; border: 1px solid #333; color: var(--gold); 
+            padding: 15px; width: 100%; text-align: center; font-size: 22px; 
+            margin-bottom: 20px; border-radius: 8px; outline: none; box-sizing: border-box;
+        }
+        .pass-field:focus { border-color: var(--gold); }
+        .btn-unlock { 
+            background: var(--gold); color: #000; border: none; padding: 18px; 
+            width: 100%; cursor: pointer; font-family: 'Orbitron'; font-weight: 900; 
+            border-radius: 8px; letter-spacing: 2px;
+        }
 
-        .input-group { background: #111; padding: 15px; border-radius: 8px; border: 1px solid #222; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        input { width: 100%; background: #000; border: 1px solid #333; color: var(--gold); padding: 12px; text-align: center; font-size: 16px; border-radius: 5px; outline: none; box-sizing: border-box; }
-
-        .btn-jackpot { width: 100%; padding: 20px; background: var(--gold); color: #000; border: none; font-family: 'Orbitron'; font-weight: 900; cursor: pointer; border-radius: 5px; text-transform: uppercase; transition: 0.3s; }
-        .btn-jackpot:hover { box-shadow: 0 0 20px var(--gold); transform: scale(1.02); }
-
-        #output { display: none; margin-top: 25px; animation: slideUp 0.5s ease; }
-        .jackpot-card { background: linear-gradient(145deg, #111, #000); border: 2px solid var(--gold); border-radius: 15px; padding: 25px; text-align: center; position: relative; overflow: hidden; }
-        .conf-label { position: absolute; top: 0; left: 50%; transform: translateX(-50%); background: var(--gold); color: #000; font-size: 10px; padding: 2px 10px; font-weight: bold; border-radius: 0 0 5px 5px; }
-
-        .target-val { font-family: 'Orbitron'; font-size: 60px; color: #fff; margin: 15px 0; display: block; text-shadow: 0 0 20px rgba(255,255,255,0.2); }
-        .timer-info { background: #000; padding: 15px; border-radius: 10px; border: 1px solid #222; display: flex; justify-content: space-around; }
-        .t-box span { display: block; font-size: 9px; color: #666; margin-bottom: 5px; }
-        .t-box b { font-size: 18px; color: var(--gold); }
-
-        .scan-line { width: 100%; height: 2px; background: var(--gold); position: absolute; top: 0; left: 0; animation: scan 2s infinite; opacity: 0.3; }
-
-        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
-        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        /* INTERFACE PRINCIPALE */
+        .main-app { display: none; width: 100%; max-width: 480px; padding: 20px; }
+        .jackpot-display { 
+            background: #0a0a0a; border: 2px solid var(--gold); border-radius: 15px; 
+            padding: 30px; text-align: center; margin-top: 50px;
+        }
+        .value { font-family: 'Orbitron'; font-size: 65px; color: #fff; text-shadow: 0 0 20px var(--gold); }
     </style>
 </head>
 <body>
 
 <div id="lock-screen">
-    <div class="lock-box">
-        <input type="password" id="password" style="background:#000;border:1px solid #333;color:#fff;padding:12px;width:100%;margin-bottom:10px;text-align:center" placeholder="PASSCODE">
-        <button class="btn-jackpot" onclick="unlock()">ENTRER</button>
+    <div class="lock-card">
+        <div style="font-family:'Orbitron'; color:var(--gold); margin-bottom:15px; font-size:14px;">SYSTÈME VERROUILLÉ</div>
+        <input type="password" id="passInput" class="pass-field" placeholder="MOT DE PASSE">
+        <button id="unlockBtn" class="btn-unlock">DÉVERROUILLER</button>
+        <div id="error" style="color:red; margin-top:15px; font-size:11px; display:none;">CODE INCORRECT - RÉESSAYEZ</div>
     </div>
 </div>
 
-<div class="panel">
-    <div class="header">
-        <div class="title">JACKPOT HUNTER V31</div>
-        <div id="clock" style="font-size:12px; color:#555; margin-top:5px;">00:00:00</div>
-    </div>
-
-    <div class="input-group">
-        <div class="grid">
-            <input type="number" id="m" placeholder="MINUTE">
-            <input type="number" id="s" placeholder="SECONDE">
-        </div>
-        <input type="number" id="v" step="0.01" placeholder="VALEUR DERNIER CRASH (ex: 1.20)" style="width:100%">
-        <button class="btn-jackpot" onclick="findJackpot()" style="margin-top:10px">ANALYSER LA BRÈCHE</button>
-    </div>
-
-    <div id="output">
-        <div class="jackpot-card">
-            <div class="scan-line"></div>
-            <div class="conf-label">CONFIANCE 99% - CYCLE DÉTECTÉ</div>
-            <span style="font-size: 11px; color: var(--gold); letter-spacing: 2px;">CIBLE JACKPOT</span>
-            <span class="target-val" id="jack-x">--.--x</span>
-            
-            <div class="timer-info">
-                <div class="t-box"><span>ENTRÉE PRÉCISE</span><b id="t-start">--:--</b></div>
-                <div class="t-box"><span>EXPLOSION MAX</span><b id="t-end">--:--</b></div>
-            </div>
-            
-            <div style="margin-top:15px; color: var(--g); font-size: 10px; font-weight: bold; border: 1px solid var(--g); padding: 8px;">
-                INSTRUCTION : ENCAISSEZ À <span id="safe-x">--</span> POUR GARANTIR LE GAIN
-            </div>
-        </div>
+<div class="main-app" id="app">
+    <div class="jackpot-display">
+        <div style="color:var(--gold); font-size:12px; letter-spacing:3px;">PROCHAIN JACKPOT 99%</div>
+        <div class="value" id="val">12.50x</div>
+        <div id="timer" style="margin-top:20px; font-size:20px; color:var(--g);">PRÊT POUR ANALYSE</div>
+        <button onclick="location.reload()" style="margin-top:30px; background:none; border:1px solid #333; color:#555; cursor:pointer; padding:5px 10px;">RE-VERROUILLER</button>
     </div>
 </div>
 
 <script>
-    const PASS = "COSMOX2026";
-    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('fr-FR'); }, 1000);
+    const KEY = "COSMOX2026";
+    const btn = document.getElementById('unlockBtn');
+    const input = document.getElementById('passInput');
+    const screen = document.getElementById('lock-screen');
+    const app = document.getElementById('app');
+    const error = document.getElementById('error');
 
-    function unlock() {
-        if(document.getElementById('password').value === PASS) document.getElementById('lock-screen').style.display='none';
+    // FONCTION DE DÉVERROUILLAGE SANS DÉFAUT
+    function performUnlock() {
+        if (input.value === KEY) {
+            screen.style.opacity = "0";
+            setTimeout(() => {
+                screen.style.display = "none";
+                app.style.display = "block";
+            }, 300);
+        } else {
+            error.style.display = "block";
+            input.value = "";
+            input.focus();
+        }
     }
 
-    function findJackpot() {
-        const m = parseInt(document.getElementById('m').value);
-        const s = parseInt(document.getElementById('s').value);
-        const v = parseFloat(document.getElementById('v').value);
-        if(isNaN(m) || isNaN(s) || isNaN(v)) return alert("Données manquantes");
+    // ÉCOUTEUR CLIC BOUTON
+    btn.addEventListener('click', performUnlock);
 
-        document.getElementById('output').style.display = 'block';
+    // ÉCOUTEUR TOUCHE ENTRÉE
+    input.addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            performUnlock();
+        }
+    });
 
-        // LOGIQUE JACKPOT 99%
-        // L'IA attend un cycle long (environ 2m30 après un petit crash)
-        let waitTime = (v < 1.5) ? 145 : 210; 
-        let targetS = (s + waitTime) % 60;
-        let targetM = (m + Math.floor((s + waitTime) / 60)) % 60;
-
-        // Calcul du Jackpot (Cote entre 8.00x et 15.00x)
-        let jackVal = (8.50 + (s / 10) + (v / 5)).toFixed(2);
-        
-        // Sécurité 99% : Retrait anticipé de 0.50x sur un Jackpot
-        let safeExit = (parseFloat(jackVal) - 0.50).toFixed(2);
-
-        // Temps de vol estimé pour un jackpot (environ 1.8s par point de cote)
-        let duration = Math.floor(parseFloat(jackVal) * 1.8);
-        let endS = (targetS + duration) % 60;
-        let endM = (targetM + Math.floor((targetS + duration) / 60)) % 60;
-
-        document.getElementById('jack-x').innerText = jackVal + "x";
-        document.getElementById('safe-x').innerText = safeExit + "x";
-        document.getElementById('t-start').innerText = targetM.toString().padStart(2,'0') + ":" + targetS.toString().padStart(2,'0');
-        document.getElementById('t-end').innerText = endM.toString().padStart(2,'0') + ":" + endS.toString().padStart(2,'0');
-    }
+    // AUTO-FOCUS AU CHARGEMENT
+    window.onload = () => input.focus();
 </script>
 </body>
 </html>
