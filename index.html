@@ -3,64 +3,94 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMOX V35 - SUPER-NOVA</title>
+    <title>COSMOX V36 - FINAL ARMOR</title>
     <style>
-        :root { --gold: #ffd700; --green: #00ff88; --blue: #00d2ff; --pink: #ff007f; --bg: #000; }
-        body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; overflow-x: hidden; }
+        :root { --gold: #ffd700; --green: #00ff88; --bg: #000; }
+        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; overflow: hidden; }
         
-        /* SYSTÈME DE DÉVERROUILLAGE INDESTRUCTIBLE */
-        #FORCED_LOCK { position: fixed; inset: 0; background: #000; z-index: 100000; display: flex; justify-content: center; align-items: center; }
-        .lock-card { border: 2px solid var(--gold); padding: 40px; border-radius: 20px; background: #080808; text-align: center; width: 320px; box-shadow: 0 0 50px rgba(255, 215, 0, 0.1); }
-        .lock-card input { width: 100%; padding: 15px; margin-bottom: 20px; background: #000; border: 1px solid #333; color: var(--gold); font-size: 24px; text-align: center; border-radius: 10px; }
-        #UNLOCK_TRIGGER { width: 100%; padding: 20px; background: var(--gold); color: #000; border: none; font-weight: 900; cursor: pointer; border-radius: 10px; text-transform: uppercase; font-size: 16px; }
+        /* PROTECTION MAXIMALE */
+        #SCREEN_LOCK { 
+            position: fixed; inset: 0; background: #000; z-index: 999999; 
+            display: flex; justify-content: center; align-items: center; 
+        }
+        .ui-box { 
+            border: 2px solid var(--gold); padding: 30px; border-radius: 15px; 
+            background: #0a0a0a; text-align: center; width: 85%; max-width: 320px;
+        }
+        input { 
+            width: 100%; padding: 15px; margin-bottom: 20px; background: #111; 
+            border: 1px solid #333; color: var(--gold); font-size: 22px; 
+            text-align: center; border-radius: 8px; box-sizing: border-box;
+        }
+        #UNLOCK_BTN { 
+            width: 100%; padding: 18px; background: var(--gold); color: #000; 
+            border: none; font-weight: 900; cursor: pointer; border-radius: 8px;
+            font-size: 16px; display: block !important; visibility: visible !important;
+        }
 
-        /* INTERFACE DE PRÉDICTION */
-        #MAIN_INTERFACE { display: none; width: 100%; max-width: 500px; padding: 15px; box-sizing: border-box; }
-        .header { text-align: center; border-bottom: 1px solid #222; padding-bottom: 15px; margin-bottom: 20px; }
-        .input-box { background: #111; padding: 20px; border-radius: 15px; border: 1px solid #222; margin-bottom: 20px; }
-        .grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-top: 10px; }
-        input[type="number"] { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: var(--green); text-align: center; border-radius: 8px; }
-
-        /* CARDS CIBLES */
-        .target-list { display: flex; flex-direction: column; gap: 12px; }
-        .card { background: #0c0c0c; border: 1px solid #222; padding: 18px; border-radius: 15px; position: relative; border-left: 6px solid #fff; }
-        .c2 { border-left-color: var(--green); }
-        .c5 { border-left-color: var(--blue); }
-        .c10 { border-left-color: var(--pink); }
-        .c_jackpot { border-left-color: var(--gold); background: linear-gradient(90deg, #1a1500, #0c0c0c); border-width: 2px 2px 2px 8px; }
-
-        .tag { font-size: 10px; font-weight: bold; color: #888; text-transform: uppercase; }
-        .val-x { font-size: 36px; font-weight: 900; margin: 5px 0; display: block; }
-        .time-box { display: flex; justify-content: space-between; font-size: 13px; color: #aaa; margin-top: 10px; background: #000; padding: 8px; border-radius: 5px; }
-        .time-box b { color: #fff; }
+        /* APP CACHÉE */
+        #MAIN_APP { display: none; padding: 20px; text-align: center; }
+        .jackpot-alert { border: 2px solid var(--green); padding: 20px; border-radius: 15px; margin-top: 40px; }
+        .x-val { font-size: 50px; color: var(--green); font-weight: 900; }
     </style>
 </head>
 <body>
 
-<div id="FORCED_LOCK">
-    <div class="lock-card">
-        <div style="color:var(--gold); font-size: 12px; margin-bottom: 15px; letter-spacing: 2px;">ACCÈS SYSTÈME QUANTUM</div>
-        <input type="password" id="ENTRY_PASS" placeholder="CODE">
-        <button id="UNLOCK_TRIGGER">DÉVERROUILLAGE</button>
+<div id="SCREEN_LOCK">
+    <div class="ui-box">
+        <h2 style="color:var(--gold); margin-top:0;">SYSTÈME ACTIF</h2>
+        <input type="text" id="CODE_INPUT" placeholder="MOT DE PASSE" autocomplete="off">
+        <button id="UNLOCK_BTN">DÉVERROUILLAGE IMMÉDIAT</button>
+        <p id="MSG" style="color:red; display:none; font-size:12px; margin-top:10px;">CODE INCORRECT</p>
     </div>
 </div>
 
-<div id="MAIN_INTERFACE">
-    <div class="header">
-        <h2 style="margin:0; color:var(--gold);">SUPER-NOVA V35</h2>
-        <div id="LIVE_CLOCK" style="color:#555; font-size:12px;">00:00:00</div>
+<div id="MAIN_APP">
+    <div class="jackpot-alert">
+        <h3 style="color:var(--gold);">🎯 BRÈCHE JACKPOT DÉTECTÉE</h3>
+        <div class="x-val" id="VAL_X">85.40x</div>
+        <p>MINUTE D'ENTRÉE : <span id="MIN_V">--</span></p>
+        <p>SECONDE DE CRASH : <span id="SEC_V">--</span></p>
+        <button onclick="window.location.reload()" style="background:#222; color:#fff; border:none; padding:10px; cursor:pointer;">RE-VERROUILLER</button>
     </div>
+</div>
 
-    <div class="input-box">
-        <div class="tag">Analyse du dernier crash</div>
-        <div class="grid">
-            <input type="number" id="M" placeholder="MIN">
-            <input type="number" id="S" placeholder="SEC">
-            <input type="number" id="V" step="0.01" placeholder="COTE">
-        </div>
-        <button onclick="calculateNova()" style="width:100%; padding:18px; background:var(--gold); color:#000; border:none; border-radius:8px; margin-top:15px; font-weight:bold; cursor:pointer;">SCANNER LES BRÈCHES</button>
-    </div>
+<script>
+    // SCRIPT À EXÉCUTION PRIORITAIRE
+    (function() {
+        const key = "COSMOX2026";
+        const trigger = document.getElementById('UNLOCK_BTN');
+        const input = document.getElementById('CODE_INPUT');
+        const layer = document.getElementById('SCREEN_LOCK');
+        const app = document.getElementById('MAIN_APP');
 
-    <div id="RESULTS" class="target-list" style="display:none;">
-        <div class="card c2">
-            <span class="tag">
+        // FORCE L'ACTIVATION DU CLIC
+        trigger.addEventListener('click', function() {
+            if (input.value.trim() === key) {
+                // Suppression brutale du verrou
+                layer.setAttribute("style", "display:none !important");
+                app.style.display = "block";
+                generateJackpot();
+            } else {
+                document.getElementById('MSG').style.display = "block";
+                input.value = "";
+            }
+        });
+
+        // ACTIVER LA TOUCHE ENTRÉE
+        input.addEventListener('keydown', function(e) {
+            if (e.key === "Enter") {
+                trigger.click();
+            }
+        });
+
+        function generateJackpot() {
+            const now = new Date();
+            document.getElementById('MIN_V').innerText = (now.getMinutes() + 2) % 60;
+            document.getElementById('SEC_V').innerText = Math.floor(Math.random() * 59);
+        }
+    })();
+</script>
+
+</body>
+</html>
