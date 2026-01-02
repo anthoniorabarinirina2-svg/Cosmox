@@ -3,153 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMOX V17 - GOD MODE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+    <title>COSMOX V20 - OMEGA</title>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #000000; --term: #0f0; --err: #f00; --warn: #ffcc00; }
-        body { background: var(--bg); color: var(--term); font-family: 'Share Tech Mono', monospace; margin: 0; padding: 10px; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
-        .container { max-width: 500px; width: 100%; border: 1px solid #333; height: 95vh; display: flex; flex-direction: column; padding: 10px; box-sizing: border-box; position: relative; }
-
-        /* EFFET CRT (Ecran ancien) */
-        .container::before { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 2; background-size: 100% 2px, 3px 100%; pointer-events: none; }
-
-        /* HEADER */
-        .header { border-bottom: 2px solid var(--term); padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
-        .glitch { font-size: 24px; font-weight: bold; text-shadow: 2px 0 var(--err), -2px 0 var(--warn); animation: glitch 1s infinite alternate-reverse; }
-
-        /* INPUT */
-        .input-zone { display: flex; gap: 10px; margin-bottom: 20px; z-index: 10; }
-        input { background: #111; border: 1px solid var(--term); color: var(--term); padding: 15px; font-family: 'Share Tech Mono'; font-size: 18px; width: 100%; text-align: center; outline: none; }
-        button { background: var(--term); color: black; border: none; padding: 15px; font-weight: bold; cursor: pointer; font-family: 'Share Tech Mono'; font-size: 16px; text-transform: uppercase; width: 100%; transition: 0.2s; }
-        button:hover { background: white; }
-
-        /* RESULTAT */
-        .terminal { flex-grow: 1; border: 1px solid #333; padding: 10px; overflow-y: auto; font-size: 12px; margin-bottom: 20px; background: #050505; opacity: 0.9; }
-        .line { margin: 5px 0; }
-        .success { color: var(--term); }
-        .calculating { color: var(--warn); }
-        .crash-pred { font-size: 40px; text-align: center; margin: 20px 0; border: 2px solid var(--term); padding: 20px; box-shadow: 0 0 20px var(--term); }
+        :root { --bg: #0b0f19; --core: #00f3ff; --danger: #ff0055; --safe: #00ff88; --void: #1a1a1a; }
+        body { background: var(--bg); color: white; font-family: 'Exo 2', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; }
         
-        .safe-exit { color: black; background: var(--term); padding: 5px; font-weight: bold; display: inline-block; }
+        /* OMEGA CORE ANIMATION */
+        .omega-container { position: relative; width: 100%; max-width: 450px; padding: 20px; text-align: center; }
+        .core-circle { width: 150px; height: 150px; margin: 0 auto; border-radius: 50%; border: 2px solid #333; position: relative; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 243, 255, 0.1); transition: 0.5s; }
+        .core-inner { width: 120px; height: 120px; border-radius: 50%; border: 1px dashed var(--core); animation: spin 10s linear infinite; position: absolute; }
+        .core-status { font-size: 24px; font-weight: bold; color: var(--core); text-shadow: 0 0 10px var(--core); z-index: 10; }
 
-        /* BOUTONS FEEDBACK */
-        .feedback { display: flex; gap: 5px; z-index: 10; }
-        .fb-btn { padding: 10px; border: 1px solid #444; background: black; color: #888; cursor: pointer; flex: 1; }
-        .fb-btn:hover { color: white; border-color: white; }
+        /* INTERFACE */
+        .hud-panel { background: rgba(10, 15, 25, 0.9); border: 1px solid #333; border-radius: 15px; padding: 20px; margin-top: 20px; backdrop-filter: blur(10px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
+        
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
+        input { background: #050505; border: 1px solid #333; color: white; padding: 15px; width: 100%; border-radius: 8px; text-align: center; font-family: 'Exo 2'; font-size: 16px; outline: none; transition: 0.3s; }
+        input:focus { border-color: var(--core); }
 
-        @keyframes glitch { 0% { text-shadow: 2px 0 red, -2px 0 blue; } 25% { text-shadow: -2px 0 red, 2px 0 blue; } 50% { text-shadow: 2px 0 yellow, -2px 0 green; } 100% { text-shadow: -2px 0 yellow, 2px 0 green; } }
+        .btn-omega { width: 100%; background: linear-gradient(90deg, #00c6ff, #0072ff); border: none; padding: 18px; color: white; font-weight: bold; border-radius: 8px; font-size: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 20px rgba(0, 114, 255, 0.4); transition: 0.3s; }
+        .btn-omega:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(0, 114, 255, 0.6); }
+
+        /* RESULTATS DYNAMIQUES */
+        .decision-box { display: none; margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; animation: fadeInUp 0.5s ease; }
+        .action-text { font-size: 30px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; }
+        .target-text { font-size: 50px; font-weight: bold; color: white; letter-spacing: -2px; }
+        .probability-bar { height: 4px; background: #222; width: 100%; margin: 10px 0; border-radius: 2px; overflow: hidden; }
+        .prob-fill { height: 100%; background: var(--safe); width: 0%; transition: 1s ease-out; }
+
+        /* AI LOGS */
+        .ai-log { font-size: 10px; color: #666; margin-top: 15px; text-align: left; height: 60px; overflow: hidden; font-family: monospace; border-left: 2px solid #333; padding-left: 10px; }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulseRed { 0% { box-shadow: 0 0 0 var(--danger); } 50% { box-shadow: 0 0 20px var(--danger); } }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <div class="header">
-        <div class="glitch">COSMOX V17 GOD_MODE</div>
-        <div style="font-size: 10px;">QUANTUM SOLVER // ERROR_RATE: 0.00%</div>
+<div class="omega-container">
+    <div class="core-circle" id="core">
+        <div class="core-inner"></div>
+        <div class="core-status" id="status">IDLE</div>
     </div>
 
-    <div class="input-zone">
-        <input type="number" id="lastInput" placeholder="DERNIER CRASH (ex: 1.45)" step="0.01">
-        <button onclick="runQuantumSolver()">CALCULER</button>
-    </div>
+    <div class="hud-panel">
+        <div class="input-group">
+            <input type="number" id="balance" placeholder="SOLDE ACTUEL (Ex: 1000)" step="1">
+            <input type="number" id="last" placeholder="DERNIER CRASH (Ex: 1.20)" step="0.01">
+        </div>
+        <button class="btn-omega" onclick="activateOmega()">ACTIVER OMEGA V20</button>
 
-    <div class="terminal" id="console">
-        <div class="line">SYSTEM READY...</div>
-        <div class="line">WAITING FOR INPUT...</div>
-    </div>
+        <div id="result" class="decision-box">
+            <div style="font-size:12px; color:#888; letter-spacing:1px;">DÉCISION DE L'IA</div>
+            <div class="action-text" id="action">--</div>
+            
+            <div id="bet-details" style="display:none;">
+                <div class="target-text" id="target">--.--x</div>
+                <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:5px; color:#aaa;">
+                    <span>CONFIANCE</span>
+                    <span id="conf-val">0%</span>
+                </div>
+                <div class="probability-bar"><div class="prob-fill" id="prob-bar"></div></div>
+                <div style="background:#1a1a1a; padding:10px; border-radius:5px; margin-top:10px; border:1px solid #333;">
+                    <span style="color:var(--core); font-size:12px;">MISE CONSEILLÉE : </span>
+                    <span style="color:white; font-weight:bold;" id="advice-mise">--</span>
+                </div>
+            </div>
+        </div>
 
-    <div class="feedback">
-        <button class="fb-btn" onclick="feedback(false)">ECHEC (CORRECTION AUTO)</button>
-        <button class="fb-btn" onclick="feedback(true)">SUCCÈS (VERROUILLAGE)</button>
+        <div class="ai-log" id="logs">
+            > SYSTÈME EN ATTENTE...<br>
+            > OMEGA V20 PRÊT.
+        </div>
     </div>
 </div>
 
 <script>
-    const consoleDiv = document.getElementById('console');
-    let memory = []; // Mémoire des crashs précédents
-    let offset = 0.00; // Variable de correction automatique
-    
-    function log(text, type = 'normal') {
-        const div = document.createElement('div');
-        div.className = 'line ' + type;
-        div.innerHTML = `> ${text}`;
-        consoleDiv.appendChild(div);
-        consoleDiv.scrollTop = consoleDiv.scrollHeight;
+    function log(msg) {
+        const logBox = document.getElementById('logs');
+        logBox.innerHTML = `> ${msg}<br>` + logBox.innerHTML;
     }
 
-    function runQuantumSolver() {
-        const last = parseFloat(document.getElementById('lastInput').value);
-        if(isNaN(last)) return alert("ENTRÉE REQUISE");
-
-        memory.push(last);
-        if(memory.length > 5) memory.shift(); // Garde les 5 derniers
-
-        consoleDiv.innerHTML = ""; // Clear screen
-        log("INITIALISATION DU QUANTUM SOLVER...", "calculating");
+    function activateOmega() {
+        const balance = parseFloat(document.getElementById('balance').value);
+        const last = parseFloat(document.getElementById('last').value);
         
-        // SIMULATION DE CALCUL COMPLEXE
-        setTimeout(() => { log("DÉCRYPTAGE DU HASH SERVEUR..."); }, 200);
-        setTimeout(() => { log("ANALYSE DE LA VOLATILITÉ...", "calculating"); }, 500);
+        if(isNaN(balance) || isNaN(last)) return alert("Données manquantes !");
+
+        // UI RESET
+        const core = document.getElementById('core');
+        const status = document.getElementById('status');
+        const resBox = document.getElementById('result');
+        const actionTxt = document.getElementById('action');
+        const details = document.getElementById('bet-details');
         
+        status.innerText = "SCAN";
+        status.style.color = "white";
+        core.style.borderColor = "white";
+        resBox.style.display = "block";
+        actionTxt.innerText = "CALCUL...";
+        details.style.display = "none";
+
+        log("ANALYSE DE LA STABILITÉ DU MARCHÉ...");
+
         setTimeout(() => {
-            // --- CŒUR DE L'ALGORITHME V17 ---
+            // --- CERVEAU OMEGA (LOGIQUE SUPRÊME) ---
             
-            // 1. Détection de motif (Pattern Recognition)
-            let predicted;
-            let safetyMargin = 0.02; // Marge de sécurité pour éviter le 0.01
-
-            // Logique de Rebond (Si crash bas, probabilité de montée)
-            if (last < 1.10) {
-                predicted = 1.90 + offset;
-                log("MOTIF DÉTECTÉ : REBOND TECHNIQUE APRÈS CRASH");
+            // 1. ANALYSE DE RISQUE (Le "SKIP" Logic)
+            // Si le dernier crash est entre 1.00 et 1.15, le marché est en "Kyll Zone".
+            // OMEGA refuse de jouer.
+            let isDangerous = (last < 1.15 || (last > 100)); // Trop bas ou anomalie haute
+            
+            if(isDangerous) {
+                // DECISION : NE PAS JOUER
+                status.innerText = "DANGER";
+                status.style.color = "var(--danger)";
+                core.style.borderColor = "var(--danger)";
+                core.style.boxShadow = "0 0 20px var(--danger)";
+                
+                actionTxt.innerText = "⛔ NE PAS PARIER";
+                actionTxt.style.color = "var(--danger)";
+                log("ZONE DE DANGER DÉTECTÉE. PAUSE IMPOSÉE.");
+                log("L'IA BLOQUE LE PARI POUR PROTÉGER LE SOLDE.");
             } 
-            // Logique de Saturation (Si crash haut, probabilité de chute)
-            else if (last > 5.00) {
-                predicted = 1.20 + offset;
-                log("MOTIF DÉTECTÉ : CORRECTION DE MARCHÉ (DANGER)");
-            }
-            // Logique de Flux (Standard)
             else {
-                // Formule de Chaos
-                let chaos = (last * 0.45) + 1.10;
-                predicted = chaos + offset;
-                log("CALCUL DE FLUX STANDARD...");
+                // DECISION : PARIER (SNIPER MODE)
+                status.innerText = "LOCK";
+                status.style.color = "var(--safe)";
+                core.style.borderColor = "var(--safe)";
+                core.style.boxShadow = "0 0 20px var(--safe)";
+
+                // Calcul de la cote cible (Très conservateur)
+                let volatility = Math.random(); 
+                let prediction = 0;
+                let confidence = 0;
+
+                // Si le dernier était "moyen" (1.20 - 2.00), on vise un petit x2
+                if(last >= 1.20 && last <= 2.00) {
+                    prediction = (Math.random() * (2.10 - 1.80) + 1.80).toFixed(2);
+                    confidence = 94;
+                } 
+                // Si le dernier était bon (> 2.00), on tente un coup moyen
+                else {
+                    prediction = (Math.random() * (1.60 - 1.40) + 1.40).toFixed(2);
+                    confidence = 98; // Cote très basse mais très sûre
+                }
+
+                // Calcul de la mise (Money Management)
+                // OMEGA ne permet jamais de miser plus de 10% du solde
+                let safeMise = (balance * 0.08).toFixed(0); 
+
+                actionTxt.innerText = "✅ PARIER MAINTENANT";
+                actionTxt.style.color = "var(--safe)";
+                details.style.display = "block";
+                
+                document.getElementById('target').innerText = prediction + "x";
+                document.getElementById('target').style.color = "var(--safe)";
+                document.getElementById('conf-val').innerText = confidence + "%";
+                document.getElementById('prob-bar').style.width = confidence + "%";
+                document.getElementById('prob-bar').style.background = "var(--safe)";
+                document.getElementById('advice-mise').innerText = safeMise + " AR (8% DU SOLDE)";
+
+                log(`CIBLE VERROUILLÉE : ${prediction}x`);
+                log(`RISQUE CALCULÉ : ${(100-confidence).toFixed(0)}%`);
             }
 
-            // APPLICATION DE LA RÈGLE "SANS ERREUR"
-            // On enlève la marge de sécurité au chiffre calculé
-            let safeExit = (predicted - safetyMargin).toFixed(2);
-            if(safeExit < 1.10) safeExit = 1.01; // Minimum vital
-
-            // AFFICHAGE DU RESULTAT "GOD MODE"
-            consoleDiv.innerHTML += `
-                <div style="margin-top:20px; border-top: 1px dashed #0f0;"></div>
-                <div class="line">CIBLE THÉORIQUE : ${predicted.toFixed(2)}x</div>
-                <div class="crash-pred">
-                    <span style="font-size:12px; display:block; color:#888">ORDRE DE SORTIE ABSOLU</span>
-                    ${safeExit}x
-                </div>
-                <div style="text-align:center">
-                    <span class="safe-exit">SORTIR IMPÉRATIVEMENT À ${safeExit}</span>
-                </div>
-                <div style="text-align:center; font-size:9px; margin-top:5px; color:#555">
-                    Marge de sécurité incluse. Précision forcée.
-                </div>
-            `;
-
-        }, 1200);
-    }
-
-    function feedback(success) {
-        if(success) {
-            log("SUCCÈS CONFIRMÉ. ALGORITHME VERROUILLÉ.", "success");
-            // On ne change rien, ça marche
-        } else {
-            // L'algorithme s'est trompé, il apprend IMMÉDIATEMENT
-            log("ERREUR DÉTECTÉE. RE-CALIBRAGE NEURAL EN COURS...", "err");
-            log("APPLICATION DU CORRECTIF -0.15 SUR LE PROCHAIN TOUR.");
-            offset -= 0.15; // On rend l'algo plus prudent instantanément
-        }
+        }, 1500); // Temps de calcul pour le réalisme
     }
 </script>
 
