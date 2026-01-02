@@ -3,99 +3,57 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMOX V40 - CHRONO-PRECISION</title>
+    <title>COSMOX V50 - QUANTUM CORE</title>
     <style>
-        :root { --p: #ff007f; --g: #00ff88; --b: #00d2ff; --y: #ffd700; --bg: #020202; }
-        body { background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; margin: 0; display: flex; justify-content: center; }
+        :root { --neon: #00f3ff; --hazard: #ff0055; --gold: #ffcc00; --safe: #00ff95; --bg: #010101; }
+        body { background: var(--bg); color: #fff; font-family: 'Orbitron', sans-serif; margin: 0; display: flex; justify-content: center; overflow-x: hidden; }
         
-        /* LOCK SCREEN */
-        #LOCK_SCREEN { position: fixed; inset: 0; background: #000; z-index: 1000000; display: flex; justify-content: center; align-items: center; }
-        .lock-card { border: 2px solid var(--g); padding: 30px; background: #050505; text-align: center; box-shadow: 0 0 20px var(--g); border-radius: 10px; }
-        #PASS { background: #000; border: 1px solid #333; color: var(--g); padding: 15px; width: 220px; font-size: 20px; text-align: center; margin-bottom: 20px; outline: none; }
-        #UNLOCK_BTN { width: 100%; padding: 15px; background: var(--g); color: #000; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; }
+        /* LOCK SCREEN V50 */
+        #V50_LOCK { position: fixed; inset: 0; background: radial-gradient(circle, #111, #000); z-index: 1000000; display: flex; justify-content: center; align-items: center; }
+        .v50-box { border: 2px solid var(--neon); padding: 40px; background: rgba(0,0,0,0.9); box-shadow: 0 0 50px rgba(0, 243, 255, 0.2); border-radius: 5px; text-align: center; }
+        #PASS { background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 15px; width: 100%; font-size: 24px; text-align: center; margin-bottom: 20px; outline: none; }
+        #UNLOCK_BTN { width: 100%; padding: 20px; background: var(--neon); color: #000; border: none; font-weight: 900; cursor: pointer; font-size: 16px; letter-spacing: 5px; }
 
-        /* INTERFACE */
-        #APP { display: none; width: 100%; max-width: 500px; padding: 20px; }
-        .neon-text { text-align: center; color: var(--g); text-shadow: 0 0 10px var(--g); font-size: 22px; margin-bottom: 30px; }
+        /* INTERFACE V50 */
+        #V50_APP { display: none; width: 100%; max-width: 600px; padding: 20px; box-sizing: border-box; }
+        .v50-header { border-bottom: 2px solid var(--neon); padding-bottom: 15px; margin-bottom: 30px; display: flex; justify-content: space-between; align-items: center; }
         
-        .input-panel { background: #0a0a0a; border: 1px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        input[type="number"] { background: #000; border: 1px solid #444; color: #fff; padding: 12px; font-size: 18px; text-align: center; border-radius: 5px; }
-        label { font-size: 10px; color: #666; display: block; margin-bottom: 5px; }
+        .v50-input-zone { background: #0a0a0a; border: 1px solid #222; padding: 25px; border-radius: 4px; position: relative; }
+        .v50-input-zone::before { content: "DATA INPUT"; position: absolute; top: -10px; left: 10px; background: var(--bg); padding: 0 10px; font-size: 10px; color: var(--neon); }
+        
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        input[type="number"] { background: #000; border: 1px solid #333; color: var(--safe); padding: 15px; font-size: 20px; text-align: center; font-family: 'Share Tech Mono', monospace; }
+        
+        .btn-v50 { width: 100%; padding: 20px; background: linear-gradient(90deg, var(--neon), var(--safe)); color: #000; border: none; font-weight: 900; margin-top: 20px; cursor: pointer; clip-path: polygon(5% 0%, 100% 0%, 95% 100%, 0% 100%); }
 
-        .btn-predict { width: 100%; padding: 20px; background: var(--y); color: #000; border: none; font-weight: 900; border-radius: 8px; cursor: pointer; margin-top: 15px; font-size: 14px; }
+        /* CARDS 10 TOURS */
+        .tour-matrix { margin-top: 30px; display: flex; flex-direction: column; gap: 15px; }
+        .card-v50 { background: #080808; border: 1px solid #1a1a1a; padding: 20px; position: relative; overflow: hidden; }
+        .card-v50::after { content: ""; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon); }
+        
+        .card-top { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 12px; color: #555; }
+        .card-main { display: flex; justify-content: space-between; align-items: center; }
+        
+        .chrono { font-size: 22px; color: #fff; }
+        .chrono b { color: var(--gold); }
+        .x-score { font-size: 32px; font-weight: 900; color: var(--safe); text-shadow: 0 0 10px rgba(0,255,149,0.3); }
+        
+        .crash-log { font-size: 11px; margin-top: 15px; padding-top: 10px; border-top: 1px dashed #222; color: var(--hazard); display: flex; justify-content: space-between; }
 
-        /* LISTE DES 10 TOURS */
-        .tour-item { background: #0c0c0c; border: 1px solid #1a1a1a; margin-bottom: 10px; padding: 15px; border-radius: 8px; position: relative; border-left: 4px solid #fff; }
-        .tour-header { display: flex; justify-content: space-between; font-size: 10px; color: #555; margin-bottom: 5px; }
-        .tour-main { display: flex; justify-content: space-between; align-items: center; }
-        .time-box { font-size: 18px; color: #fff; }
-        .time-box b { color: var(--b); }
-        .cote-box { font-size: 26px; font-weight: 900; color: var(--g); }
-        .crash-warning { font-size: 11px; color: var(--p); text-align: right; font-weight: bold; }
-
-        /* TYPES */
-        .type-safe { border-left-color: var(--g); }
-        .type-jackpot { border-left-color: var(--y); background: linear-gradient(90deg, #1a1600, #0c0c0c); }
+        /* TYPE STYLES */
+        .jackpot-v50::after { background: var(--gold); }
+        .jackpot-v50 { border: 1px solid var(--gold); background: rgba(255,204,0,0.02); }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@900&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div id="LOCK_SCREEN">
-    <div class="lock-card">
-        <div style="color:var(--g); margin-bottom:15px; font-size:12px;">ENCRYPTION ACTIVE v40</div>
-        <input type="password" id="PASS" placeholder="CODE">
-        <button id="UNLOCK_BTN">DÉVERROUILLER</button>
+<div id="V50_LOCK">
+    <div class="v50-box">
+        <h1 style="color:var(--neon); font-size:18px; letter-spacing:10px; margin-bottom:30px;">COSMOX CORE V.50</h1>
+        <input type="password" id="PASS" placeholder="AUTHENTICATION">
+        <button id="UNLOCK_BTN">DECRYPT ENGINE</button>
     </div>
 </div>
 
-<div id="APP">
-    <div class="neon-text">RADAR PRÉCISION // 10 TOURS</div>
-
-    <div class="input-panel">
-        <div class="input-row">
-            <div><label>MIN HISTORIQUE</label><input type="number" id="M" placeholder="MM"></div>
-            <div><label>SEC HISTORIQUE</label><input type="number" id="S" placeholder="SS"></div>
-        </div>
-        <button class="btn-predict" onclick="predictExact()">CALCULER LA SÉQUENCE EXACTE</button>
-    </div>
-
-    <div id="RESULTS"></div>
-</div>
-
-<script>
-    // ACTIVATION BOUTON
-    document.getElementById('UNLOCK_BTN').onclick = function() {
-        if(document.getElementById('PASS').value === "COSMOX2026") {
-            document.getElementById('LOCK_SCREEN').style.display = 'none';
-            document.getElementById('APP').style.display = 'block';
-        } else { alert("CODE FAUX"); }
-    };
-
-    function predictExact() {
-        const m = parseInt(document.getElementById('M').value);
-        const s = parseInt(document.getElementById('S').value);
-        if(isNaN(m) || isNaN(s)) return;
-
-        const container = document.getElementById('RESULTS');
-        container.innerHTML = "";
-
-        let lastM = m;
-        let lastS = s;
-
-        for(let i=1; i<=10; i++) {
-            // Intervalle de cycle (ajusté pour coller au serveur)
-            let gap = 50 + (i * 3);
-            let startS = (lastS + gap) % 60;
-            let startM = (lastM + Math.floor((lastS + gap) / 60)) % 60;
-            
-            lastS = startS;
-            lastM = startM;
-
-            // Détermination de la cote (le score exact)
-            let score;
-            let type = "type-safe";
-            if(i === 4 || i === 8) { // Cibles Jackpot
-                score = (60.10 + (Math.random() * 20)).toFixed(2);
-                type = "type-jackpot";
-            } else if(i % 2 === 0)
+<div id="V50_APP">
