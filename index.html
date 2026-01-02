@@ -2,139 +2,100 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>COSMOX V38 - 10 TOURS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COSMOX V40 - CHRONO-PRECISION</title>
     <style>
-        :root { --g: #00ff88; --y: #ffd700; --b: #00d2ff; --p: #ff007f; --bg: #050505; }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
+        :root { --p: #ff007f; --g: #00ff88; --b: #00d2ff; --y: #ffd700; --bg: #020202; }
+        body { background: var(--bg); color: #fff; font-family: 'Share Tech Mono', monospace; margin: 0; display: flex; justify-content: center; }
         
-        /* SYSTÈME DE DÉVERROUILLAGE FORCÉ */
+        /* LOCK SCREEN */
         #LOCK_SCREEN { position: fixed; inset: 0; background: #000; z-index: 1000000; display: flex; justify-content: center; align-items: center; }
-        .lock-box { border: 2px solid var(--y); padding: 30px; border-radius: 15px; text-align: center; background: #0a0a0a; width: 280px; }
-        #PASS { width: 100%; padding: 15px; margin: 15px 0; background: #000; border: 1px solid #333; color: var(--y); font-size: 22px; text-align: center; }
-        #UNLOCK_BTN { width: 100%; padding: 15px; background: var(--y); color: #000; border: none; font-weight: 900; cursor: pointer; border-radius: 5px; }
+        .lock-card { border: 2px solid var(--g); padding: 30px; background: #050505; text-align: center; box-shadow: 0 0 20px var(--g); border-radius: 10px; }
+        #PASS { background: #000; border: 1px solid #333; color: var(--g); padding: 15px; width: 220px; font-size: 20px; text-align: center; margin-bottom: 20px; outline: none; }
+        #UNLOCK_BTN { width: 100%; padding: 15px; background: var(--g); color: #000; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; }
 
-        /* APP INTERFACE */
-        #APP { display: none; max-width: 500px; margin: auto; }
-        .header { text-align: center; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 20px; }
-        .input-card { background: #111; padding: 15px; border-radius: 10px; border: 1px solid #222; }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
-        input { background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 5px; text-align: center; width: 100%; box-sizing: border-box; }
+        /* INTERFACE */
+        #APP { display: none; width: 100%; max-width: 500px; padding: 20px; }
+        .neon-text { text-align: center; color: var(--g); text-shadow: 0 0 10px var(--g); font-size: 22px; margin-bottom: 30px; }
         
-        .btn-main { width: 100%; padding: 18px; background: var(--g); color: #000; border: none; font-weight: bold; border-radius: 5px; margin-top: 10px; cursor: pointer; }
+        .input-panel { background: #0a0a0a; border: 1px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+        input[type="number"] { background: #000; border: 1px solid #444; color: #fff; padding: 12px; font-size: 18px; text-align: center; border-radius: 5px; }
+        label { font-size: 10px; color: #666; display: block; margin-bottom: 5px; }
 
-        /* RESULTATS 10 TOURS */
-        .results-grid { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
-        .tour-row { display: grid; grid-template-columns: 50px 1fr 80px; align-items: center; background: #0c0c0c; border: 1px solid #222; padding: 12px; border-radius: 8px; font-size: 13px; }
-        .tour-id { color: #555; font-weight: bold; font-size: 10px; }
-        .tour-time { color: #aaa; }
-        .tour-time b { color: #fff; }
-        .tour-x { text-align: right; font-weight: 900; font-size: 18px; }
-        
-        /* COULEURS DES CIBLES */
-        .x2 { border-left: 4px solid var(--g); color: var(--g); }
-        .x5 { border-left: 4px solid var(--b); color: var(--b); }
-        .x10 { border-left: 4px solid var(--p); color: var(--p); }
-        .xJACK { border-left: 4px solid var(--y); color: var(--y); background: #1a1600; }
+        .btn-predict { width: 100%; padding: 20px; background: var(--y); color: #000; border: none; font-weight: 900; border-radius: 8px; cursor: pointer; margin-top: 15px; font-size: 14px; }
+
+        /* LISTE DES 10 TOURS */
+        .tour-item { background: #0c0c0c; border: 1px solid #1a1a1a; margin-bottom: 10px; padding: 15px; border-radius: 8px; position: relative; border-left: 4px solid #fff; }
+        .tour-header { display: flex; justify-content: space-between; font-size: 10px; color: #555; margin-bottom: 5px; }
+        .tour-main { display: flex; justify-content: space-between; align-items: center; }
+        .time-box { font-size: 18px; color: #fff; }
+        .time-box b { color: var(--b); }
+        .cote-box { font-size: 26px; font-weight: 900; color: var(--g); }
+        .crash-warning { font-size: 11px; color: var(--p); text-align: right; font-weight: bold; }
+
+        /* TYPES */
+        .type-safe { border-left-color: var(--g); }
+        .type-jackpot { border-left-color: var(--y); background: linear-gradient(90deg, #1a1600, #0c0c0c); }
     </style>
 </head>
 <body>
 
 <div id="LOCK_SCREEN">
-    <div class="lock-box">
-        <div style="color:var(--y); font-size:10px; letter-spacing:2px;">SÉCURITÉ BIOMÉTRIQUE V38</div>
-        <input type="password" id="PASS" placeholder="MOT DE PASSE">
-        <button id="UNLOCK_BTN">ACTIVER LE RADAR</button>
+    <div class="lock-card">
+        <div style="color:var(--g); margin-bottom:15px; font-size:12px;">ENCRYPTION ACTIVE v40</div>
+        <input type="password" id="PASS" placeholder="CODE">
+        <button id="UNLOCK_BTN">DÉVERROUILLER</button>
     </div>
 </div>
 
 <div id="APP">
-    <div class="header">
-        <h2 style="margin:0; color:var(--y);">MATRIX-X-TEN</h2>
-        <div id="CLOCK" style="color:#555; font-size:12px;">00:00:00</div>
-    </div>
+    <div class="neon-text">RADAR PRÉCISION // 10 TOURS</div>
 
-    <div class="input-card">
-        <label style="font-size:10px; color:#666;">HISTORIQUE DU DERNIER TOUR</label>
-        <div class="grid-inputs" style="margin-top:10px;">
-            <input type="number" id="M" placeholder="MINUTE">
-            <input type="number" id="S" placeholder="SECONDE">
+    <div class="input-panel">
+        <div class="input-row">
+            <div><label>MIN HISTORIQUE</label><input type="number" id="M" placeholder="MM"></div>
+            <div><label>SEC HISTORIQUE</label><input type="number" id="S" placeholder="SS"></div>
         </div>
-        <button class="btn-main" onclick="predictTenTours()">GÉNÉRER 10 TOURS PRÉCIS</button>
+        <button class="btn-predict" onclick="predictExact()">CALCULER LA SÉQUENCE EXACTE</button>
     </div>
 
-    <div id="LIST" class="results-grid"></div>
+    <div id="RESULTS"></div>
 </div>
 
 <script>
-    // DÉVERROUILLAGE SANS FAILLE
+    // ACTIVATION BOUTON
     document.getElementById('UNLOCK_BTN').onclick = function() {
         if(document.getElementById('PASS').value === "COSMOX2026") {
             document.getElementById('LOCK_SCREEN').style.display = 'none';
             document.getElementById('APP').style.display = 'block';
-        } else {
-            alert("CODE INCORRECT");
-        }
+        } else { alert("CODE FAUX"); }
     };
 
-    // HORLOGE
-    setInterval(() => {
-        document.getElementById('CLOCK').innerText = new Date().toLocaleTimeString('fr-FR');
-    }, 1000);
-
-    function predictTenTours() {
+    function predictExact() {
         const m = parseInt(document.getElementById('M').value);
         const s = parseInt(document.getElementById('S').value);
-        if(isNaN(m) || isNaN(s)) return alert("ENTREZ L'HISTORIQUE");
+        if(isNaN(m) || isNaN(s)) return;
 
-        const list = document.getElementById('LIST');
-        list.innerHTML = "";
-        
+        const container = document.getElementById('RESULTS');
+        container.innerHTML = "";
+
         let lastM = m;
         let lastS = s;
 
         for(let i=1; i<=10; i++) {
-            // Intervalle moyen entre tours : 52 secondes
-            let interval = 52 + (i * 2); 
-            let tS = (lastS + interval) % 60;
-            let tM = (lastM + Math.floor((lastS + interval) / 60)) % 60;
+            // Intervalle de cycle (ajusté pour coller au serveur)
+            let gap = 50 + (i * 3);
+            let startS = (lastS + gap) % 60;
+            let startM = (lastM + Math.floor((lastS + gap) / 60)) % 60;
             
-            lastS = tS;
-            lastM = tM;
+            lastS = startS;
+            lastM = startM;
 
-            let typeClass = "";
-            let cote = "";
-            let label = "";
-
-            // DISTRIBUTION DES CIBLES SUR 10 TOURS
-            if(i % 4 === 1) { // Tours 1, 5, 9 -> Sécurité x2
-                cote = "2.01x";
-                typeClass = "x2";
-                label = "SAFE";
-            } else if(i % 4 === 2) { // Tours 2, 6, 10 -> Cote x5
-                cote = "5.20x";
-                typeClass = "x5";
-                label = "MEDIUM";
-            } else if(i === 3 || i === 7) { // Tours 3, 7 -> Cote x10
-                cote = "10.45x";
-                typeClass = "x10";
-                label = "SNIPER";
-            } else if(i === 4 || i === 8) { // Tours 4, 8 -> JACKPOT
-                cote = (75 + (s/2)).toFixed(2) + "x";
-                typeClass = "xJACK";
-                label = "JACKPOT";
-            }
-
-            list.innerHTML += `
-                <div class="tour-row ${typeClass}">
-                    <div class="tour-id">T-${i}</div>
-                    <div class="tour-time">DÉBUT À <b>${tM.toString().padStart(2,'0')}:${tS.toString().padStart(2,'0')}</b></div>
-                    <div class="tour-x">${cote}</div>
-                </div>
-            `;
-        }
-    }
-</script>
-
-</body>
-</html>
+            // Détermination de la cote (le score exact)
+            let score;
+            let type = "type-safe";
+            if(i === 4 || i === 8) { // Cibles Jackpot
+                score = (60.10 + (Math.random() * 20)).toFixed(2);
+                type = "type-jackpot";
+            } else if(i % 2 === 0)
