@@ -2,94 +2,138 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMOX V36 - FINAL ARMOR</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>COSMOX V38 - 10 TOURS</title>
     <style>
-        :root { --gold: #ffd700; --green: #00ff88; --bg: #000; }
-        body { background: var(--bg); color: #fff; font-family: sans-serif; margin: 0; overflow: hidden; }
+        :root { --g: #00ff88; --y: #ffd700; --b: #00d2ff; --p: #ff007f; --bg: #050505; }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; margin: 0; padding: 10px; }
         
-        /* PROTECTION MAXIMALE */
-        #SCREEN_LOCK { 
-            position: fixed; inset: 0; background: #000; z-index: 999999; 
-            display: flex; justify-content: center; align-items: center; 
-        }
-        .ui-box { 
-            border: 2px solid var(--gold); padding: 30px; border-radius: 15px; 
-            background: #0a0a0a; text-align: center; width: 85%; max-width: 320px;
-        }
-        input { 
-            width: 100%; padding: 15px; margin-bottom: 20px; background: #111; 
-            border: 1px solid #333; color: var(--gold); font-size: 22px; 
-            text-align: center; border-radius: 8px; box-sizing: border-box;
-        }
-        #UNLOCK_BTN { 
-            width: 100%; padding: 18px; background: var(--gold); color: #000; 
-            border: none; font-weight: 900; cursor: pointer; border-radius: 8px;
-            font-size: 16px; display: block !important; visibility: visible !important;
-        }
+        /* SYSTÈME DE DÉVERROUILLAGE FORCÉ */
+        #LOCK_SCREEN { position: fixed; inset: 0; background: #000; z-index: 1000000; display: flex; justify-content: center; align-items: center; }
+        .lock-box { border: 2px solid var(--y); padding: 30px; border-radius: 15px; text-align: center; background: #0a0a0a; width: 280px; }
+        #PASS { width: 100%; padding: 15px; margin: 15px 0; background: #000; border: 1px solid #333; color: var(--y); font-size: 22px; text-align: center; }
+        #UNLOCK_BTN { width: 100%; padding: 15px; background: var(--y); color: #000; border: none; font-weight: 900; cursor: pointer; border-radius: 5px; }
 
-        /* APP CACHÉE */
-        #MAIN_APP { display: none; padding: 20px; text-align: center; }
-        .jackpot-alert { border: 2px solid var(--green); padding: 20px; border-radius: 15px; margin-top: 40px; }
-        .x-val { font-size: 50px; color: var(--green); font-weight: 900; }
+        /* APP INTERFACE */
+        #APP { display: none; max-width: 500px; margin: auto; }
+        .header { text-align: center; border-bottom: 1px solid #222; padding-bottom: 10px; margin-bottom: 20px; }
+        .input-card { background: #111; padding: 15px; border-radius: 10px; border: 1px solid #222; }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px; }
+        input { background: #000; border: 1px solid #444; color: #fff; padding: 12px; border-radius: 5px; text-align: center; width: 100%; box-sizing: border-box; }
+        
+        .btn-main { width: 100%; padding: 18px; background: var(--g); color: #000; border: none; font-weight: bold; border-radius: 5px; margin-top: 10px; cursor: pointer; }
+
+        /* RESULTATS 10 TOURS */
+        .results-grid { margin-top: 20px; display: flex; flex-direction: column; gap: 8px; }
+        .tour-row { display: grid; grid-template-columns: 50px 1fr 80px; align-items: center; background: #0c0c0c; border: 1px solid #222; padding: 12px; border-radius: 8px; font-size: 13px; }
+        .tour-id { color: #555; font-weight: bold; font-size: 10px; }
+        .tour-time { color: #aaa; }
+        .tour-time b { color: #fff; }
+        .tour-x { text-align: right; font-weight: 900; font-size: 18px; }
+        
+        /* COULEURS DES CIBLES */
+        .x2 { border-left: 4px solid var(--g); color: var(--g); }
+        .x5 { border-left: 4px solid var(--b); color: var(--b); }
+        .x10 { border-left: 4px solid var(--p); color: var(--p); }
+        .xJACK { border-left: 4px solid var(--y); color: var(--y); background: #1a1600; }
     </style>
 </head>
 <body>
 
-<div id="SCREEN_LOCK">
-    <div class="ui-box">
-        <h2 style="color:var(--gold); margin-top:0;">SYSTÈME ACTIF</h2>
-        <input type="text" id="CODE_INPUT" placeholder="MOT DE PASSE" autocomplete="off">
-        <button id="UNLOCK_BTN">DÉVERROUILLAGE IMMÉDIAT</button>
-        <p id="MSG" style="color:red; display:none; font-size:12px; margin-top:10px;">CODE INCORRECT</p>
+<div id="LOCK_SCREEN">
+    <div class="lock-box">
+        <div style="color:var(--y); font-size:10px; letter-spacing:2px;">SÉCURITÉ BIOMÉTRIQUE V38</div>
+        <input type="password" id="PASS" placeholder="MOT DE PASSE">
+        <button id="UNLOCK_BTN">ACTIVER LE RADAR</button>
     </div>
 </div>
 
-<div id="MAIN_APP">
-    <div class="jackpot-alert">
-        <h3 style="color:var(--gold);">🎯 BRÈCHE JACKPOT DÉTECTÉE</h3>
-        <div class="x-val" id="VAL_X">85.40x</div>
-        <p>MINUTE D'ENTRÉE : <span id="MIN_V">--</span></p>
-        <p>SECONDE DE CRASH : <span id="SEC_V">--</span></p>
-        <button onclick="window.location.reload()" style="background:#222; color:#fff; border:none; padding:10px; cursor:pointer;">RE-VERROUILLER</button>
+<div id="APP">
+    <div class="header">
+        <h2 style="margin:0; color:var(--y);">MATRIX-X-TEN</h2>
+        <div id="CLOCK" style="color:#555; font-size:12px;">00:00:00</div>
     </div>
+
+    <div class="input-card">
+        <label style="font-size:10px; color:#666;">HISTORIQUE DU DERNIER TOUR</label>
+        <div class="grid-inputs" style="margin-top:10px;">
+            <input type="number" id="M" placeholder="MINUTE">
+            <input type="number" id="S" placeholder="SECONDE">
+        </div>
+        <button class="btn-main" onclick="predictTenTours()">GÉNÉRER 10 TOURS PRÉCIS</button>
+    </div>
+
+    <div id="LIST" class="results-grid"></div>
 </div>
 
 <script>
-    // SCRIPT À EXÉCUTION PRIORITAIRE
-    (function() {
-        const key = "COSMOX2026";
-        const trigger = document.getElementById('UNLOCK_BTN');
-        const input = document.getElementById('CODE_INPUT');
-        const layer = document.getElementById('SCREEN_LOCK');
-        const app = document.getElementById('MAIN_APP');
-
-        // FORCE L'ACTIVATION DU CLIC
-        trigger.addEventListener('click', function() {
-            if (input.value.trim() === key) {
-                // Suppression brutale du verrou
-                layer.setAttribute("style", "display:none !important");
-                app.style.display = "block";
-                generateJackpot();
-            } else {
-                document.getElementById('MSG').style.display = "block";
-                input.value = "";
-            }
-        });
-
-        // ACTIVER LA TOUCHE ENTRÉE
-        input.addEventListener('keydown', function(e) {
-            if (e.key === "Enter") {
-                trigger.click();
-            }
-        });
-
-        function generateJackpot() {
-            const now = new Date();
-            document.getElementById('MIN_V').innerText = (now.getMinutes() + 2) % 60;
-            document.getElementById('SEC_V').innerText = Math.floor(Math.random() * 59);
+    // DÉVERROUILLAGE SANS FAILLE
+    document.getElementById('UNLOCK_BTN').onclick = function() {
+        if(document.getElementById('PASS').value === "COSMOX2026") {
+            document.getElementById('LOCK_SCREEN').style.display = 'none';
+            document.getElementById('APP').style.display = 'block';
+        } else {
+            alert("CODE INCORRECT");
         }
-    })();
+    };
+
+    // HORLOGE
+    setInterval(() => {
+        document.getElementById('CLOCK').innerText = new Date().toLocaleTimeString('fr-FR');
+    }, 1000);
+
+    function predictTenTours() {
+        const m = parseInt(document.getElementById('M').value);
+        const s = parseInt(document.getElementById('S').value);
+        if(isNaN(m) || isNaN(s)) return alert("ENTREZ L'HISTORIQUE");
+
+        const list = document.getElementById('LIST');
+        list.innerHTML = "";
+        
+        let lastM = m;
+        let lastS = s;
+
+        for(let i=1; i<=10; i++) {
+            // Intervalle moyen entre tours : 52 secondes
+            let interval = 52 + (i * 2); 
+            let tS = (lastS + interval) % 60;
+            let tM = (lastM + Math.floor((lastS + interval) / 60)) % 60;
+            
+            lastS = tS;
+            lastM = tM;
+
+            let typeClass = "";
+            let cote = "";
+            let label = "";
+
+            // DISTRIBUTION DES CIBLES SUR 10 TOURS
+            if(i % 4 === 1) { // Tours 1, 5, 9 -> Sécurité x2
+                cote = "2.01x";
+                typeClass = "x2";
+                label = "SAFE";
+            } else if(i % 4 === 2) { // Tours 2, 6, 10 -> Cote x5
+                cote = "5.20x";
+                typeClass = "x5";
+                label = "MEDIUM";
+            } else if(i === 3 || i === 7) { // Tours 3, 7 -> Cote x10
+                cote = "10.45x";
+                typeClass = "x10";
+                label = "SNIPER";
+            } else if(i === 4 || i === 8) { // Tours 4, 8 -> JACKPOT
+                cote = (75 + (s/2)).toFixed(2) + "x";
+                typeClass = "xJACK";
+                label = "JACKPOT";
+            }
+
+            list.innerHTML += `
+                <div class="tour-row ${typeClass}">
+                    <div class="tour-id">T-${i}</div>
+                    <div class="tour-time">DÉBUT À <b>${tM.toString().padStart(2,'0')}:${tS.toString().padStart(2,'0')}</b></div>
+                    <div class="tour-x">${cote}</div>
+                </div>
+            `;
+        }
+    }
 </script>
 
 </body>
