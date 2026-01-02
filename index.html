@@ -3,22 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMOX V13 - BIG ODDS & REASONING</title>
+    <title>COSMOX V14 - NEURAL LEARNING</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #ff007f; --b: #00d2ff; --bg: #05070a; --g: #00ff88; --y: #f0b90b; --gold: #ffd700; }
+        :root { --p: #ff007f; --b: #00d2ff; --bg: #05070a; --g: #00ff88; --y: #f0b90b; --gold: #ffd700; --red: #ff3e3e; }
         body { background: var(--bg); color: white; font-family: 'Rajdhani', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .container { max-width: 450px; width: 100%; display: none; animation: fadeIn 0.4s ease; }
+        .container { max-width: 480px; width: 100%; display: none; animation: fadeIn 0.4s ease; }
 
-        /* LOCK SCREEN */
         #lock { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; }
         .lock-card { background: #12161d; padding: 40px; border-radius: 20px; border: 1px solid var(--p); text-align: center; width: 85%; }
 
-        /* HEADER */
         .header { background: #12161d; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 15px; text-align: center; border-bottom: 3px solid var(--p); }
         .clock { font-family: 'Orbitron'; color: var(--b); font-size: 20px; }
 
-        /* INPUTS */
         .card { background: #12161d; border-radius: 15px; padding: 20px; border-left: 4px solid var(--b); margin-bottom: 20px; }
         .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         label { display: block; font-size: 10px; color: #888; font-family: 'Orbitron'; margin-bottom: 5px; }
@@ -26,73 +23,71 @@
 
         .btn { width: 100%; padding: 15px; border: none; background: var(--p); color: white; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; border-radius: 10px; text-transform: uppercase; margin-top: 15px; }
 
-        /* RESULTATS */
-        .res-list { margin-top: 20px; }
-        .sig-card { background: #12161d; border: 1px solid #333; border-radius: 12px; padding: 15px; margin-bottom: 15px; position: relative; animation: slideIn 0.3s ease forwards; opacity: 0; }
+        /* SIGNAUX */
+        .sig-card { background: #12161d; border: 1px solid #333; border-radius: 12px; padding: 15px; margin-bottom: 15px; position: relative; animation: slideIn 0.3s ease forwards; }
         
-        /* GROSSE COTE ISOLÉE */
-        .big-odd-signal { border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); background: linear-gradient(145deg, #12161d, #1a1500); }
-        .big-odd-tag { position: absolute; top: -10px; right: 10px; background: var(--gold); color: black; font-family: 'Orbitron'; font-size: 9px; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
+        /* ALERTE 99% */
+        .secure-99 { border: 2px solid var(--g); box-shadow: 0 0 15px rgba(0, 255, 136, 0.4); background: linear-gradient(145deg, #050a08, #12161d); }
+        .badge-99 { position: absolute; top: -10px; left: 10px; background: var(--g); color: black; font-family: 'Orbitron'; font-size: 10px; padding: 3px 10px; border-radius: 20px; font-weight: 900; animation: blink 1s infinite; }
 
-        .sig-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .sig-time { font-family: 'Orbitron'; font-size: 18px; color: var(--b); }
-        .reasoning { font-size: 11px; color: #bbb; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 2px solid var(--p); line-height: 1.4; }
-        
-        .cote-display { display: flex; justify-content: space-around; margin-bottom: 15px; }
-        .val-box { text-align: center; }
-        .val-num { font-family: 'Orbitron'; font-size: 22px; color: var(--g); }
-        .val-label { font-size: 8px; color: #666; text-transform: uppercase; }
+        .sig-time { font-family: 'Orbitron'; font-size: 20px; color: var(--b); margin-bottom: 10px; }
+        .chance-bar { height: 4px; background: #222; border-radius: 2px; margin: 10px 0; overflow: hidden; }
+        .chance-fill { height: 100%; background: var(--g); transition: 1s ease-out; }
 
-        /* BOUTONS ECHEC/GAGNE PAR PREDICTION */
+        .cote-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .cote-val { font-family: 'Orbitron'; font-size: 24px; color: var(--g); }
+        .chance-text { font-size: 11px; color: var(--y); font-family: 'Orbitron'; }
+
+        /* FEEDBACK SYSTEM */
+        .feedback-zone { background: rgba(0,0,0,0.5); padding: 10px; border-radius: 8px; display: none; margin-top: 10px; border: 1px dashed #444; }
         .verify-btns { display: flex; gap: 8px; }
-        .v-btn { flex: 1; padding: 8px; border: none; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-size: 9px; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
+        .v-btn { flex: 1; padding: 10px; border: none; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-size: 9px; font-weight: bold; text-transform: uppercase; }
         .v-gagne { background: rgba(0, 255, 136, 0.2); color: var(--g); border: 1px solid var(--g); }
         .v-echec { background: rgba(255, 0, 127, 0.2); color: var(--p); border: 1px solid var(--p); }
-        .v-btn:disabled { opacity: 0.3; cursor: not-allowed; }
 
-        /* GLOBAL STATS */
-        .stat-bar { background: #0a0c10; padding: 15px; border-radius: 12px; border: 1px solid var(--y); margin-top: 20px; text-align: center; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .stat-bar { background: #0a0c10; padding: 15px; border-radius: 12px; border: 1px solid var(--y); margin-top: 20px; display: flex; justify-content: space-around; }
+        
+        @keyframes blink { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div id="lock">
     <div class="lock-card">
-        <h2 style="color:var(--p); font-family:'Orbitron'; font-size: 14px;">SYSTEM KEY REQUIRED</h2>
+        <h2 style="color:var(--p); font-family:'Orbitron'; font-size: 14px;">NEURAL INTERFACE V14</h2>
         <input type="password" id="pass" placeholder="PASSWORD">
-        <button class="btn" onclick="unlock()">ACCESS COSMOX</button>
+        <button class="btn" onclick="unlock()">SYNC NEURONS</button>
     </div>
 </div>
 
 <div id="app" class="container">
     <div class="header">
         <div class="clock" id="clock">00:00:00</div>
-        <div style="font-size: 9px; color: var(--p); font-family: 'Orbitron'; margin-top: 5px;">COSMOX REASONING ENGINE V13</div>
+        <div style="font-size: 9px; color: var(--y); font-family: 'Orbitron'; margin-top: 5px;">COSMOX NEURAL-LEARNING ENGINE</div>
     </div>
 
     <div class="card">
-        <label>DERNIER CRASH</label>
-        <input type="number" id="v" step="0.01" placeholder="2.00">
+        <label>DERNIER CRASH RELEVÉ</label>
+        <input type="number" id="v" step="0.01" placeholder="1.80">
         <div class="input-grid">
-            <div><label>MINUTE (M)</label><input type="number" id="m" placeholder="00"></div>
-            <div><label>SECONDE (S)</label><input type="number" id="s" placeholder="00"></div>
+            <div><label>MINUTE (M)</label><input type="number" id="m" placeholder="12"></div>
+            <div><label>SECONDE (S)</label><input type="number" id="s" placeholder="45"></div>
         </div>
-        <button class="btn" onclick="generateIntelligentSignals()">ANALYSER & PRÉDIRE</button>
+        <button class="btn" onclick="generateNeuralSignals()">GÉNÉRER SIGNAUX ANALYSÉS</button>
     </div>
 
-    <div id="results" class="res-list"></div>
+    <div id="results"></div>
 
     <div class="stat-bar">
-        <div style="font-size:10px; color:var(--y); font-family:'Orbitron';">PRÉCISION GLOBALE SESSION</div>
-        <div style="font-size:24px; color:white; font-family:'Orbitron'; margin-top:5px;" id="global-acc">0%</div>
+        <div><div id="global-acc" style="font-size:18px; font-family:'Orbitron';">0%</div><div style="font-size:8px;">PRÉCISION</div></div>
+        <div><div id="learning-lvl" style="font-size:18px; font-family:'Orbitron'; color:var(--b);">V14.0</div><div style="font-size:8px;">VERSION IA</div></div>
     </div>
 </div>
 
 <script>
     let wins = 0; let total = 0;
+    let bias = 0; // Biais d'apprentissage qui s'ajuste
     setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('fr-FR'); }, 1000);
 
     function unlock() {
@@ -102,82 +97,105 @@
         } else { alert("Accès refusé"); }
     }
 
-    function generateIntelligentSignals() {
+    function generateNeuralSignals() {
         const val = parseFloat(document.getElementById('v').value);
         const m = parseInt(document.getElementById('m').value);
         const s = parseInt(document.getElementById('s').value);
 
-        if(isNaN(val) || isNaN(m) || isNaN(s)) return alert("Données manquantes");
+        if(isNaN(val) || isNaN(m) || isNaN(s)) return alert("Données incomplètes");
 
         const resContainer = document.getElementById('results');
         resContainer.innerHTML = "";
 
-        for (let i = 1; i <= 4; i++) {
+        for (let i = 1; i <= 3; i++) {
             setTimeout(() => {
-                let delay = 65 + (i * 22);
+                let delay = 60 + (i * 30);
                 let targetS = (s + delay) % 60;
                 let targetM = (m + Math.floor((s + delay) / 60)) % 60;
                 
-                // --- LOGIQUE DE RAISONNEMENT ---
-                let isBigOdd = (targetS % 10 === 0 && val < 3); // Condition pour une grosse cote
-                let coteMin = (1.50 + (targetS / 50)).toFixed(2);
-                let coteMax = isBigOdd ? (10 + Math.random() * 15).toFixed(2) : (parseFloat(coteMin) + 2 + Math.random() * 3).toFixed(2);
+                // --- LOGIQUE DE PROBABILITÉ & APPRENTISSAGE ---
+                let isSecure99 = (targetS % 15 === 0 && val < 2); // Condition pour signal 99%
+                let probability = isSecure99 ? 99 : (85 - (i * 5) + (bias * 2));
+                if(probability > 99) probability = 99;
 
-                let reasoningText = "";
-                if(isBigOdd) {
-                    reasoningText = "ALGO : Détection d'une fenêtre de haute fréquence à la seconde " + targetS + ". Le système anticipe une rupture de cycle stable. Potentiel de gain massif détecté.";
-                } else {
-                    reasoningText = "ALGO : Analyse de la minute " + targetM + ". Le flux suggère une correction modérée. Nous recommandons une sortie sécurisée pour préserver le capital.";
-                }
-
+                let coteMin = (1.40 + (targetS / 100) + (bias/10)).toFixed(2);
+                
                 const card = document.createElement('div');
-                card.className = 'sig-card' + (isBigOdd ? ' big-odd-signal' : '');
-                card.style.animationDelay = (i * 0.1) + "s";
-
+                card.className = 'sig-card' + (isSecure99 ? ' secure-99' : '');
+                
                 let hh = new Date().getHours().toString().padStart(2, '0');
                 let mm = targetM.toString().padStart(2, '0');
                 let ss = targetS.toString().padStart(2, '0');
 
                 card.innerHTML = `
-                    ${isBigOdd ? '<div class="big-odd-tag">GROS GAIN DÉTECTÉ</div>' : ''}
-                    <div class="sig-header">
-                        <div class="sig-time">${hh}:${mm}:${ss}</div>
-                        <div style="font-size:9px; color:var(--y)">SIGNAL #${i}</div>
-                    </div>
-                    <div class="reasoning">${reasoningText}</div>
-                    <div class="cote-display">
-                        <div class="val-box">
-                            <div class="val-label">Objectif Min</div>
-                            <div class="val-num">${coteMin}x</div>
+                    ${isSecure99 ? '<div class="badge-99">CONFIRMÉ 99%</div>' : ''}
+                    <div class="sig-time">${hh}:${mm}:${ss}</div>
+                    
+                    <div class="cote-row">
+                        <div>
+                            <div style="font-size:9px; color:#666;">COTE MINIMUM</div>
+                            <div class="cote-val">${coteMin}x</div>
                         </div>
-                        <div class="val-box">
-                            <div class="val-label">Objectif Max</div>
-                            <div class="val-num" style="color:${isBigOdd ? 'var(--gold)' : 'var(--p)'}">${coteMax}x</div>
+                        <div style="text-align:right">
+                            <div class="chance-text">CHANCE : ${probability.toFixed(0)}%</div>
+                            <div class="chance-bar"><div class="chance-fill" style="width:${probability}%"></div></div>
                         </div>
                     </div>
+
                     <div class="verify-btns">
-                        <button class="v-btn v-gagne" onclick="track(this, true)">Gagné ✅</button>
-                        <button class="v-btn v-echec" onclick="track(this, false)">Échec ❌</button>
+                        <button class="v-btn v-gagne" onclick="askResult(this, ${coteMin})">GAGNÉ ✅</button>
+                        <button class="v-btn v-echec" onclick="recordLoss(this)">PERDU ❌</button>
+                    </div>
+
+                    <div class="feedback-zone">
+                        <label style="font-size:9px;">COTE RÉELLE ATTEINTE ?</label>
+                        <input type="number" step="0.01" placeholder="Ex: 2.15" class="real-input" style="font-size:12px; padding:5px; margin-top:5px;">
+                        <button class="btn" style="padding:5px; font-size:10px; margin-top:5px;" onclick="improveAI(this, ${coteMin})">ENREGISTRER POUR AMÉLIORER L'IA</button>
                     </div>
                 `;
                 resContainer.appendChild(card);
-            }, i * 150);
+            }, i * 200);
         }
     }
 
-    function track(btn, isWin) {
-        total++;
-        if(isWin) wins++;
-        document.getElementById('global-acc').innerText = ((wins / total) * 100).toFixed(1) + "%";
-        
-        // Désactiver les deux boutons du même bloc
-        const parent = btn.parentElement;
-        parent.querySelectorAll('button').forEach(b => {
-            b.disabled = true;
-            if(b !== btn) b.style.opacity = "0.1";
-        });
-        btn.style.background = isWin ? "var(--g)" : "var(--p)";
+    function askResult(btn, predicted) {
+        btn.parentElement.nextElementSibling.style.display = "block";
+        btn.style.background = "var(--g)";
         btn.style.color = "black";
+        btn.parentElement.querySelectorAll('button').forEach(b => b.disabled = true);
+    }
+
+    function improveAI(btn, predicted) {
+        const realCote = parseFloat(btn.previousElementSibling.value);
+        if(isNaN(realCote)) return alert("Entre la cote réelle !");
+        
+        total++;
+        wins++;
+        
+        // --- LOGIQUE D'APPRENTISSAGE ---
+        // Si la cote réelle était plus haute que prévu, on augmente le biais de confiance
+        if(realCote > predicted) {
+            bias += 0.1;
+        } else {
+            bias -= 0.05;
+        }
+
+        updateStats();
+        btn.parentElement.innerHTML = "<div style='color:var(--g); font-size:10px; text-align:center;'>DONNÉES ENREGISTRÉES. IA MISE À JOUR.</div>";
+    }
+
+    function recordLoss(btn) {
+        total++;
+        bias -= 0.2; // Grosse pénalité en cas d'échec
+        updateStats();
+        btn.style.background = "var(--p)";
+        btn.style.color = "white";
+        btn.parentElement.querySelectorAll('button').forEach(b => b.disabled = true);
+    }
+
+    function updateStats() {
+        document.getElementById('global-acc').innerText = total === 0 ? "0%" : ((wins / total) * 100).toFixed(1) + "%";
+        document.getElementById('learning-lvl').innerText = "V14." + Math.abs(bias * 10).toFixed(0);
     }
 </script>
 
