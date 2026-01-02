@@ -2,99 +2,98 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMOX V60 - SNIFFER PRO</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>COSMOX V70</title>
     <style>
-        body { background: #000; color: #00ff00; font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; }
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; }
         
-        /* BOUTON TOUJOURS PRÉSENT */
-        #LOCK_SCREEN { position: fixed; inset: 0; background: #000; z-index: 10000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .box { border: 2px solid #ff0055; padding: 25px; background: #080808; text-align: center; width: 280px; box-shadow: 0 0 15px #ff0055; }
-        
-        input { width: 100%; padding: 12px; margin: 10px 0; background: #000; border: 1px solid #333; color: #ff0055; text-align: center; font-size: 20px; outline: none; }
-        
-        #UNLOCK_BTN { 
-            width: 100%; padding: 15px; background: #ff0055; color: #fff; 
-            border: none; font-weight: bold; cursor: pointer; display: block !important; 
-        }
+        /* LOCK SYSTEM */
+        #LOCK { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .box { border: 2px solid #0f0; padding: 30px; background: #050505; text-align: center; width: 300px; box-shadow: 0 0 20px #0f0; }
+        input { width: 100%; padding: 15px; margin-bottom: 20px; background: #000; border: 1px solid #0f0; color: #fff; font-size: 20px; text-align: center; }
+        #GO { width: 100%; padding: 20px; background: #0f0; color: #000; border: none; font-weight: 900; cursor: pointer; font-size: 18px; }
 
-        /* INTERFACE DE PRÉDICTION */
-        #DASHBOARD { display: none; width: 100%; max-width: 450px; padding: 20px; }
-        .card { background: #111; border: 1px solid #222; margin-bottom: 10px; padding: 15px; border-radius: 5px; }
-        .jackpot-row { border: 2px solid #ffd700; background: rgba(255,215,0,0.05); }
-        .val { font-size: 28px; font-weight: bold; color: #fff; }
-        .label { font-size: 11px; color: #666; text-transform: uppercase; }
-        .time { color: #00d2ff; font-weight: bold; }
-        .crash { color: #ff0055; font-size: 12px; }
+        /* APP */
+        #APP { display: none; width: 100%; max-width: 500px; padding: 20px; }
+        .entry-group { background: #111; padding: 20px; border: 1px solid #333; margin-bottom: 20px; border-radius: 10px; }
+        .btn-calc { width: 100%; padding: 15px; background: #0088ff; color: #fff; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        
+        .row { background: #0c0c0c; border: 1px solid #222; margin: 10px 0; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; }
+        .jack { border: 2px solid #ffd700; background: #1a1600; }
+        .time { font-size: 14px; color: #888; }
+        .time b { color: #fff; }
+        .cote { font-size: 24px; font-weight: 900; color: #0f0; }
+        .crash-sec { font-size: 11px; color: #ff0055; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div id="LOCK_SCREEN">
+<div id="LOCK">
     <div class="box">
-        <h3 style="margin:0; color:#ff0055;">SYSTEM_V60_ACTIF</h3>
-        <input type="password" id="ENTRY" placeholder="CODE_ACCESS">
-        <button id="UNLOCK_BTN">DECRYPT_DATA</button>
+        <h2 style="margin:0 0 20px 0;">ACCESS V70</h2>
+        <input type="text" id="CODE" placeholder="MOT DE PASSE">
+        <button id="GO">DÉVERROUILLER</button>
     </div>
 </div>
 
-<div id="DASHBOARD">
-    <h2 style="text-align:center; color:#ffd700;">LIVE_PREDICTION_ENGINE</h2>
-    
-    <div style="background:#111; padding:15px; margin-bottom:20px; border:1px solid #333;">
-        <label>DERNIER CRASH (M:S)</label>
-        <div style="display:flex; gap:10px; margin-top:5px;">
-            <input type="number" id="MIN" placeholder="MIN" style="color:#00ff00;">
-            <input type="number" id="SEC" placeholder="SEC" style="color:#00ff00;">
+<div id="APP">
+    <div class="entry-group">
+        <div style="display:flex; gap:10px;">
+            <input type="number" id="M" placeholder="MIN" style="border-color:#333;">
+            <input type="number" id="S" placeholder="SEC" style="border-color:#333;">
         </div>
-        <button onclick="calculateLive()" style="width:100%; padding:15px; background:#00ff00; color:#000; font-weight:bold; border:none; margin-top:10px; cursor:pointer;">SCANNER LE CYCLE</button>
+        <button class="btn-calc" onclick="runV70()">GÉNÉRER 10 TOURS SÉCURISÉS</button>
     </div>
 
-    <div id="LOGS"></div>
+    <div id="LIST"></div>
 </div>
 
 <script>
-    const KEY = "COSMOX2026";
-    const btn = document.getElementById('UNLOCK_BTN');
-    
-    // Le bouton ne peut pas être désactivé
-    btn.onclick = function() {
-        if(document.getElementById('ENTRY').value === KEY) {
-            document.getElementById('LOCK_SCREEN').style.display = 'none';
-            document.getElementById('DASHBOARD').style.display = 'block';
+    // DEVERROUILLAGE INSTANTANÉ
+    document.getElementById('GO').onclick = function() {
+        if(document.getElementById('CODE').value === "COSMOX2026") {
+            document.getElementById('LOCK').style.display = 'none';
+            document.getElementById('APP').style.display = 'block';
         } else {
-            alert("ACCÈS REFUSÉ");
+            alert("ERREUR");
         }
     };
 
-    function calculateLive() {
-        const m = parseInt(document.getElementById('MIN').value);
-        const s = parseInt(document.getElementById('SEC').value);
+    function runV70() {
+        const m = parseInt(document.getElementById('M').value);
+        const s = parseInt(document.getElementById('S').value);
         if(isNaN(m) || isNaN(s)) return;
 
-        const logs = document.getElementById('LOGS');
-        logs.innerHTML = "";
+        const list = document.getElementById('LIST');
+        list.innerHTML = "";
 
         for(let i=1; i<=10; i++) {
-            let gap = 55 + (i * 4);
+            // Algorithme de cycle progressif
+            let gap = 52 + (i * 3);
             let tS = (s + gap) % 60;
             let tM = (m + Math.floor((s + gap) / 60)) % 60;
             
-            let isJackpot = (i === 4 || i === 8);
-            let score = isJackpot ? (60.10 + (Math.random()*5)).toFixed(2) : (2.05 + (Math.random()*0.1)).toFixed(2);
-            if (i === 3 || i === 7) score = (10.40 + (Math.random()*2)).toFixed(2);
+            let score, isJackpot = (i === 4 || i === 8);
             
-            let flight = Math.floor(parseFloat(score) * 1.48);
-            let crashSec = (tS + flight) % 60;
+            if(isJackpot) {
+                score = (60.10 + (Math.random() * 5)).toFixed(2);
+            } else if(i % 2 === 0) {
+                score = (10.00 + (Math.random() * 3)).toFixed(2);
+            } else {
+                score = (2.00 + (Math.random() * 0.1)).toFixed(2);
+            }
 
-            logs.innerHTML += `
-                <div class="card ${isJackpot ? 'jackpot-row' : ''}">
-                    <div class="label">${isJackpot ? '🔥 MEGA_JACKPOT' : '🎯 TARGET_TOUR'} #${i}</div>
-                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:5px;">
-                        <div class="time">DÉBUT: ${tM.toString().padStart(2,'0')}:${tS.toString().padStart(2,'0')}</div>
-                        <div class="val">${score}x</div>
+            // Calcul du temps de vol pour atteindre cette cote
+            let flightTime = Math.floor(parseFloat(score) * 1.48);
+            let crashReal = (tS + flightTime) % 60;
+
+            list.innerHTML += `
+                <div class="row ${isJackpot ? 'jack' : ''}">
+                    <div>
+                        <div class="time">DÉBUT: <b>${tM.toString().padStart(2,'0')}:${tS.toString().padStart(2,'0')}</b></div>
+                        <div class="crash-sec">CRASH À : ${crashReal}s</div>
                     </div>
-                    <div class="crash">CRASH_SYSTÈME_À: ${crashSec}s</div>
+                    <div class="cote">${score}x</div>
                 </div>
             `;
         }
