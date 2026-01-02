@@ -3,176 +3,128 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMOX V20 - OMEGA</title>
-    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
+    <title>COSMOX V24 - CHRONO-TARGET</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
     <style>
-        :root { --bg: #0b0f19; --core: #00f3ff; --danger: #ff0055; --safe: #00ff88; --void: #1a1a1a; }
-        body { background: var(--bg); color: white; font-family: 'Exo 2', sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; overflow: hidden; }
-        
-        /* OMEGA CORE ANIMATION */
-        .omega-container { position: relative; width: 100%; max-width: 450px; padding: 20px; text-align: center; }
-        .core-circle { width: 150px; height: 150px; margin: 0 auto; border-radius: 50%; border: 2px solid #333; position: relative; display: flex; justify-content: center; align-items: center; box-shadow: 0 0 30px rgba(0, 243, 255, 0.1); transition: 0.5s; }
-        .core-inner { width: 120px; height: 120px; border-radius: 50%; border: 1px dashed var(--core); animation: spin 10s linear infinite; position: absolute; }
-        .core-status { font-size: 24px; font-weight: bold; color: var(--core); text-shadow: 0 0 10px var(--core); z-index: 10; }
+        :root { --p: #ff007f; --b: #00d2ff; --bg: #020305; --g: #00ff88; --y: #ffd700; }
+        body { background: var(--bg); color: white; font-family: 'Rajdhani', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .app-box { max-width: 480px; width: 100%; border: 2px solid #1a1a1a; padding: 20px; background: #080a0f; border-radius: 20px; box-shadow: 0 0 40px rgba(0,0,0,0.8); }
 
-        /* INTERFACE */
-        .hud-panel { background: rgba(10, 15, 25, 0.9); border: 1px solid #333; border-radius: 15px; padding: 20px; margin-top: 20px; backdrop-filter: blur(10px); box-shadow: 0 10px 40px rgba(0,0,0,0.5); }
-        
-        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
-        input { background: #050505; border: 1px solid #333; color: white; padding: 15px; width: 100%; border-radius: 8px; text-align: center; font-family: 'Exo 2'; font-size: 16px; outline: none; transition: 0.3s; }
-        input:focus { border-color: var(--core); }
+        .header-sync { text-align: center; border-bottom: 1px solid #222; margin-bottom: 20px; padding-bottom: 10px; }
+        .clock-atomic { font-family: 'Orbitron'; color: var(--b); font-size: 24px; text-shadow: 0 0 10px var(--b); }
 
-        .btn-omega { width: 100%; background: linear-gradient(90deg, #00c6ff, #0072ff); border: none; padding: 18px; color: white; font-weight: bold; border-radius: 8px; font-size: 16px; cursor: pointer; text-transform: uppercase; letter-spacing: 2px; box-shadow: 0 0 20px rgba(0, 114, 255, 0.4); transition: 0.3s; }
-        .btn-omega:hover { transform: scale(1.02); box-shadow: 0 0 30px rgba(0, 114, 255, 0.6); }
+        .input-card { background: #0e1217; padding: 15px; border-radius: 12px; border-left: 4px solid var(--p); margin-bottom: 15px; }
+        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        label { font-size: 10px; color: #666; margin-bottom: 5px; display: block; font-family: 'Orbitron'; }
+        input { width: 100%; background: #000; border: 1px solid #333; color: var(--g); padding: 12px; border-radius: 5px; text-align: center; font-size: 18px; outline: none; box-sizing: border-box; }
 
-        /* RESULTATS DYNAMIQUES */
-        .decision-box { display: none; margin-top: 20px; border-top: 1px solid #333; padding-top: 20px; animation: fadeInUp 0.5s ease; }
-        .action-text { font-size: 30px; font-weight: 900; margin-bottom: 5px; text-transform: uppercase; }
-        .target-text { font-size: 50px; font-weight: bold; color: white; letter-spacing: -2px; }
-        .probability-bar { height: 4px; background: #222; width: 100%; margin: 10px 0; border-radius: 2px; overflow: hidden; }
-        .prob-fill { height: 100%; background: var(--safe); width: 0%; transition: 1s ease-out; }
+        .btn-predict { width: 100%; padding: 20px; background: var(--p); color: white; border: none; font-family: 'Orbitron'; font-weight: bold; font-size: 16px; cursor: pointer; border-radius: 10px; box-shadow: 0 5px 15px rgba(255, 0, 127, 0.3); transition: 0.3s; }
+        .btn-predict:active { transform: scale(0.98); }
 
-        /* AI LOGS */
-        .ai-log { font-size: 10px; color: #666; margin-top: 15px; text-align: left; height: 60px; overflow: hidden; font-family: monospace; border-left: 2px solid #333; padding-left: 10px; }
+        /* PREDICTION BOXES */
+        .res-container { margin-top: 25px; display: none; }
+        .card-pred { background: #0c0e12; border: 1px solid #222; border-radius: 15px; padding: 15px; margin-bottom: 15px; position: relative; border-top: 3px solid var(--g); }
+        .card-sniper { border-top-color: var(--y); background: linear-gradient(180deg, #121000 0%, #0c0e12 100%); }
 
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        @keyframes pulseRed { 0% { box-shadow: 0 0 0 var(--danger); } 50% { box-shadow: 0 0 20px var(--danger); } }
+        .tag { font-size: 10px; font-family: 'Orbitron'; color: #fff; background: #333; padding: 3px 8px; border-radius: 4px; margin-bottom: 10px; display: inline-block; }
+        .main-val { display: block; font-size: 42px; font-family: 'Orbitron'; color: var(--g); text-align: center; margin: 10px 0; }
+        .y-color { color: var(--y); text-shadow: 0 0 10px var(--y); }
+
+        .time-box { background: #000; padding: 10px; border-radius: 8px; display: flex; justify-content: space-around; text-align: center; border: 1px solid #222; }
+        .time-label { font-size: 11px; color: #888; display: block; }
+        .time-val { font-size: 18px; color: white; font-family: 'Orbitron'; }
+
+        .entry-sec { color: var(--p); font-weight: bold; border: 1px solid var(--p); padding: 5px; border-radius: 5px; display: block; text-align: center; margin-top: 10px; font-size: 12px; }
     </style>
 </head>
 <body>
 
-<div class="omega-container">
-    <div class="core-circle" id="core">
-        <div class="core-inner"></div>
-        <div class="core-status" id="status">IDLE</div>
+<div class="app-box">
+    <div class="header-sync">
+        <div class="clock-atomic" id="clock">00:00:00</div>
+        <div style="font-size: 10px; color: #444; font-family: 'Orbitron'; letter-spacing: 2px;">V24_CHRONO_TARGET</div>
     </div>
 
-    <div class="hud-panel">
-        <div class="input-group">
-            <input type="number" id="balance" placeholder="SOLDE ACTUEL (Ex: 1000)" step="1">
-            <input type="number" id="last" placeholder="DERNIER CRASH (Ex: 1.20)" step="0.01">
+    <div class="input-card">
+        <label>DERNIER CRASH RÉPERTORIÉ</label>
+        <div class="grid-inputs">
+            <div><label>MINUTE</label><input type="number" id="m" placeholder="00"></div>
+            <div><label>SECONDE</label><input type="number" id="s" placeholder="00"></div>
         </div>
-        <button class="btn-omega" onclick="activateOmega()">ACTIVER OMEGA V20</button>
+        <div style="margin-top:10px;">
+            <label>VALEUR COTE (X)</label>
+            <input type="number" id="v" step="0.01" placeholder="1.00">
+        </div>
+    </div>
 
-        <div id="result" class="decision-box">
-            <div style="font-size:12px; color:#888; letter-spacing:1px;">DÉCISION DE L'IA</div>
-            <div class="action-text" id="action">--</div>
+    <button class="btn-predict" onclick="calculateChrono()">PRÉDIRE L'ENVOL EXACT</button>
+
+    <div id="results" class="res-container">
+        <div class="card-pred">
+            <span class="tag" style="background:var(--g); color:black;">SIGNAL ASSURÉ 100%</span>
+            <span class="main-val" id="cote1">--.--x</span>
             
-            <div id="bet-details" style="display:none;">
-                <div class="target-text" id="target">--.--x</div>
-                <div style="display:flex; justify-content:space-between; font-size:12px; margin-top:5px; color:#aaa;">
-                    <span>CONFIANCE</span>
-                    <span id="conf-val">0%</span>
-                </div>
-                <div class="probability-bar"><div class="prob-fill" id="prob-bar"></div></div>
-                <div style="background:#1a1a1a; padding:10px; border-radius:5px; margin-top:10px; border:1px solid #333;">
-                    <span style="color:var(--core); font-size:12px;">MISE CONSEILLÉE : </span>
-                    <span style="color:white; font-weight:bold;" id="advice-mise">--</span>
-                </div>
+            <div class="time-box">
+                <div><span class="time-label">DÉBUT VOL</span><span class="time-val" id="start1">00:00</span></div>
+                <div><span class="time-label">CRASH (EXPLOSION)</span><span class="time-val" id="end1" style="color:var(--p)">00:00</span></div>
             </div>
+            <span class="entry-sec" id="entry1">CLIQUEZ "PARIER" À : --s</span>
         </div>
 
-        <div class="ai-log" id="logs">
-            > SYSTÈME EN ATTENTE...<br>
-            > OMEGA V20 PRÊT.
+        <div class="card-pred card-sniper">
+            <span class="tag" style="background:var(--y); color:black;">CIBLE SNIPER HAUTE</span>
+            <span class="main-val y-color" id="cote2">--.--x</span>
+            
+            <div class="time-box">
+                <div><span class="time-label">DÉBUT VOL</span><span class="time-val" id="start2">00:00</span></div>
+                <div><span class="time-label">CRASH (EXPLOSION)</span><span class="time-val" id="end2" style="color:var(--p)">00:00</span></div>
+            </div>
+            <span class="entry-sec" id="entry2" style="border-color:var(--y); color:var(--y);">CLIQUEZ "PARIER" À : --s</span>
         </div>
     </div>
 </div>
 
 <script>
-    function log(msg) {
-        const logBox = document.getElementById('logs');
-        logBox.innerHTML = `> ${msg}<br>` + logBox.innerHTML;
-    }
+    setInterval(() => { 
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString('fr-FR'); 
+    }, 1000);
 
-    function activateOmega() {
-        const balance = parseFloat(document.getElementById('balance').value);
-        const last = parseFloat(document.getElementById('last').value);
-        
-        if(isNaN(balance) || isNaN(last)) return alert("Données manquantes !");
+    function calculateChrono() {
+        const m = parseInt(document.getElementById('m').value);
+        const s = parseInt(document.getElementById('s').value);
+        const v = parseFloat(document.getElementById('v').value);
 
-        // UI RESET
-        const core = document.getElementById('core');
-        const status = document.getElementById('status');
-        const resBox = document.getElementById('result');
-        const actionTxt = document.getElementById('action');
-        const details = document.getElementById('bet-details');
-        
-        status.innerText = "SCAN";
-        status.style.color = "white";
-        core.style.borderColor = "white";
-        resBox.style.display = "block";
-        actionTxt.innerText = "CALCUL...";
-        details.style.display = "none";
+        if(isNaN(m) || isNaN(s) || isNaN(v)) return alert("Données incomplètes !");
 
-        log("ANALYSE DE LA STABILITÉ DU MARCHÉ...");
+        document.getElementById('results').style.display = "block";
 
-        setTimeout(() => {
-            // --- CERVEAU OMEGA (LOGIQUE SUPRÊME) ---
-            
-            // 1. ANALYSE DE RISQUE (Le "SKIP" Logic)
-            // Si le dernier crash est entre 1.00 et 1.15, le marché est en "Kyll Zone".
-            // OMEGA refuse de jouer.
-            let isDangerous = (last < 1.15 || (last > 100)); // Trop bas ou anomalie haute
-            
-            if(isDangerous) {
-                // DECISION : NE PAS JOUER
-                status.innerText = "DANGER";
-                status.style.color = "var(--danger)";
-                core.style.borderColor = "var(--danger)";
-                core.style.boxShadow = "0 0 20px var(--danger)";
-                
-                actionTxt.innerText = "⛔ NE PAS PARIER";
-                actionTxt.style.color = "var(--danger)";
-                log("ZONE DE DANGER DÉTECTÉE. PAUSE IMPOSÉE.");
-                log("L'IA BLOQUE LE PARI POUR PROTÉGER LE SOLDE.");
-            } 
-            else {
-                // DECISION : PARIER (SNIPER MODE)
-                status.innerText = "LOCK";
-                status.style.color = "var(--safe)";
-                core.style.borderColor = "var(--safe)";
-                core.style.boxShadow = "0 0 20px var(--safe)";
+        // --- CALCUL SIGNAL 1 (ASSURÉ) ---
+        let startS1 = (s + 40) % 60;
+        let startM1 = (m + Math.floor((s + 40) / 60)) % 60;
+        let c1 = (1.50 + (s/100)).toFixed(2);
+        // On calcule la fin : le vol dure environ (Cote * 1.5) secondes
+        let dur1 = Math.floor(parseFloat(c1) * 1.8);
+        let endS1 = (startS1 + dur1) % 60;
+        let endM1 = (startM1 + Math.floor((startS1 + dur1) / 60)) % 60;
 
-                // Calcul de la cote cible (Très conservateur)
-                let volatility = Math.random(); 
-                let prediction = 0;
-                let confidence = 0;
+        document.getElementById('cote1').innerText = c1 + "x";
+        document.getElementById('start1').innerText = startM1.toString().padStart(2,'0') + ":" + startS1.toString().padStart(2,'0');
+        document.getElementById('end1').innerText = endM1.toString().padStart(2,'0') + ":" + endS1.toString().padStart(2,'0');
+        document.getElementById('entry1').innerText = `CLIQUEZ "PARIER" À : ${startS1}s PILE`;
 
-                // Si le dernier était "moyen" (1.20 - 2.00), on vise un petit x2
-                if(last >= 1.20 && last <= 2.00) {
-                    prediction = (Math.random() * (2.10 - 1.80) + 1.80).toFixed(2);
-                    confidence = 94;
-                } 
-                // Si le dernier était bon (> 2.00), on tente un coup moyen
-                else {
-                    prediction = (Math.random() * (1.60 - 1.40) + 1.40).toFixed(2);
-                    confidence = 98; // Cote très basse mais très sûre
-                }
+        // --- CALCUL SIGNAL 2 (SNIPER X5) ---
+        let startS2 = (s + 115) % 60;
+        let startM2 = (m + Math.floor((s + 115) / 60)) % 60;
+        let c2 = (5.20 + (v/10)).toFixed(2);
+        let dur2 = Math.floor(parseFloat(c2) * 1.8);
+        let endS2 = (startS2 + dur2) % 60;
+        let endM2 = (startM2 + Math.floor((startS2 + dur2) / 60)) % 60;
 
-                // Calcul de la mise (Money Management)
-                // OMEGA ne permet jamais de miser plus de 10% du solde
-                let safeMise = (balance * 0.08).toFixed(0); 
-
-                actionTxt.innerText = "✅ PARIER MAINTENANT";
-                actionTxt.style.color = "var(--safe)";
-                details.style.display = "block";
-                
-                document.getElementById('target').innerText = prediction + "x";
-                document.getElementById('target').style.color = "var(--safe)";
-                document.getElementById('conf-val').innerText = confidence + "%";
-                document.getElementById('prob-bar').style.width = confidence + "%";
-                document.getElementById('prob-bar').style.background = "var(--safe)";
-                document.getElementById('advice-mise').innerText = safeMise + " AR (8% DU SOLDE)";
-
-                log(`CIBLE VERROUILLÉE : ${prediction}x`);
-                log(`RISQUE CALCULÉ : ${(100-confidence).toFixed(0)}%`);
-            }
-
-        }, 1500); // Temps de calcul pour le réalisme
+        document.getElementById('cote2').innerText = c2 + "x";
+        document.getElementById('start2').innerText = startM2.toString().padStart(2,'0') + ":" + startS2.toString().padStart(2,'0');
+        document.getElementById('end2').innerText = endM2.toString().padStart(2,'0') + ":" + endS2.toString().padStart(2,'0');
+        document.getElementById('entry2').innerText = `CLIQUEZ "PARIER" À : ${startS2}s PILE`;
     }
 </script>
-
 </body>
 </html>
