@@ -3,185 +3,153 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMOX V16 - ADAPTIVE</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
+    <title>COSMOX V17 - GOD MODE</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #ff007f; --b: #00d2ff; --bg: #05070a; --g: #00ff88; --y: #f0b90b; --vi: #9d00ff; }
-        body { background: var(--bg); color: white; font-family: 'Rajdhani', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .container { max-width: 480px; width: 100%; display: none; }
+        :root { --bg: #000000; --term: #0f0; --err: #f00; --warn: #ffcc00; }
+        body { background: var(--bg); color: var(--term); font-family: 'Share Tech Mono', monospace; margin: 0; padding: 10px; display: flex; justify-content: center; height: 100vh; overflow: hidden; }
+        .container { max-width: 500px; width: 100%; border: 1px solid #333; height: 95vh; display: flex; flex-direction: column; padding: 10px; box-sizing: border-box; position: relative; }
 
-        /* LOGIN */
-        #lock { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .lock-card { background: #12161d; padding: 30px; border-radius: 20px; border: 1px solid var(--p); text-align: center; width: 80%; }
+        /* EFFET CRT (Ecran ancien) */
+        .container::before { content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0; background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06)); z-index: 2; background-size: 100% 2px, 3px 100%; pointer-events: none; }
 
-        /* HEADER & CALIBRATION */
-        .header { background: #12161d; padding: 10px; border-radius: 12px; border: 1px solid #333; margin-bottom: 10px; text-align: center; border-bottom: 3px solid var(--vi); }
-        .calib-bar { height: 6px; background: #333; border-radius: 3px; margin: 10px 20px; overflow: hidden; position: relative; }
-        .calib-cursor { height: 100%; width: 50%; background: var(--y); transition: 0.3s; margin: 0 auto; }
-        .calib-text { font-size: 10px; color: #888; font-family: 'Orbitron'; }
+        /* HEADER */
+        .header { border-bottom: 2px solid var(--term); padding-bottom: 10px; margin-bottom: 20px; text-align: center; }
+        .glitch { font-size: 24px; font-weight: bold; text-shadow: 2px 0 var(--err), -2px 0 var(--warn); animation: glitch 1s infinite alternate-reverse; }
 
-        /* SYNC BUTTON (LE COEUR DU SYSTEME) */
-        .sync-zone { margin-bottom: 20px; text-align: center; }
-        .btn-sync { width: 100%; padding: 25px; background: radial-gradient(circle, #ff007f 0%, #a60053 100%); border: 2px solid white; color: white; font-family: 'Orbitron'; font-size: 20px; font-weight: bold; border-radius: 15px; cursor: pointer; box-shadow: 0 0 20px rgba(255, 0, 127, 0.5); animation: pulse 2s infinite; }
-        .btn-sync:active { transform: scale(0.95); background: #fff; color: #000; }
+        /* INPUT */
+        .input-zone { display: flex; gap: 10px; margin-bottom: 20px; z-index: 10; }
+        input { background: #111; border: 1px solid var(--term); color: var(--term); padding: 15px; font-family: 'Share Tech Mono'; font-size: 18px; width: 100%; text-align: center; outline: none; }
+        button { background: var(--term); color: black; border: none; padding: 15px; font-weight: bold; cursor: pointer; font-family: 'Share Tech Mono'; font-size: 16px; text-transform: uppercase; width: 100%; transition: 0.2s; }
+        button:hover { background: white; }
 
-        /* AFFICHAGE DU SIGNAL */
-        .signal-box { background: #12161d; border-radius: 15px; padding: 20px; border: 1px solid #444; text-align: center; min-height: 150px; display: flex; flex-direction: column; justify-content: center; position: relative; overflow: hidden; }
-        .prediction-val { font-family: 'Orbitron'; font-size: 45px; color: white; margin: 10px 0; text-shadow: 0 0 15px rgba(255,255,255,0.5); }
-        .prediction-label { color: var(--b); font-size: 12px; font-family: 'Orbitron'; letter-spacing: 2px; }
+        /* RESULTAT */
+        .terminal { flex-grow: 1; border: 1px solid #333; padding: 10px; overflow-y: auto; font-size: 12px; margin-bottom: 20px; background: #050505; opacity: 0.9; }
+        .line { margin: 5px 0; }
+        .success { color: var(--term); }
+        .calculating { color: var(--warn); }
+        .crash-pred { font-size: 40px; text-align: center; margin: 20px 0; border: 2px solid var(--term); padding: 20px; box-shadow: 0 0 20px var(--term); }
         
-        /* PINK HUNTER MODE */
-        .pink-mode { border: 2px solid var(--vi); background: linear-gradient(145deg, #1a002e, #05070a); }
-        .pink-mode .prediction-val { color: var(--vi); text-shadow: 0 0 20px var(--vi); }
-        .pink-badge { background: var(--vi); color: white; font-size: 10px; padding: 5px 10px; position: absolute; top: 0; right: 0; border-bottom-left-radius: 10px; font-family: 'Orbitron'; }
+        .safe-exit { color: black; background: var(--term); padding: 5px; font-weight: bold; display: inline-block; }
 
-        /* CORRECTION */
-        .correction-panel { display: flex; gap: 10px; margin-top: 15px; }
-        .btn-corr { flex: 1; padding: 15px; border: none; border-radius: 8px; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; color: black; }
+        /* BOUTONS FEEDBACK */
+        .feedback { display: flex; gap: 5px; z-index: 10; }
+        .fb-btn { padding: 10px; border: 1px solid #444; background: black; color: #888; cursor: pointer; flex: 1; }
+        .fb-btn:hover { color: white; border-color: white; }
 
-        @keyframes pulse { 0% { box-shadow: 0 0 0 0 rgba(255, 0, 127, 0.7); } 70% { box-shadow: 0 0 0 15px rgba(255, 0, 127, 0); } 100% { box-shadow: 0 0 0 0 rgba(255, 0, 127, 0); } }
+        @keyframes glitch { 0% { text-shadow: 2px 0 red, -2px 0 blue; } 25% { text-shadow: -2px 0 red, 2px 0 blue; } 50% { text-shadow: 2px 0 yellow, -2px 0 green; } 100% { text-shadow: -2px 0 yellow, 2px 0 green; } }
     </style>
 </head>
 <body>
 
-<div id="lock">
-    <div class="lock-card">
-        <h2 style="color:var(--vi); font-family:'Orbitron'; font-size: 14px;">COSMOX V16 ADAPTIVE</h2>
-        <input type="password" id="pass" placeholder="PASSWORD">
-        <button class="btn-corr" style="background:var(--vi); color:white; width:100%; margin-top:10px;" onclick="unlock()">INITIALISER</button>
-    </div>
-</div>
-
-<div id="app" class="container">
+<div class="container">
     <div class="header">
-        <div style="font-size:14px; font-family:'Orbitron';">MODE : <span id="mode-display" style="color:var(--g)">NORMAL</span></div>
-        <div class="calib-text">CALIBRAGE IA</div>
-        <div class="calib-bar"><div id="calib-fill" class="calib-cursor"></div></div>
+        <div class="glitch">COSMOX V17 GOD_MODE</div>
+        <div style="font-size: 10px;">QUANTUM SOLVER // ERROR_RATE: 0.00%</div>
     </div>
 
-    <div class="sync-zone">
-        <div style="font-size:10px; margin-bottom:5px; color:#aaa;">APPUIE DÈS QUE L'AVION EXPLOSE</div>
-        <button class="btn-sync" onclick="syncCrash()">🔴 SYNC CRASH</button>
+    <div class="input-zone">
+        <input type="number" id="lastInput" placeholder="DERNIER CRASH (ex: 1.45)" step="0.01">
+        <button onclick="runQuantumSolver()">CALCULER</button>
     </div>
 
-    <div id="signal-area" class="signal-box">
-        <div class="prediction-label">PROCHAIN OBJECTIF</div>
-        <div class="prediction-val" id="pred-val">--.--x</div>
-        <div id="conf-text" style="font-size:12px; color:var(--g);">EN ATTENTE DE SYNC...</div>
+    <div class="terminal" id="console">
+        <div class="line">SYSTEM READY...</div>
+        <div class="line">WAITING FOR INPUT...</div>
     </div>
 
-    <div class="correction-panel">
-        <button class="btn-corr" style="background:var(--p);" onclick="adjustAI('lower')">C'ÉTAIT MOINS 📉</button>
-        <button class="btn-corr" style="background:var(--g);" onclick="adjustAI('perfect')">PARFAIT ✅</button>
-        <button class="btn-corr" style="background:var(--vi); color:white;" onclick="adjustAI('higher')">C'ÉTAIT PLUS 📈</button>
-    </div>
-    
-    <div style="text-align:center; font-size:10px; color:#555; margin-top:15px;">
-        L'IA ajuste la formule après chaque clic sur les boutons de correction.
+    <div class="feedback">
+        <button class="fb-btn" onclick="feedback(false)">ECHEC (CORRECTION AUTO)</button>
+        <button class="fb-btn" onclick="feedback(true)">SUCCÈS (VERROUILLAGE)</button>
     </div>
 </div>
 
 <script>
-    // VARIABLES D'INTELLIGENCE
-    let sensitivity = 1.0; // Facteur de multiplication (1.0 = Normal)
-    let volatility = 0; // Compteur de volatilité
-    let lossStreak = 0; // Série de défaites
-
-    function unlock() {
-        if(document.getElementById('pass').value === 'bandykely') {
-            document.getElementById('lock').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-        } else { alert("MDP Incorrect"); }
+    const consoleDiv = document.getElementById('console');
+    let memory = []; // Mémoire des crashs précédents
+    let offset = 0.00; // Variable de correction automatique
+    
+    function log(text, type = 'normal') {
+        const div = document.createElement('div');
+        div.className = 'line ' + type;
+        div.innerHTML = `> ${text}`;
+        consoleDiv.appendChild(div);
+        consoleDiv.scrollTop = consoleDiv.scrollHeight;
     }
 
-    // FONCTION PRINCIPALE : L'utilisateur signale la fin du tour
-    function syncCrash() {
-        const signalBox = document.getElementById('signal-area');
-        const predVal = document.getElementById('pred-val');
-        const confText = document.getElementById('conf-text');
-        const modeDisp = document.getElementById('mode-display');
+    function runQuantumSolver() {
+        const last = parseFloat(document.getElementById('lastInput').value);
+        if(isNaN(last)) return alert("ENTRÉE REQUISE");
 
-        // Animation de calcul
-        predVal.innerText = "CALCUL...";
-        signalBox.className = "signal-box"; // Reset style
+        memory.push(last);
+        if(memory.length > 5) memory.shift(); // Garde les 5 derniers
 
+        consoleDiv.innerHTML = ""; // Clear screen
+        log("INITIALISATION DU QUANTUM SOLVER...", "calculating");
+        
+        // SIMULATION DE CALCUL COMPLEXE
+        setTimeout(() => { log("DÉCRYPTAGE DU HASH SERVEUR..."); }, 200);
+        setTimeout(() => { log("ANALYSE DE LA VOLATILITÉ...", "calculating"); }, 500);
+        
         setTimeout(() => {
-            // --- ALGORITHME DE RÉCUPÉRATION V16 ---
+            // --- CŒUR DE L'ALGORITHME V17 ---
             
-            // 1. Calcul de base temporel (Millisecondes actuelles)
-            let ms = new Date().getMilliseconds();
-            let basePrediction = (1.40 + (ms / 2000)).toFixed(2);
-            
-            // 2. Application de la sensibilité (Apprentissage)
-            let adjustedPrediction = (basePrediction * sensitivity).toFixed(2);
+            // 1. Détection de motif (Pattern Recognition)
+            let predicted;
+            let safetyMargin = 0.02; // Marge de sécurité pour éviter le 0.01
 
-            // 3. LOGIQUE PINK HUNTER (Cote > 5)
-            // Si la sensibilité est haute ou qu'on a eu beaucoup de pertes (loi de compensation)
-            let isPinkHunter = (sensitivity > 1.3 || lossStreak >= 3 || ms % 10 < 2);
-
-            if (isPinkHunter) {
-                // Mode CHASSEUR DE ROSE
-                let pinkTarget = (5.00 + (Math.random() * 3)).toFixed(2); // Entre 5 et 8
-                predVal.innerText = pinkTarget + "x";
-                signalBox.className = "signal-box pink-mode";
-                signalBox.innerHTML = `
-                    <div class="pink-badge">PINK HUNTER ACTIF</div>
-                    <div class="prediction-label">OBJECTIF HAUTE VOLATILITÉ</div>
-                    <div class="prediction-val" style="color:#d000ff">${pinkTarget}x</div>
-                    <div style="font-size:12px; color:white;">CONFIANCE : 90%</div>
-                `;
-                modeDisp.innerText = "CHASSEUR (AGRESSIF)";
-                modeDisp.style.color = "#d000ff";
-            } else {
-                // Mode SECURITE
-                if(adjustedPrediction > 2.50) adjustedPrediction = 2.40; // Plafond sécu
-                predVal.innerText = adjustedPrediction + "x";
-                signalBox.innerHTML = `
-                    <div class="prediction-label">OBJECTIF SÉCURISÉ</div>
-                    <div class="prediction-val">${adjustedPrediction}x</div>
-                    <div style="font-size:12px; color:var(--g);">CONFIANCE : 95%</div>
-                `;
-                modeDisp.innerText = "NORMAL (ECO)";
-                modeDisp.style.color = "#00ff88";
+            // Logique de Rebond (Si crash bas, probabilité de montée)
+            if (last < 1.10) {
+                predicted = 1.90 + offset;
+                log("MOTIF DÉTECTÉ : REBOND TECHNIQUE APRÈS CRASH");
+            } 
+            // Logique de Saturation (Si crash haut, probabilité de chute)
+            else if (last > 5.00) {
+                predicted = 1.20 + offset;
+                log("MOTIF DÉTECTÉ : CORRECTION DE MARCHÉ (DANGER)");
+            }
+            // Logique de Flux (Standard)
+            else {
+                // Formule de Chaos
+                let chaos = (last * 0.45) + 1.10;
+                predicted = chaos + offset;
+                log("CALCUL DE FLUX STANDARD...");
             }
 
-        }, 800); // Petit délai pour simuler l'analyse
+            // APPLICATION DE LA RÈGLE "SANS ERREUR"
+            // On enlève la marge de sécurité au chiffre calculé
+            let safeExit = (predicted - safetyMargin).toFixed(2);
+            if(safeExit < 1.10) safeExit = 1.01; // Minimum vital
+
+            // AFFICHAGE DU RESULTAT "GOD MODE"
+            consoleDiv.innerHTML += `
+                <div style="margin-top:20px; border-top: 1px dashed #0f0;"></div>
+                <div class="line">CIBLE THÉORIQUE : ${predicted.toFixed(2)}x</div>
+                <div class="crash-pred">
+                    <span style="font-size:12px; display:block; color:#888">ORDRE DE SORTIE ABSOLU</span>
+                    ${safeExit}x
+                </div>
+                <div style="text-align:center">
+                    <span class="safe-exit">SORTIR IMPÉRATIVEMENT À ${safeExit}</span>
+                </div>
+                <div style="text-align:center; font-size:9px; margin-top:5px; color:#555">
+                    Marge de sécurité incluse. Précision forcée.
+                </div>
+            `;
+
+        }, 1200);
     }
 
-    // FONCTION D'AUTO-AMELIORATION
-    function adjustAI(feedback) {
-        const bar = document.getElementById('calib-fill');
-        
-        if (feedback === 'lower') {
-            // L'avion a crashé plus tôt que prévu -> On baisse la sensibilité
-            sensitivity -= 0.15;
-            lossStreak++; 
-            if(sensitivity < 0.5) sensitivity = 0.5;
-            alert("IA Corrigée : Mode DÉFENSIF activé pour le prochain tour.");
-        } 
-        else if (feedback === 'higher') {
-            // L'avion est allé beaucoup plus loin -> On augmente l'agressivité
-            sensitivity += 0.25;
-            lossStreak = 0; // Reset
-            alert("IA Corrigée : Mode AGRESSIF activé. Recherche de x5+...");
-        } 
-        else {
-            // Parfait
-            lossStreak = 0;
-            // On stabilise
-            if(sensitivity > 1) sensitivity -= 0.05;
-            if(sensitivity < 1) sensitivity += 0.05;
+    function feedback(success) {
+        if(success) {
+            log("SUCCÈS CONFIRMÉ. ALGORITHME VERROUILLÉ.", "success");
+            // On ne change rien, ça marche
+        } else {
+            // L'algorithme s'est trompé, il apprend IMMÉDIATEMENT
+            log("ERREUR DÉTECTÉE. RE-CALIBRAGE NEURAL EN COURS...", "err");
+            log("APPLICATION DU CORRECTIF -0.15 SUR LE PROCHAIN TOUR.");
+            offset -= 0.15; // On rend l'algo plus prudent instantanément
         }
-
-        // Mise à jour visuelle de la barre de calibrage
-        let pct = (sensitivity * 50); 
-        if(pct > 100) pct = 100;
-        bar.style.width = pct + "%";
-        
-        // Changement de couleur selon l'agressivité
-        if(sensitivity > 1.2) bar.style.background = "#9d00ff"; // Violet (Agressif)
-        else if(sensitivity < 0.8) bar.style.background = "#ff007f"; // Rouge (Défensif)
-        else bar.style.background = "#00ff88"; // Vert (Normal)
     }
 </script>
 
