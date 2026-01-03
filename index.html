@@ -2,112 +2,127 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROSE CHRONO V13</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>V13 - GAMER NO-LOCK</title>
     <style>
-        :root { --rose: #ff00ff; --win: #00ff88; --loss: #ff0055; --bg: #000; }
-        body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; padding: 10px; }
+        :root { --neon: #00ff41; --blue: #0077ff; --violet: #a020f0; --rose: #ff00ff; --danger: #ff003c; --bg: #050505; }
+        body { background: var(--bg); color: #fff; font-family: 'Orbitron', sans-serif; margin: 0; padding: 15px; }
         
-        /* SYSTÈME D'ACCÈS */
-        #LOCK { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .gate { border: 1px solid var(--rose); padding: 25px; text-align: center; background: #050505; }
-        input { background: #000; border: 1px solid #333; color: var(--rose); padding: 12px; margin: 10px 0; width: 180px; text-align: center; }
-        #GO { background: var(--rose); color: #fff; border: none; padding: 12px 25px; font-weight: bold; cursor: pointer; }
+        .header { text-align: center; border-bottom: 2px solid var(--neon); padding-bottom: 10px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0, 255, 65, 0.1); }
+        .header h1 { font-size: 18px; letter-spacing: 3px; margin: 0; color: var(--neon); }
 
-        /* INTERFACE DE CALCUL */
-        #APP { display: none; max-width: 450px; margin: auto; }
-        .monitor { border: 1px solid #222; padding: 15px; background: #0a0a0a; margin-bottom: 20px; }
-        .btn-scan { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: 900; cursor: pointer; margin-top: 10px; }
+        .monitor-panel { background: #0a0a0a; border: 1px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
         
-        /* CARTES DE PRÉDICTION */
-        .tour-card { border: 1px solid #222; margin: 10px 0; padding: 15px; border-radius: 4px; position: relative; }
-        .tour-rose { border: 2px solid var(--rose); background: rgba(255, 0, 255, 0.05); box-shadow: 0 0 10px var(--rose); }
-        .tour-win { border-left: 6px solid var(--win); }
-        .tour-loss { border-left: 6px solid var(--loss); opacity: 0.5; }
+        input { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; margin: 8px 0 15px 0; border-radius: 8px; font-size: 16px; text-align: center; box-sizing: border-box; }
+        input:focus { border-color: var(--neon); outline: none; }
 
-        .type-label { font-size: 10px; font-weight: bold; margin-bottom: 5px; }
-        .time-data { font-size: 14px; }
-        .time-data b { color: #fff; font-size: 18px; }
-        .cote-data { position: absolute; right: 15px; top: 20px; font-size: 28px; font-weight: 900; }
-        .sec-crash { font-size: 11px; color: var(--loss); font-weight: bold; margin-top: 5px; }
+        .btn-predict { width: 100%; padding: 18px; background: var(--neon); color: #000; border: none; font-weight: 900; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 14px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); }
+        .btn-predict:active { transform: scale(0.98); }
+
+        /* ALERTE COTE BLEUE */
+        #ALERT_BOX { display: none; background: rgba(0, 119, 255, 0.1); border: 1px solid var(--blue); color: var(--blue); padding: 10px; border-radius: 8px; text-align: center; font-size: 11px; margin-bottom: 15px; font-weight: bold; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
+
+        /* RESULT CARDS */
+        .card { background: #111; border-radius: 10px; padding: 15px; margin-bottom: 12px; border-left: 5px solid #333; position: relative; }
+        .is-win { border-left-color: var(--neon); }
+        .is-loss { border-left-color: var(--danger); opacity: 0.7; }
+        .is-5x { border: 1px solid var(--violet); box-shadow: 0 0 10px var(--violet); }
+        .is-10x { border: 1px solid var(--rose); box-shadow: 0 0 10px var(--rose); }
+
+        .tag { font-size: 9px; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; }
+        .time-start { font-size: 14px; color: #aaa; }
+        .time-start b { color: #fff; }
+        .cote-val { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 28px; font-weight: 900; }
+        .crash-time { font-size: 10px; color: var(--danger); display: block; margin-top: 5px; }
     </style>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-<div id="LOCK">
-    <div class="gate">
-        <h3 style="color:var(--rose);">ENGINE_V13_LOCKED</h3>
-        <input type="password" id="CODE" placeholder="PASSWORD">
-        <button id="GO">DECRYPT</button>
-    </div>
+<div class="header">
+    <h1>ENGINE V13 <span style="color:#fff;">| GAMER PRO</span></h1>
 </div>
 
-<div id="APP">
-    <h2 style="text-align:center; color:var(--rose);">ROSE CHRONO ENGINE</h2>
+<div class="monitor-panel">
+    <div id="ALERT_BOX">⚠️ ALERTE : COTE BLEUE SUCCESSIVE DÉTECTÉE</div>
     
-    <div class="monitor">
-        <label style="font-size:11px; color:#555;">MINUTE & SECONDE DU DERNIER CRASH</label>
-        <div style="display:flex; gap:10px; margin-top:10px;">
-            <input type="number" id="M" placeholder="MIN" style="width:50%;">
-            <input type="number" id="S" placeholder="SEC" style="width:50%;">
+    <label>Dernière Cote (ex: 1.45)</label>
+    <input type="number" id="LAST_COTE" step="0.01" placeholder="0.00">
+    
+    <div style="display: flex; gap: 10px;">
+        <div style="flex:1;">
+            <label>Minute</label>
+            <input type="number" id="M" placeholder="MIN">
         </div>
-        <button class="btn-scan" onclick="chronoScan()">SCANNER LES 3 PROCHAINS TOURS</button>
+        <div style="flex:1;">
+            <label>Seconde</label>
+            <input type="number" id="S" placeholder="SEC">
+        </div>
     </div>
-
-    <div id="RESULTS"></div>
+    
+    <button class="btn-predict" onclick="runGamerEngine()">Lancer la prédiction</button>
 </div>
+
+<div id="RESULTS"></div>
 
 <script>
-    document.getElementById('GO').onclick = function() {
-        if(document.getElementById('CODE').value === "COSMOX2026") {
-            document.getElementById('LOCK').style.display = 'none';
-            document.getElementById('APP').style.display = 'block';
-        }
-    };
-
-    function chronoScan() {
+    function runGamerEngine() {
+        const lastCote = parseFloat(document.getElementById('LAST_COTE').value);
         const m = parseInt(document.getElementById('M').value);
         const s = parseInt(document.getElementById('S').value);
-        if(isNaN(m) || isNaN(s)) return;
-
+        const alertBox = document.getElementById('ALERT_BOX');
         const res = document.getElementById('RESULTS');
+
+        if(isNaN(lastCote) || isNaN(m) || isNaN(s)) return;
+
+        // Activation de l'alerte Bleue
+        if(lastCote < 2.00) {
+            alertBox.style.display = 'block';
+        } else {
+            alertBox.style.display = 'none';
+        }
+
         res.innerHTML = "";
         let lM = m, lS = s;
 
         for(let i=1; i<=3; i++) {
-            // Cycle de décalage technique
             let gap = 53 + (i * 2);
             let tS = (lS + gap) % 60;
             let tM = (lM + Math.floor((lS + gap) / 60)) % 60;
             lS = tS; lM = tM;
 
-            let cote, typeClass, label;
+            let cote, typeClass, label, color;
             let rand = Math.random();
 
-            if (i === 3 || rand > 0.85) { // Priorité au Rose sur le tour 3
-                cote = (rand > 0.5) ? "60.10" : "12.40";
-                typeClass = "tour-rose";
-                label = "PRÉDICTION : ROSE DÉTECTÉ ⚡";
-            } else if (rand > 0.4) {
-                cote = (2.00 + (Math.random()*0.15)).toFixed(2);
-                typeClass = "tour-win";
-                label = "PRÉDICTION : GAGNÉ ✅";
-            } else {
-                cote = (1.20 + (Math.random()*0.3)).toFixed(2);
-                typeClass = "tour-loss";
-                label = "PRÉDICTION : PERDU ❌";
+            if (i === 2) { // Cible 5x
+                cote = (5.20 + rand).toFixed(2);
+                typeClass = "is-5x is-win";
+                label = "PALIER 5x DÉTECTÉ";
+                color = "var(--violet)";
+            } else if (i === 3) { // Cible 10x
+                cote = (10.15 + rand).toFixed(2);
+                typeClass = "is-10x is-win";
+                label = "OBJECTIF 10x ROSE";
+                color = "var(--rose)";
+            } else { // Tour de chauffe
+                let win = lastCote < 2.00 ? rand > 0.4 : rand > 0.2;
+                cote = win ? (2.05).toFixed(2) : (1.30).toFixed(2);
+                typeClass = win ? "is-win" : "is-loss";
+                label = win ? "PRÉDICTION : GAGNÉ" : "PRÉDICTION : PERDU";
+                color = win ? "var(--neon)" : "var(--danger)";
             }
 
-            // Calcul de la seconde de crash exacte
-            let flightTime = Math.floor(parseFloat(cote) * 1.48);
-            let crashS = (tS + flightTime) % 60;
+            let flight = Math.floor(parseFloat(cote) * 1.48);
+            let cS = (tS + flight) % 60;
 
             res.innerHTML += `
-                <div class="tour-card ${typeClass}">
-                    <div class="type-label" style="color:${typeClass==='tour-rose'?'#ff00ff':(typeClass==='tour-win'?'#00ff88':'#ff0055')}">${label}</div>
-                    <div class="time-data">START : <b>${tM}:${tS.toString().padStart(2,'0')}</b></div>
-                    <div class="sec-crash">EXPLOSION RÉELLE : ${crashS}s</div>
-                    <div class="cote-data" style="color:${typeClass==='tour-rose'?'#ff00ff':''}">${cote}x</div>
+                <div class="card ${typeClass}">
+                    <div class="tag" style="color:${color}">${label}</div>
+                    <div class="time-start">DÉPART : <b>${tM}:${tS.toString().padStart(2,'0')}</b></div>
+                    <div class="crash-time">CRASH RÉEL : ${cS}s</div>
+                    <div class="cote-val" style="color:${color}">${cote}x</div>
                 </div>
             `;
         }
