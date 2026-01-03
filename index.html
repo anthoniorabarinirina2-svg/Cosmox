@@ -2,115 +2,124 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>COSMOX V1000 - BLACK OPS</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ADALABE - MULTI-SIGNAL V9</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
     <style>
-        :root { --neon: #00ff41; --danger: #ff003c; --gold: #ffd700; --bg: #000; }
-        body { background: var(--bg); color: #fff; font-family: 'Consolas', monospace; margin: 0; overflow-x: hidden; }
-        
-        /* ÉCRAN DE VERROUILLAGE SÉCURISÉ */
-        #LOCK_SCREEN { position: fixed; inset: 0; background: #000; z-index: 100000; display: flex; justify-content: center; align-items: center; }
-        .terminal { border: 2px solid var(--neon); padding: 35px; background: #050505; text-align: center; box-shadow: 0 0 40px rgba(0,255,65,0.2); width: 300px; }
-        input { background: #000; border: 1px solid #333; color: var(--neon); padding: 15px; width: 100%; font-size: 22px; text-align: center; margin-bottom: 20px; outline: none; box-sizing: border-box; }
-        #OPEN_BTN { width: 100%; padding: 18px; background: var(--neon); color: #000; border: none; font-weight: 900; cursor: pointer; text-transform: uppercase; font-size: 16px; }
+        :root { --p: #ff007f; --b: #00d2ff; --bg: #05070a; --g: #00ff88; --y: #f0b90b; }
+        body { background: var(--bg); color: white; font-family: 'Rajdhani', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; }
+        .container { max-width: 420px; width: 100%; animation: fadeIn 0.3s ease; }
 
-        /* DASHBOARD GAMER */
-        #APP { display: none; padding: 20px; max-width: 500px; margin: auto; }
-        .header { text-align: center; color: var(--neon); margin-bottom: 25px; letter-spacing: 5px; font-weight: bold; }
-        .input-zone { background: #0a0a0a; border: 1px solid #222; padding: 20px; border-radius: 5px; margin-bottom: 25px; }
-        .grid-inputs { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
-        label { font-size: 10px; color: #555; display: block; margin-bottom: 5px; }
-        .num-in { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: #fff; text-align: center; font-size: 18px; box-sizing: border-box; }
-        
-        .btn-predict { width: 100%; padding: 20px; background: var(--neon); color: #000; border: none; font-weight: 900; margin-top: 15px; cursor: pointer; border-radius: 4px; }
+        /* HEADER */
+        .header { background: #12161d; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 15px; text-align: center; border-bottom: 3px solid var(--b); }
+        .clock { font-family: 'Orbitron'; color: var(--b); font-size: 22px; text-shadow: 0 0 10px var(--b); }
 
-        /* LISTE DES 10 TOURS */
-        .results-list { display: flex; flex-direction: column; gap: 10px; }
-        .tour-card { background: #0d0d0d; border-left: 5px solid #333; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 3px; }
-        .tour-card.jackpot { border-left-color: var(--gold); background: linear-gradient(90deg, #1a1600, #0d0d0d); }
-        .tour-card.safe { border-left-color: #0088ff; }
+        /* INPUT CARD */
+        .card { background: #12161d; border-radius: 15px; padding: 20px; border-left: 4px solid var(--p); box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; }
+        .input-row { display: flex; gap: 10px; margin: 15px 0; }
+        .input-box { flex: 1; }
+        label { display: block; font-size: 10px; color: #888; font-family: 'Orbitron'; margin-bottom: 5px; }
+        input { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: var(--g); border-radius: 8px; text-align: center; font-family: 'Orbitron'; font-size: 18px; box-sizing: border-box; }
+
+        .btn { width: 100%; padding: 18px; border: none; background: var(--p); color: white; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; border-radius: 10px; text-transform: uppercase; transition: 0.2s; box-shadow: 0 0 15px rgba(255, 0, 127, 0.3); }
+        .btn:active { transform: scale(0.95); }
+
+        /* LISTE DES PREDICTIONS */
+        .results-list { margin-top: 20px; display: none; }
+        .sig-card { background: #12161d; border: 1px solid #333; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border-right: 4px solid var(--g); animation: slideIn 0.3s ease forwards; opacity: 0; }
         
-        .tour-time { font-size: 14px; }
-        .tour-time b { color: var(--neon); }
-        .tour-val { font-size: 26px; font-weight: 900; }
-        .crash-alert { font-size: 11px; color: var(--danger); font-weight: bold; display: block; margin-top: 5px; }
+        .sig-time { font-family: 'Orbitron'; font-size: 20px; color: var(--g); }
+        .sig-info { text-align: right; }
+        .sig-cote { font-family: 'Orbitron'; font-size: 16px; color: var(--p); }
+        .sig-trust { font-size: 9px; color: var(--y); text-transform: uppercase; font-weight: bold; margin-top: 3px; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div id="LOCK_SCREEN">
-    <div class="terminal">
-        <div style="font-size:10px; margin-bottom:15px; color:var(--neon);">SYSTEM_BOOT_V1000</div>
-        <input type="password" id="ACCESS_CODE" placeholder="PASSWORD">
-        <button id="OPEN_BTN">INITIALIZE</button>
+<div class="container">
+    <div class="header">
+        <div style="font-size: 9px; color: var(--y); font-family: 'Orbitron'; margin-bottom: 5px;">ADALABE MULTI-SCAN V9</div>
+        <div class="clock" id="clock">00:00:00</div>
     </div>
-</div>
 
-<div id="APP">
-    <div class="header">COSMOX_V1000</div>
-    
-    <div class="input-zone">
-        <div class="grid-inputs">
-            <div><label>DERNIÈRE MIN</label><input type="number" id="MIN" class="num-in" placeholder="00"></div>
-            <div><label>DERNIÈRE SEC</label><input type="number" id="SEC" class="num-in" placeholder="00"></div>
+    <div class="card">
+        <label style="text-align:center; color: var(--p); font-size: 12px; margin-bottom: 10px;">DERNIÈRES DONNÉES DU CRASH</label>
+        <div class="input-row">
+            <div class="input-box">
+                <label>MINUTE</label>
+                <input type="number" id="m" placeholder="00" min="0" max="59">
+            </div>
+            <div class="input-box">
+                <label>SECONDE</label>
+                <input type="number" id="s" placeholder="00" min="0" max="59">
+            </div>
         </div>
-        <button class="btn-predict" onclick="runPrediction()">GÉNÉRER LE FUTUR (10 TOURS)</button>
+        <button class="btn" onclick="genererMultiples()">SCANNER LES 5 PROCHAINS TOURS</button>
     </div>
 
-    <div id="LIST" class="results-list"></div>
+    <div id="results" class="results-list">
+        </div>
 </div>
 
 <script>
-    // DEVERROUILLAGE SANS FAILLE
-    document.getElementById('OPEN_BTN').onclick = function() {
-        if(document.getElementById('ACCESS_CODE').value === "COSMOX2026") {
-            document.getElementById('LOCK_SCREEN').style.display = 'none';
-            document.getElementById('APP').style.display = 'block';
-        } else {
-            alert("WRONG_CODE");
+    // Horloge Live
+    setInterval(() => {
+        document.getElementById('clock').innerText = new Date().toLocaleTimeString('fr-FR');
+    }, 1000);
+
+    function genererMultiples() {
+        const m = parseInt(document.getElementById('m').value);
+        const s = parseInt(document.getElementById('s').value);
+
+        if (isNaN(m) || isNaN(s)) {
+            alert("ERREUR : Entre les données !");
+            return;
         }
-    };
 
-    function runPrediction() {
-        const m = parseInt(document.getElementById('MIN').value);
-        const s = parseInt(document.getElementById('SEC').value);
-        if(isNaN(m) || isNaN(s)) return;
+        const resContainer = document.getElementById('results');
+        resContainer.innerHTML = ""; // Vider
+        resContainer.style.display = "block";
 
-        const list = document.getElementById('LIST');
-        list.innerHTML = "";
-        
-        let lastM = m, lastS = s;
+        // Génération de 5 prédictions
+        for (let i = 1; i <= 5; i++) {
+            setTimeout(() => {
+                // Algorithme de décalage progressif (Ex: +1m15, +2m30, etc.)
+                let totalSeconds = s + (i * 75); 
+                let nextS = totalSeconds % 60;
+                let nextM = (m + Math.floor(totalSeconds / 60)) % 60;
 
-        for(let i=1; i<=10; i++) {
-            let gap = 53 + (i * 2);
-            let tS = (lastS + gap) % 60;
-            let tM = (lastM + Math.floor((lastS + gap) / 60)) % 60;
-            lastS = tS; lastM = tM;
+                // Calcul de la cote assurée (Cote Min et Max)
+                let base = (nextS % 2 === 0) ? 2.10 : 1.60;
+                let estimation = (base + (nextM / 20)).toFixed(2);
+                let maxEst = (parseFloat(estimation) + 1.5 + (i/2)).toFixed(2);
 
-            let cote, type = "";
-            if(i === 4 || i === 8) { 
-                cote = 60.10; type = "jackpot"; 
-            } else if(i % 2 === 0) { 
-                cote = (10.00 + Math.random()).toFixed(2); 
-            } else { 
-                cote = (2.05 + (Math.random()*0.03)).toFixed(2); type = "safe";
-            }
+                // Pourcentage de fiabilité
+                let trust = 95 - (i * 4); 
 
-            // Calcul du crash réel (1.48s par point de cote)
-            let flight = Math.floor(parseFloat(cote) * 1.48);
-            let cS = (tS + flight) % 60;
+                const sigCard = document.createElement('div');
+                sigCard.className = 'sig-card';
+                sigCard.style.animationDelay = (i * 0.1) + "s";
+                
+                let now = new Date();
+                let hh = now.getHours().toString().padStart(2, '0');
+                let mm = nextM.toString().padStart(2, '0');
+                let ss = nextS.toString().padStart(2, '0');
 
-            list.innerHTML += `
-                <div class="tour-card ${type}">
-                    <div>
-                        <div class="tour-time">DÉBUT: <b>${tM.toString().padStart(2,'0')}:${tS.toString().padStart(2,'0')}</b></div>
-                        <span class="crash-alert">CRASH RÉEL À : ${cS}s</span>
+                sigCard.innerHTML = `
+                    <div class="sig-time">${hh}:${mm}:${ss}</div>
+                    <div class="sig-info">
+                        <div class="sig-cote">${estimation}x - ${maxEst}x</div>
+                        <div class="sig-trust">Fiabilité : ${trust}%</div>
                     </div>
-                    <div class="tour-val" style="color:${type==='jackpot'?'#ffd700':''}">${cote}x</div>
-                </div>
-            `;
+                `;
+                resContainer.appendChild(sigCard);
+            }, i * 150);
         }
     }
 </script>
+
 </body>
 </html>
