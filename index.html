@@ -3,183 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>COSMOX V13 - BIG ODDS & REASONING</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
+    <title>AVIATOR ENGINE V13</title>
     <style>
-        :root { --p: #ff007f; --b: #00d2ff; --bg: #05070a; --g: #00ff88; --y: #f0b90b; --gold: #ffd700; }
-        body { background: var(--bg); color: white; font-family: 'Rajdhani', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .container { max-width: 450px; width: 100%; display: none; animation: fadeIn 0.4s ease; }
-
-        /* LOCK SCREEN */
-        #lock { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; }
-        .lock-card { background: #12161d; padding: 40px; border-radius: 20px; border: 1px solid var(--p); text-align: center; width: 85%; }
-
-        /* HEADER */
-        .header { background: #12161d; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 15px; text-align: center; border-bottom: 3px solid var(--p); }
-        .clock { font-family: 'Orbitron'; color: var(--b); font-size: 20px; }
-
-        /* INPUTS */
-        .card { background: #12161d; border-radius: 15px; padding: 20px; border-left: 4px solid var(--b); margin-bottom: 20px; }
-        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        label { display: block; font-size: 10px; color: #888; font-family: 'Orbitron'; margin-bottom: 5px; }
-        input { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: var(--g); border-radius: 8px; text-align: center; font-family: 'Orbitron'; font-size: 18px; box-sizing: border-box; }
-
-        .btn { width: 100%; padding: 15px; border: none; background: var(--p); color: white; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; border-radius: 10px; text-transform: uppercase; margin-top: 15px; }
-
-        /* RESULTATS */
-        .res-list { margin-top: 20px; }
-        .sig-card { background: #12161d; border: 1px solid #333; border-radius: 12px; padding: 15px; margin-bottom: 15px; position: relative; animation: slideIn 0.3s ease forwards; opacity: 0; }
+        :root { --win: #00ff88; --loss: #ff0055; --bg: #0b0b0b; --card: #151515; }
+        body { background: var(--bg); color: #fff; font-family: 'Arial', sans-serif; margin: 0; display: flex; justify-content: center; }
         
-        /* GROSSE COTE ISOLÉE */
-        .big-odd-signal { border: 2px solid var(--gold); box-shadow: 0 0 20px rgba(255, 215, 0, 0.3); background: linear-gradient(145deg, #12161d, #1a1500); }
-        .big-odd-tag { position: absolute; top: -10px; right: 10px; background: var(--gold); color: black; font-family: 'Orbitron'; font-size: 9px; padding: 2px 8px; border-radius: 5px; font-weight: bold; }
+        /* SYSTÈME DE VÉRIFICATION */
+        #LOCK { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .lock-box { border: 2px solid var(--win); padding: 30px; background: #111; text-align: center; border-radius: 10px; }
+        input[type="password"] { padding: 12px; width: 200px; border: 1px solid #333; background: #000; color: var(--win); text-align: center; margin-bottom: 20px; outline: none; }
+        #UNLOCK_BTN { padding: 12px 30px; background: var(--win); color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
 
-        .sig-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .sig-time { font-family: 'Orbitron'; font-size: 18px; color: var(--b); }
-        .reasoning { font-size: 11px; color: #bbb; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; margin-bottom: 10px; border-left: 2px solid var(--p); line-height: 1.4; }
-        
-        .cote-display { display: flex; justify-content: space-around; margin-bottom: 15px; }
-        .val-box { text-align: center; }
-        .val-num { font-family: 'Orbitron'; font-size: 22px; color: var(--g); }
-        .val-label { font-size: 8px; color: #666; text-transform: uppercase; }
+        /* ENGINE INTERFACE */
+        #ENGINE { display: none; width: 100%; max-width: 400px; padding: 20px; }
+        .header { text-align: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
+        .input-group { background: var(--card); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
+        .btn-scan { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase; }
 
-        /* BOUTONS ECHEC/GAGNE PAR PREDICTION */
-        .verify-btns { display: flex; gap: 8px; }
-        .v-btn { flex: 1; padding: 8px; border: none; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-size: 9px; font-weight: bold; text-transform: uppercase; transition: 0.2s; }
-        .v-gagne { background: rgba(0, 255, 136, 0.2); color: var(--g); border: 1px solid var(--g); }
-        .v-echec { background: rgba(255, 0, 127, 0.2); color: var(--p); border: 1px solid var(--p); }
-        .v-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+        /* TRIPLE SCAN CARDS */
+        .prediction-container { display: flex; flex-direction: column; gap: 15px; }
+        .scan-card { background: var(--card); border-left: 6px solid #444; padding: 15px; border-radius: 5px; position: relative; }
+        .scan-card.win { border-left-color: var(--win); }
+        .scan-card.loss { border-left-color: var(--loss); }
+        .scan-card.jackpot { border: 1px solid #ffd700; border-left: 6px solid #ffd700; background: #1a1600; }
 
-        /* GLOBAL STATS */
-        .stat-bar { background: #0a0c10; padding: 15px; border-radius: 12px; border: 1px solid var(--y); margin-top: 20px; text-align: center; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .status-tag { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
+        .time-info { font-size: 14px; color: #aaa; }
+        .cote-val { font-size: 28px; font-weight: 900; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); }
     </style>
 </head>
 <body>
 
-<div id="lock">
-    <div class="lock-card">
-        <h2 style="color:var(--p); font-family:'Orbitron'; font-size: 14px;">SYSTEM KEY REQUIRED</h2>
-        <input type="password" id="pass" placeholder="PASSWORD">
-        <button class="btn" onclick="unlock()">ACCESS COSMOX</button>
+<div id="LOCK">
+    <div class="lock-box">
+        <h2 style="color:var(--win); margin-top:0;">ENGINE V13</h2>
+        <input type="password" id="PASS" placeholder="ACCESS KEY">
+        <button id="UNLOCK_BTN">DECRYPT ENGINE</button>
     </div>
 </div>
 
-<div id="app" class="container">
+<div id="ENGINE">
     <div class="header">
-        <div class="clock" id="clock">00:00:00</div>
-        <div style="font-size: 9px; color: var(--p); font-family: 'Orbitron'; margin-top: 5px;">COSMOX REASONING ENGINE V13</div>
+        <h1 style="margin:0; font-size:18px; letter-spacing:2px;">AVIATOR ENGINE <span style="color:var(--win);">V13</span></h1>
     </div>
 
-    <div class="card">
-        <label>DERNIER CRASH</label>
-        <input type="number" id="v" step="0.01" placeholder="2.00">
-        <div class="input-grid">
-            <div><label>MINUTE (M)</label><input type="number" id="m" placeholder="00"></div>
-            <div><label>SECONDE (S)</label><input type="number" id="s" placeholder="00"></div>
+    <div class="input-group">
+        <label style="font-size:11px; color:#666;">ENTRER DERNIER TOUR (H:M:S)</label>
+        <div style="display:flex; gap:10px; margin-top:8px;">
+            <input type="number" id="M" placeholder="MIN" style="width:50%; padding:10px; background:#000; color:#fff; border:1px solid #333;">
+            <input type="number" id="S" placeholder="SEC" style="width:50%; padding:10px; background:#000; color:#fff; border:1px solid #333;">
         </div>
-        <button class="btn" onclick="generateIntelligentSignals()">ANALYSER & PRÉDIRE</button>
+        <button class="btn-scan" onclick="runTripleScan()">SCANNER 3 TOURS</button>
     </div>
 
-    <div id="results" class="res-list"></div>
-
-    <div class="stat-bar">
-        <div style="font-size:10px; color:var(--y); font-family:'Orbitron';">PRÉCISION GLOBALE SESSION</div>
-        <div style="font-size:24px; color:white; font-family:'Orbitron'; margin-top:5px;" id="global-acc">0%</div>
-    </div>
+    <div id="PREDICTIONS" class="prediction-container"></div>
 </div>
 
 <script>
-    let wins = 0; let total = 0;
-    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('fr-FR'); }, 1000);
+    document.getElementById('UNLOCK_BTN').onclick = function() {
+        if(document.getElementById('PASS').value === "COSMOX2026") {
+            document.getElementById('LOCK').style.display = 'none';
+            document.getElementById('ENGINE').style.display = 'block';
+        } else { alert("ACCESS DENIED"); }
+    };
 
-    function unlock() {
-        if(document.getElementById('pass').value === 'bandykely') {
-            document.getElementById('lock').style.display = 'none';
-            document.getElementById('app').style.display = 'block';
-        } else { alert("Accès refusé"); }
-    }
+    function runTripleScan() {
+        const m = parseInt(document.getElementById('M').value);
+        const s = parseInt(document.getElementById('S').value);
+        if(isNaN(m) || isNaN(s)) return;
 
-    function generateIntelligentSignals() {
-        const val = parseFloat(document.getElementById('v').value);
-        const m = parseInt(document.getElementById('m').value);
-        const s = parseInt(document.getElementById('s').value);
+        const container = document.getElementById('PREDICTIONS');
+        container.innerHTML = "";
+        
+        let lastS = s;
+        let lastM = m;
 
-        if(isNaN(val) || isNaN(m) || isNaN(s)) return alert("Données manquantes");
+        // On prédit 3 tours à l'avance
+        for(let i=1; i<=3; i++) {
+            let gap = 52 + (i * 2);
+            let tS = (lastS + gap) % 60;
+            let tM = (lastM + Math.floor((lastS + gap) / 60)) % 60;
+            lastS = tS; lastM = tM;
 
-        const resContainer = document.getElementById('results');
-        resContainer.innerHTML = "";
+            // Détermination aléatoire mais orientée du résultat (80% win sur v13)
+            let isWin = Math.random() > 0.2;
+            let isJackpot = (i === 3 && Math.random() > 0.7); // Chance de jackpot sur le 3ème tour scan
+            
+            let cote;
+            if(isJackpot) {
+                cote = "60.10";
+            } else {
+                cote = (2.00 + Math.random() * 0.15).toFixed(2);
+            }
 
-        for (let i = 1; i <= 4; i++) {
-            setTimeout(() => {
-                let delay = 65 + (i * 22);
-                let targetS = (s + delay) % 60;
-                let targetM = (m + Math.floor((s + delay) / 60)) % 60;
-                
-                // --- LOGIQUE DE RAISONNEMENT ---
-                let isBigOdd = (targetS % 10 === 0 && val < 3); // Condition pour une grosse cote
-                let coteMin = (1.50 + (targetS / 50)).toFixed(2);
-                let coteMax = isBigOdd ? (10 + Math.random() * 15).toFixed(2) : (parseFloat(coteMin) + 2 + Math.random() * 3).toFixed(2);
+            let cardClass = isWin ? "win" : "loss";
+            if(isJackpot) cardClass = "jackpot win";
 
-                let reasoningText = "";
-                if(isBigOdd) {
-                    reasoningText = "ALGO : Détection d'une fenêtre de haute fréquence à la seconde " + targetS + ". Le système anticipe une rupture de cycle stable. Potentiel de gain massif détecté.";
-                } else {
-                    reasoningText = "ALGO : Analyse de la minute " + targetM + ". Le flux suggère une correction modérée. Nous recommandons une sortie sécurisée pour préserver le capital.";
-                }
-
-                const card = document.createElement('div');
-                card.className = 'sig-card' + (isBigOdd ? ' big-odd-signal' : '');
-                card.style.animationDelay = (i * 0.1) + "s";
-
-                let hh = new Date().getHours().toString().padStart(2, '0');
-                let mm = targetM.toString().padStart(2, '0');
-                let ss = targetS.toString().padStart(2, '0');
-
-                card.innerHTML = `
-                    ${isBigOdd ? '<div class="big-odd-tag">GROS GAIN DÉTECTÉ</div>' : ''}
-                    <div class="sig-header">
-                        <div class="sig-time">${hh}:${mm}:${ss}</div>
-                        <div style="font-size:9px; color:var(--y)">SIGNAL #${i}</div>
+            container.innerHTML += `
+                <div class="scan-card ${cardClass}">
+                    <div class="status-tag" style="color:${isWin?'#00ff88':'#ff0055'}">
+                        PRÉDICTION : ${isWin ? 'GAGNÉ ✅' : 'PERDU ❌'}
                     </div>
-                    <div class="reasoning">${reasoningText}</div>
-                    <div class="cote-display">
-                        <div class="val-box">
-                            <div class="val-label">Objectif Min</div>
-                            <div class="val-num">${coteMin}x</div>
-                        </div>
-                        <div class="val-box">
-                            <div class="val-label">Objectif Max</div>
-                            <div class="val-num" style="color:${isBigOdd ? 'var(--gold)' : 'var(--p)'}">${coteMax}x</div>
-                        </div>
-                    </div>
-                    <div class="verify-btns">
-                        <button class="v-btn v-gagne" onclick="track(this, true)">Gagné ✅</button>
-                        <button class="v-btn v-echec" onclick="track(this, false)">Échec ❌</button>
-                    </div>
-                `;
-                resContainer.appendChild(card);
-            }, i * 150);
+                    <div class="time-info">DÉBUT : <b>${tM}:${tS.toString().padStart(2,'0')}</b></div>
+                    <div class="cote-val" style="color:${isJackpot?'#ffd700':''}">${cote}x</div>
+                </div>
+            `;
         }
     }
-
-    function track(btn, isWin) {
-        total++;
-        if(isWin) wins++;
-        document.getElementById('global-acc').innerText = ((wins / total) * 100).toFixed(1) + "%";
-        
-        // Désactiver les deux boutons du même bloc
-        const parent = btn.parentElement;
-        parent.querySelectorAll('button').forEach(b => {
-            b.disabled = true;
-            if(b !== btn) b.style.opacity = "0.1";
-        });
-        btn.style.background = isWin ? "var(--g)" : "var(--p)";
-        btn.style.color = "black";
-    }
 </script>
-
 </body>
 </html>
