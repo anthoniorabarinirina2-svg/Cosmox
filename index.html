@@ -3,114 +3,99 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>COSMOX V1000 - QUANTUM</title>
+    <title>COSMOX V2000 - GHOST REVERSE</title>
     <style>
-        :root { --p: #ff0055; --g: #00ff88; --b: #000; --y: #ffd700; }
-        body { background: var(--b); color: #fff; font-family: 'Segoe UI', monospace; margin: 0; padding: 0; }
+        :root { --neon: #00ff00; --warn: #ff0055; --gold: #ffd700; --bg: #000; }
+        body { background: var(--bg); color: var(--neon); font-family: 'Consolas', monospace; margin: 0; padding: 10px; }
         
-        /* SYSTÈME DE DÉVERROUILLAGE V1000 */
-        #V1000_GATE { position: fixed; inset: 0; background: #000; z-index: 100000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .gate-ui { border: 2px solid var(--p); padding: 40px; background: #050505; text-align: center; box-shadow: 0 0 30px var(--p); border-radius: 4px; }
-        input { background: #000; border: 1px solid #333; color: var(--p); padding: 15px; width: 220px; font-size: 22px; text-align: center; margin-bottom: 20px; outline: none; }
-        #UNLOCK_BTN { width: 100%; padding: 18px; background: var(--p); color: #fff; border: none; font-weight: 900; cursor: pointer; letter-spacing: 2px; }
+        /* OVERLAY PIRATE */
+        #LOCK { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; justify-content: center; align-items: center; }
+        .terminal { border: 1px solid var(--neon); padding: 30px; background: #050505; text-align: center; box-shadow: 0 0 20px rgba(0,255,0,0.2); }
+        input { background: #000; border: 1px solid var(--neon); color: var(--neon); padding: 12px; width: 100%; text-align: center; font-size: 20px; margin-bottom: 15px; }
+        #BTN_PIRATE { width: 100%; padding: 15px; background: var(--neon); color: #000; border: none; font-weight: bold; cursor: pointer; text-transform: uppercase; }
 
-        /* INTERFACE DE PRÉCISION */
-        #CORE { display: none; padding: 15px; max-width: 500px; margin: auto; }
-        .monitor { background: #0a0a0a; border: 1px solid #222; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-top: 4px solid var(--g); }
-        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        input[type="number"] { background: #000; border: 1px solid #444; color: #fff; padding: 12px; font-size: 18px; text-align: center; border-radius: 5px; }
+        /* DASHBOARD */
+        #DASHBOARD { display: none; }
+        .stat-card { border: 1px solid #222; background: #0a0a0a; padding: 15px; margin-bottom: 10px; border-radius: 4px; }
+        .grid-10 { display: flex; flex-direction: column; gap: 8px; }
+        .tour { display: flex; justify-content: space-between; align-items: center; padding: 12px; background: #0d0d0d; border-left: 4px solid #333; }
+        .tour.jackpot { border-left-color: var(--gold); background: rgba(255,215,0,0.05); }
+        .tour.safe { border-left-color: #0088ff; }
         
-        .scan-btn { width: 100%; padding: 18px; background: var(--g); color: #000; border: none; font-weight: 900; border-radius: 5px; margin-top: 15px; cursor: pointer; text-transform: uppercase; }
-
-        /* LISTE DES 10 TOURS RÉELS */
-        .tour-grid { display: flex; flex-direction: column; gap: 10px; }
-        .tour-card { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
-        .tour-card.jackpot { border: 1px solid var(--y); background: linear-gradient(90deg, #1a1600, #0d0d0d); }
-        .tour-card.safe { border-left: 5px solid var(--g); }
-        
-        .time-label { font-size: 14px; color: #888; }
-        .time-label b { color: #fff; font-size: 16px; }
-        .x-val { font-size: 26px; font-weight: 900; color: var(--g); }
-        .crash-time { font-size: 11px; color: var(--p); display: block; margin-top: 5px; font-weight: bold; text-transform: uppercase; }
-        .y-text { color: var(--y) !important; }
+        .timer { font-size: 14px; color: #fff; }
+        .timer b { color: var(--gold); }
+        .score { font-size: 24px; font-weight: 900; }
+        .crash-sec { font-size: 10px; color: var(--warn); display: block; }
     </style>
 </head>
 <body>
 
-<div id="V1000_GATE">
-    <div class="gate-ui">
-        <h2 style="margin:0 0 10px 0; font-size:14px; color:var(--p);">CORE_SYSTEM_V1000</h2>
-        <input type="password" id="ENTRY_CODE" placeholder="ENCRYPT_KEY">
-        <button id="UNLOCK_BTN">DECRYPT_DATA</button>
+<div id="LOCK">
+    <div class="terminal">
+        <p style="font-size:10px;">INJECTING_EXPLOIT_V2000...</p>
+        <input type="password" id="PASS" placeholder="ACCESS_KEY">
+        <button id="BTN_PIRATE">EXÉCUTER LE PIRATAGE</button>
     </div>
 </div>
 
-<div id="CORE">
-    <div class="monitor">
-        <div style="font-size:12px; color:var(--g); text-align:center;">● RADAR QUANTUM SYNCHRONISÉ</div>
-        <div class="input-row">
-            <div><label style="font-size:10px; color:#555;">DERNIÈRE MINUTE</label><input type="number" id="M_IN" placeholder="00"></div>
-            <div><label style="font-size:10px; color:#555;">DERNIÈRE SECONDE</label><input type="number" id="S_IN" placeholder="00"></div>
+<div id="DASHBOARD">
+    <h3 style="text-align:center; letter-spacing:3px;">● GHOST_REVERSE_ACTIVE</h3>
+    
+    <div class="stat-card">
+        <div style="display:flex; gap:10px;">
+            <input type="number" id="M" placeholder="MIN" style="width:50%; margin:0;">
+            <input type="number" id="S" placeholder="SEC" style="width:50%; margin:0;">
         </div>
-        <button class="scan-btn" onclick="generateV1000()">PRÉDIRE SÉQUENCE 10 TOURS</button>
+        <button onclick="revealAll()" style="width:100%; padding:15px; background:white; color:black; font-weight:bold; border:none; margin-top:10px; cursor:pointer;">DÉCOUVRIR LES 10 TOURS</button>
     </div>
 
-    <div id="RESULTS" class="tour-grid"></div>
+    <div id="LIST" class="grid-10"></div>
 </div>
 
 <script>
-    // DEVERROUILLAGE SANS DELAI
-    document.getElementById('UNLOCK_BTN').onclick = function() {
-        if(document.getElementById('ENTRY_CODE').value === "COSMOX2026") {
-            document.getElementById('V1000_GATE').style.display = 'none';
-            document.getElementById('CORE').style.display = 'block';
-        } else {
-            alert("KEY_ERROR");
-        }
+    document.getElementById('BTN_PIRATE').onclick = function() {
+        if(document.getElementById('PASS').value === "COSMOX2026") {
+            document.getElementById('LOCK').style.display = 'none';
+            document.getElementById('DASHBOARD').style.display = 'block';
+        } else { alert("KEY_DENIED"); }
     };
 
-    function generateV1000() {
-        const m = parseInt(document.getElementById('M_IN').value);
-        const s = parseInt(document.getElementById('S_IN').value);
-        if(isNaN(m) || isNaN(s)) return alert("ENTRER L'HISTORIQUE");
+    function revealAll() {
+        const m = parseInt(document.getElementById('M').value);
+        const s = parseInt(document.getElementById('S').value);
+        if(isNaN(m) || isNaN(s)) return;
 
-        const display = document.getElementById('RESULTS');
-        display.innerHTML = "";
+        const list = document.getElementById('LIST');
+        list.innerHTML = "";
         
-        let lastM = m;
-        let lastS = s;
+        let lM = m, lS = s;
 
         for(let i=1; i<=10; i++) {
-            // Cycle de 53 secondes (calibrage 2026)
             let gap = 53 + (i * 2);
-            let tS = (lastS + gap) % 60;
-            let tM = (lastM + Math.floor((lastS + gap) / 60)) % 60;
-            lastS = tS; lastM = tM;
+            let tS = (lS + gap) % 60;
+            let tM = (lM + Math.floor((lS + gap) / 60)) % 60;
+            lS = tS; lM = tM;
 
-            let score, isJack = false;
-            
-            // Logique de ton plan de jeu
+            let cote, type = "";
             if(i === 4 || i === 8) { 
-                score = (60.10 + (Math.random()*2)).toFixed(2);
-                isJack = true;
+                cote = 60.10; type = "jackpot"; 
             } else if(i % 2 === 0) { 
-                score = (10.05 + (Math.random()*3)).toFixed(2);
+                cote = (10.00 + Math.random()).toFixed(2); 
             } else { 
-                score = (2.00 + (Math.random()*0.05)).toFixed(2);
+                cote = (2.05 + (Math.random()*0.05)).toFixed(2); type = "safe";
             }
 
-            // CALCUL DE LA SECONDE D'EXPLOSION RÉELLE
-            // La cote 60.10x correspond à un vol de 89s environ après le départ.
-            let flightDuration = Math.floor(parseFloat(score) * 1.48);
-            let crashRealSec = (tS + flightDuration) % 60;
+            // Calcul du crash (temps de vol physique)
+            let flight = Math.floor(parseFloat(cote) * 1.48);
+            let cS = (tS + flight) % 60;
 
-            display.innerHTML += `
-                <div class="tour-card ${isJack ? 'jackpot' : (i%2!==0 ? 'safe' : '')}">
+            list.innerHTML += `
+                <div class="tour ${type}">
                     <div>
-                        <div class="time-label">T-${i} DÉPART <b>${tM.toString().padStart(2,'0')}:${tS.toString().padStart(2,'0')}</b></div>
-                        <span class="crash-time">EXPLOSION SYSTÈME : ${crashRealSec}s</span>
+                        <div class="timer">TOUR #${i} - START <b>${tM}:${tS.toString().padStart(2,'0')}</b></div>
+                        <span class="crash-sec">CRASH À LA SECONDE : ${cS}s</span>
                     </div>
-                    <div class="x-val ${isJack ? 'y-text' : ''}">${score}x</div>
+                    <div class="score" style="color:${type==='jackpot'?'#ffd700':''}">${cote}x</div>
                 </div>
             `;
         }
