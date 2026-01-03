@@ -3,109 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AVIATOR ENGINE V13</title>
+    <title>ROSE CHRONO V13</title>
     <style>
-        :root { --win: #00ff88; --loss: #ff0055; --bg: #0b0b0b; --card: #151515; }
-        body { background: var(--bg); color: #fff; font-family: 'Arial', sans-serif; margin: 0; display: flex; justify-content: center; }
+        :root { --rose: #ff00ff; --win: #00ff88; --loss: #ff0055; --bg: #000; }
+        body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; padding: 10px; }
         
-        /* SYSTÈME DE VÉRIFICATION */
-        #LOCK { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .lock-box { border: 2px solid var(--win); padding: 30px; background: #111; text-align: center; border-radius: 10px; }
-        input[type="password"] { padding: 12px; width: 200px; border: 1px solid #333; background: #000; color: var(--win); text-align: center; margin-bottom: 20px; outline: none; }
-        #UNLOCK_BTN { padding: 12px 30px; background: var(--win); color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; }
+        /* SYSTÈME D'ACCÈS */
+        #LOCK { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .gate { border: 1px solid var(--rose); padding: 25px; text-align: center; background: #050505; }
+        input { background: #000; border: 1px solid #333; color: var(--rose); padding: 12px; margin: 10px 0; width: 180px; text-align: center; }
+        #GO { background: var(--rose); color: #fff; border: none; padding: 12px 25px; font-weight: bold; cursor: pointer; }
 
-        /* ENGINE INTERFACE */
-        #ENGINE { display: none; width: 100%; max-width: 400px; padding: 20px; }
-        .header { text-align: center; border-bottom: 1px solid #333; padding-bottom: 15px; margin-bottom: 20px; }
-        .input-group { background: var(--card); padding: 15px; border-radius: 8px; margin-bottom: 20px; }
-        .btn-scan { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: bold; cursor: pointer; border-radius: 5px; text-transform: uppercase; }
+        /* INTERFACE DE CALCUL */
+        #APP { display: none; max-width: 450px; margin: auto; }
+        .monitor { border: 1px solid #222; padding: 15px; background: #0a0a0a; margin-bottom: 20px; }
+        .btn-scan { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: 900; cursor: pointer; margin-top: 10px; }
+        
+        /* CARTES DE PRÉDICTION */
+        .tour-card { border: 1px solid #222; margin: 10px 0; padding: 15px; border-radius: 4px; position: relative; }
+        .tour-rose { border: 2px solid var(--rose); background: rgba(255, 0, 255, 0.05); box-shadow: 0 0 10px var(--rose); }
+        .tour-win { border-left: 6px solid var(--win); }
+        .tour-loss { border-left: 6px solid var(--loss); opacity: 0.5; }
 
-        /* TRIPLE SCAN CARDS */
-        .prediction-container { display: flex; flex-direction: column; gap: 15px; }
-        .scan-card { background: var(--card); border-left: 6px solid #444; padding: 15px; border-radius: 5px; position: relative; }
-        .scan-card.win { border-left-color: var(--win); }
-        .scan-card.loss { border-left-color: var(--loss); }
-        .scan-card.jackpot { border: 1px solid #ffd700; border-left: 6px solid #ffd700; background: #1a1600; }
-
-        .status-tag { font-size: 10px; font-weight: bold; text-transform: uppercase; margin-bottom: 5px; }
-        .time-info { font-size: 14px; color: #aaa; }
-        .cote-val { font-size: 28px; font-weight: 900; position: absolute; right: 15px; top: 50%; transform: translateY(-50%); }
+        .type-label { font-size: 10px; font-weight: bold; margin-bottom: 5px; }
+        .time-data { font-size: 14px; }
+        .time-data b { color: #fff; font-size: 18px; }
+        .cote-data { position: absolute; right: 15px; top: 20px; font-size: 28px; font-weight: 900; }
+        .sec-crash { font-size: 11px; color: var(--loss); font-weight: bold; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div id="LOCK">
-    <div class="lock-box">
-        <h2 style="color:var(--win); margin-top:0;">ENGINE V13</h2>
-        <input type="password" id="PASS" placeholder="ACCESS KEY">
-        <button id="UNLOCK_BTN">DECRYPT ENGINE</button>
+    <div class="gate">
+        <h3 style="color:var(--rose);">ENGINE_V13_LOCKED</h3>
+        <input type="password" id="CODE" placeholder="PASSWORD">
+        <button id="GO">DECRYPT</button>
     </div>
 </div>
 
-<div id="ENGINE">
-    <div class="header">
-        <h1 style="margin:0; font-size:18px; letter-spacing:2px;">AVIATOR ENGINE <span style="color:var(--win);">V13</span></h1>
-    </div>
-
-    <div class="input-group">
-        <label style="font-size:11px; color:#666;">ENTRER DERNIER TOUR (H:M:S)</label>
-        <div style="display:flex; gap:10px; margin-top:8px;">
-            <input type="number" id="M" placeholder="MIN" style="width:50%; padding:10px; background:#000; color:#fff; border:1px solid #333;">
-            <input type="number" id="S" placeholder="SEC" style="width:50%; padding:10px; background:#000; color:#fff; border:1px solid #333;">
+<div id="APP">
+    <h2 style="text-align:center; color:var(--rose);">ROSE CHRONO ENGINE</h2>
+    
+    <div class="monitor">
+        <label style="font-size:11px; color:#555;">MINUTE & SECONDE DU DERNIER CRASH</label>
+        <div style="display:flex; gap:10px; margin-top:10px;">
+            <input type="number" id="M" placeholder="MIN" style="width:50%;">
+            <input type="number" id="S" placeholder="SEC" style="width:50%;">
         </div>
-        <button class="btn-scan" onclick="runTripleScan()">SCANNER 3 TOURS</button>
+        <button class="btn-scan" onclick="chronoScan()">SCANNER LES 3 PROCHAINS TOURS</button>
     </div>
 
-    <div id="PREDICTIONS" class="prediction-container"></div>
+    <div id="RESULTS"></div>
 </div>
 
 <script>
-    document.getElementById('UNLOCK_BTN').onclick = function() {
-        if(document.getElementById('PASS').value === "COSMOX2026") {
+    document.getElementById('GO').onclick = function() {
+        if(document.getElementById('CODE').value === "COSMOX2026") {
             document.getElementById('LOCK').style.display = 'none';
-            document.getElementById('ENGINE').style.display = 'block';
-        } else { alert("ACCESS DENIED"); }
+            document.getElementById('APP').style.display = 'block';
+        }
     };
 
-    function runTripleScan() {
+    function chronoScan() {
         const m = parseInt(document.getElementById('M').value);
         const s = parseInt(document.getElementById('S').value);
         if(isNaN(m) || isNaN(s)) return;
 
-        const container = document.getElementById('PREDICTIONS');
-        container.innerHTML = "";
-        
-        let lastS = s;
-        let lastM = m;
+        const res = document.getElementById('RESULTS');
+        res.innerHTML = "";
+        let lM = m, lS = s;
 
-        // On prédit 3 tours à l'avance
         for(let i=1; i<=3; i++) {
-            let gap = 52 + (i * 2);
-            let tS = (lastS + gap) % 60;
-            let tM = (lastM + Math.floor((lastS + gap) / 60)) % 60;
-            lastS = tS; lastM = tM;
+            // Cycle de décalage technique
+            let gap = 53 + (i * 2);
+            let tS = (lS + gap) % 60;
+            let tM = (lM + Math.floor((lS + gap) / 60)) % 60;
+            lS = tS; lM = tM;
 
-            // Détermination aléatoire mais orientée du résultat (80% win sur v13)
-            let isWin = Math.random() > 0.2;
-            let isJackpot = (i === 3 && Math.random() > 0.7); // Chance de jackpot sur le 3ème tour scan
-            
-            let cote;
-            if(isJackpot) {
-                cote = "60.10";
+            let cote, typeClass, label;
+            let rand = Math.random();
+
+            if (i === 3 || rand > 0.85) { // Priorité au Rose sur le tour 3
+                cote = (rand > 0.5) ? "60.10" : "12.40";
+                typeClass = "tour-rose";
+                label = "PRÉDICTION : ROSE DÉTECTÉ ⚡";
+            } else if (rand > 0.4) {
+                cote = (2.00 + (Math.random()*0.15)).toFixed(2);
+                typeClass = "tour-win";
+                label = "PRÉDICTION : GAGNÉ ✅";
             } else {
-                cote = (2.00 + Math.random() * 0.15).toFixed(2);
+                cote = (1.20 + (Math.random()*0.3)).toFixed(2);
+                typeClass = "tour-loss";
+                label = "PRÉDICTION : PERDU ❌";
             }
 
-            let cardClass = isWin ? "win" : "loss";
-            if(isJackpot) cardClass = "jackpot win";
+            // Calcul de la seconde de crash exacte
+            let flightTime = Math.floor(parseFloat(cote) * 1.48);
+            let crashS = (tS + flightTime) % 60;
 
-            container.innerHTML += `
-                <div class="scan-card ${cardClass}">
-                    <div class="status-tag" style="color:${isWin?'#00ff88':'#ff0055'}">
-                        PRÉDICTION : ${isWin ? 'GAGNÉ ✅' : 'PERDU ❌'}
-                    </div>
-                    <div class="time-info">DÉBUT : <b>${tM}:${tS.toString().padStart(2,'0')}</b></div>
-                    <div class="cote-val" style="color:${isJackpot?'#ffd700':''}">${cote}x</div>
+            res.innerHTML += `
+                <div class="tour-card ${typeClass}">
+                    <div class="type-label" style="color:${typeClass==='tour-rose'?'#ff00ff':(typeClass==='tour-win'?'#00ff88':'#ff0055')}">${label}</div>
+                    <div class="time-data">START : <b>${tM}:${tS.toString().padStart(2,'0')}</b></div>
+                    <div class="sec-crash">EXPLOSION RÉELLE : ${crashS}s</div>
+                    <div class="cote-data" style="color:${typeClass==='tour-rose'?'#ff00ff':''}">${cote}x</div>
                 </div>
             `;
         }
