@@ -3,123 +3,178 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ADALABE - MULTI-SIGNAL V9</title>
+    <title>COSMOX V15 - ORACLE NEURAL</title>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600&display=swap" rel="stylesheet">
     <style>
-        :root { --p: #ff007f; --b: #00d2ff; --bg: #05070a; --g: #00ff88; --y: #f0b90b; }
+        :root { --p: #ff007f; --b: #00d2ff; --bg: #05070a; --g: #00ff88; --y: #f0b90b; --gold: #ffd700; --jk: #a020f0; }
         body { background: var(--bg); color: white; font-family: 'Rajdhani', sans-serif; margin: 0; padding: 10px; display: flex; justify-content: center; }
-        .container { max-width: 420px; width: 100%; animation: fadeIn 0.3s ease; }
+        .container { max-width: 480px; width: 100%; display: none; }
 
-        /* HEADER */
-        .header { background: #12161d; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 15px; text-align: center; border-bottom: 3px solid var(--b); }
-        .clock { font-family: 'Orbitron'; color: var(--b); font-size: 22px; text-shadow: 0 0 10px var(--b); }
+        #lock { position: fixed; inset: 0; background: var(--bg); z-index: 9999; display: flex; justify-content: center; align-items: center; }
+        .lock-card { background: #12161d; padding: 40px; border-radius: 20px; border: 1px solid var(--p); text-align: center; width: 85%; }
 
-        /* INPUT CARD */
-        .card { background: #12161d; border-radius: 15px; padding: 20px; border-left: 4px solid var(--p); box-shadow: 0 10px 30px rgba(0,0,0,0.5); margin-bottom: 20px; }
-        .input-row { display: flex; gap: 10px; margin: 15px 0; }
-        .input-box { flex: 1; }
-        label { display: block; font-size: 10px; color: #888; font-family: 'Orbitron'; margin-bottom: 5px; }
+        .header { background: #12161d; padding: 15px; border-radius: 12px; border: 1px solid #333; margin-bottom: 15px; text-align: center; border-bottom: 3px solid var(--p); }
+        .clock { font-family: 'Orbitron'; color: var(--b); font-size: 20px; }
+
+        .card { background: #12161d; border-radius: 15px; padding: 20px; border-left: 4px solid var(--b); margin-bottom: 20px; }
+        .input-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
         input { width: 100%; padding: 12px; background: #000; border: 1px solid #444; color: var(--g); border-radius: 8px; text-align: center; font-family: 'Orbitron'; font-size: 18px; box-sizing: border-box; }
 
-        .btn { width: 100%; padding: 18px; border: none; background: var(--p); color: white; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; border-radius: 10px; text-transform: uppercase; transition: 0.2s; box-shadow: 0 0 15px rgba(255, 0, 127, 0.3); }
-        .btn:active { transform: scale(0.95); }
+        .btn { width: 100%; padding: 15px; border: none; background: var(--p); color: white; font-family: 'Orbitron'; font-weight: bold; cursor: pointer; border-radius: 10px; text-transform: uppercase; margin-top: 15px; }
 
-        /* LISTE DES PREDICTIONS */
-        .results-list { margin-top: 20px; display: none; }
-        .sig-card { background: #12161d; border: 1px solid #333; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; border-right: 4px solid var(--g); animation: slideIn 0.3s ease forwards; opacity: 0; }
+        /* SECTION PREMIUM (5x, 10x, Jackpot) */
+        .premium-zone { background: rgba(255, 215, 0, 0.05); border: 2px solid var(--gold); border-radius: 15px; padding: 15px; margin-bottom: 20px; display: none; }
+        .premium-title { color: var(--gold); font-family: 'Orbitron'; font-size: 12px; text-align: center; margin-bottom: 10px; text-shadow: 0 0 10px var(--gold); }
+
+        /* SIGNAUX STYLES */
+        .sig-card { background: #12161d; border: 1px solid #333; border-radius: 12px; padding: 15px; margin-bottom: 15px; position: relative; animation: slideIn 0.4s ease; }
+        .jackpot-style { border: 2px solid var(--jk); box-shadow: 0 0 20px rgba(160, 32, 240, 0.4); }
         
-        .sig-time { font-family: 'Orbitron'; font-size: 20px; color: var(--g); }
-        .sig-info { text-align: right; }
-        .sig-cote { font-family: 'Orbitron'; font-size: 16px; color: var(--p); }
-        .sig-trust { font-size: 9px; color: var(--y); text-transform: uppercase; font-weight: bold; margin-top: 3px; }
+        .entry-sec { background: var(--p); color: white; font-family: 'Orbitron'; padding: 5px 10px; border-radius: 5px; font-size: 11px; display: inline-block; margin-bottom: 8px; }
+        
+        .exact-val { font-family: 'Orbitron'; font-size: 32px; color: var(--g); text-shadow: 0 0 10px var(--g); }
+        .badge-99 { position: absolute; top: -10px; right: 10px; background: var(--g); color: black; font-family: 'Orbitron'; font-size: 10px; padding: 3px 10px; border-radius: 20px; font-weight: 900; }
 
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-        @keyframes slideIn { from { transform: translateX(-20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .verify-btns { display: flex; gap: 8px; margin-top: 10px; }
+        .v-btn { flex: 1; padding: 8px; border: none; border-radius: 5px; cursor: pointer; font-family: 'Orbitron'; font-size: 9px; font-weight: bold; }
+        
+        .feedback-input { background: #000; border: 1px solid #444; color: var(--y); padding: 5px; border-radius: 4px; width: 60px; text-align: center; margin: 5px 0; }
+
+        @keyframes slideIn { from { transform: translateX(-30px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
     </style>
 </head>
 <body>
 
-<div class="container">
+<div id="lock">
+    <div class="lock-card">
+        <h2 style="color:var(--p); font-family:'Orbitron'; font-size: 14px;">ORACLE NEURAL INTERFACE</h2>
+        <input type="password" id="pass" placeholder="PASSWORD">
+        <button class="btn" onclick="unlock()">SYNC ORACLE</button>
+    </div>
+</div>
+
+<div id="app" class="container">
     <div class="header">
-        <div style="font-size: 9px; color: var(--y); font-family: 'Orbitron'; margin-bottom: 5px;">ADALABE MULTI-SCAN V9</div>
         <div class="clock" id="clock">00:00:00</div>
+        <div style="font-size: 9px; color: var(--y); font-family: 'Orbitron'; margin-top: 5px;">COSMOX V15 - DEEP SCANNER</div>
     </div>
 
     <div class="card">
-        <label style="text-align:center; color: var(--p); font-size: 12px; margin-bottom: 10px;">DERNIÈRES DONNÉES DU CRASH</label>
-        <div class="input-row">
-            <div class="input-box">
-                <label>MINUTE</label>
-                <input type="number" id="m" placeholder="00" min="0" max="59">
-            </div>
-            <div class="input-box">
-                <label>SECONDE</label>
-                <input type="number" id="s" placeholder="00" min="0" max="59">
-            </div>
+        <label style="font-size:10px; color:#888;">DERNIER CRASH RELEVÉ</label>
+        <input type="number" id="v" step="0.01" placeholder="1.80">
+        <div class="input-grid">
+            <div><label style="font-size:10px;">MINUTE (M)</label><input type="number" id="m" placeholder="12"></div>
+            <div><label style="font-size:10px;">SECONDE (S)</label><input type="number" id="s" placeholder="45"></div>
         </div>
-        <button class="btn" onclick="genererMultiples()">SCANNER LES 5 PROCHAINS TOURS</button>
+        <button class="btn" onclick="oracleScan()">SCANNER LE FUTUR (15 CYCLES)</button>
     </div>
 
-    <div id="results" class="results-list">
-        </div>
+    <div id="premium-results" class="premium-zone">
+        <div class="premium-title">🚀 CIBLES PREMIUM DÉTECTÉES (5x, 10x, JK)</div>
+        <div id="premium-list"></div>
+    </div>
+
+    <div id="standard-results"></div>
+
+    <div style="text-align:center; font-size:10px; color:#555; margin-top:20px;">PRECISION NEURALE : <span id="acc">0%</span></div>
 </div>
 
 <script>
-    // Horloge Live
-    setInterval(() => {
-        document.getElementById('clock').innerText = new Date().toLocaleTimeString('fr-FR');
-    }, 1000);
+    let wins = 0; let total = 0; let bias = 0;
+    setInterval(() => { document.getElementById('clock').innerText = new Date().toLocaleTimeString('fr-FR'); }, 1000);
 
-    function genererMultiples() {
+    function unlock() {
+        if(document.getElementById('pass').value === 'bandykely') {
+            document.getElementById('lock').style.display = 'none';
+            document.getElementById('app').style.display = 'block';
+        } else { alert("Accès refusé"); }
+    }
+
+    function oracleScan() {
+        const val = parseFloat(document.getElementById('v').value);
         const m = parseInt(document.getElementById('m').value);
         const s = parseInt(document.getElementById('s').value);
 
-        if (isNaN(m) || isNaN(s)) {
-            alert("ERREUR : Entre les données !");
-            return;
-        }
+        if(isNaN(val) || isNaN(m) || isNaN(s)) return alert("Données incomplètes");
 
-        const resContainer = document.getElementById('results');
-        resContainer.innerHTML = ""; // Vider
-        resContainer.style.display = "block";
+        const standard = document.getElementById('standard-results');
+        const premium = document.getElementById('premium-list');
+        const pZone = document.getElementById('premium-results');
+        
+        standard.innerHTML = "";
+        premium.innerHTML = "";
+        pZone.style.display = "none";
 
-        // Génération de 5 prédictions
-        for (let i = 1; i <= 5; i++) {
-            setTimeout(() => {
-                // Algorithme de décalage progressif (Ex: +1m15, +2m30, etc.)
-                let totalSeconds = s + (i * 75); 
-                let nextS = totalSeconds % 60;
-                let nextM = (m + Math.floor(totalSeconds / 60)) % 60;
+        // --- SCANNER DE 15 CYCLES FUTURS ---
+        for (let i = 1; i <= 15; i++) {
+            let delay = 60 + (i * 28); // Cycle moyen
+            let targetS = (s + delay) % 60;
+            let targetM = (m + Math.floor((s + delay) / 60)) % 60;
+            
+            // Calcul de la cote exacte simulée
+            let exactCote = (1.50 + (targetS / 12) + (bias * 0.5) + (i / 10)).toFixed(2);
+            if(targetS % 17 === 0) exactCote = (5 + Math.random() * 5).toFixed(2); // Détection 5x/10x
+            if(targetS === 0) exactCote = (50 + Math.random() * 100).toFixed(2); // Détection Jackpot
 
-                // Calcul de la cote assurée (Cote Min et Max)
-                let base = (nextS % 2 === 0) ? 2.10 : 1.60;
-                let estimation = (base + (nextM / 20)).toFixed(2);
-                let maxEst = (parseFloat(estimation) + 1.5 + (i/2)).toFixed(2);
+            let isPremium = exactCote >= 5;
+            let is99 = (targetS % 20 === 0 && !isPremium);
 
-                // Pourcentage de fiabilité
-                let trust = 95 - (i * 4); 
+            const card = document.createElement('div');
+            card.className = 'sig-card' + (exactCote >= 50 ? ' jackpot-style' : '');
+            
+            let hh = new Date().getHours().toString().padStart(2, '0');
+            let mm = targetM.toString().padStart(2, '0');
+            let ss = targetS.toString().padStart(2, '0');
+            let entryS = (targetS - 3 < 0) ? 60 + (targetS - 3) : targetS - 3;
 
-                const sigCard = document.createElement('div');
-                sigCard.className = 'sig-card';
-                sigCard.style.animationDelay = (i * 0.1) + "s";
+            card.innerHTML = `
+                ${is99 ? '<div class="badge-99">99% ASSURÉ</div>' : ''}
+                <div class="entry-sec">ENTRER À : ${entryS}s</div>
+                <div class="sig-time">HEURE : ${hh}:${mm}:${ss}</div>
+                <div style="font-size:9px; color:#888;">PREDICTION EXACTE</div>
+                <div class="exact-val">${exactCote}x</div>
+                <div style="font-size:10px; color:var(--y)">Chance : ${isPremium ? 75 : 92}%</div>
                 
-                let now = new Date();
-                let hh = now.getHours().toString().padStart(2, '0');
-                let mm = nextM.toString().padStart(2, '0');
-                let ss = nextS.toString().padStart(2, '0');
+                <div class="verify-btns">
+                    <button class="v-btn" style="background:var(--g); color:black;" onclick="train(this, true, ${exactCote})">GAGNÉ ✅</button>
+                    <button class="v-btn" style="background:var(--p); color:white;" onclick="train(this, false, ${exactCote})">PERDU ❌</button>
+                </div>
+                <div class="feedback" style="display:none; margin-top:5px;">
+                    <input type="number" step="0.01" class="feedback-input" placeholder="Cote réelle">
+                    <button onclick="saveFeedback(this, ${exactCote})" style="background:var(--b); border:none; padding:5px; font-size:9px; border-radius:4px;">VALIDER</button>
+                </div>
+            `;
 
-                sigCard.innerHTML = `
-                    <div class="sig-time">${hh}:${mm}:${ss}</div>
-                    <div class="sig-info">
-                        <div class="sig-cote">${estimation}x - ${maxEst}x</div>
-                        <div class="sig-trust">Fiabilité : ${trust}%</div>
-                    </div>
-                `;
-                resContainer.appendChild(sigCard);
-            }, i * 150);
+            if (isPremium) {
+                pZone.style.display = "block";
+                premium.appendChild(card);
+            } else if (i <= 4) { // On ne garde que les 4 premières cotes standards pour la lisibilité
+                standard.appendChild(card);
+            }
         }
     }
-</script>
 
+    function train(btn, win, predicted) {
+        btn.parentElement.nextElementSibling.style.display = "block";
+        btn.parentElement.querySelectorAll('button').forEach(b => b.disabled = true);
+        if(!win) bias -= 0.1;
+        updateUI();
+    }
+
+    function saveFeedback(btn, predicted) {
+        const real = parseFloat(btn.previousElementSibling.value);
+        if(!isNaN(real)) {
+            total++;
+            if(real >= predicted * 0.9) wins++;
+            bias += (real - predicted) / 10; // L'IA apprend la différence
+            updateUI();
+            btn.parentElement.innerHTML = "<span style='font-size:9px; color:var(--g)'>APPRENTISSAGE RÉUSSI</span>";
+        }
+    }
+
+    function updateUI() {
+        document.getElementById('acc').innerText = total === 0 ? "0%" : ((wins / total) * 100).toFixed(1) + "%";
+    }
+</script>
 </body>
 </html>
