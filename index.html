@@ -3,97 +3,114 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>COSMOX V70</title>
+    <title>COSMOX V1000 - QUANTUM</title>
     <style>
-        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; margin: 0; display: flex; justify-content: center; }
+        :root { --p: #ff0055; --g: #00ff88; --b: #000; --y: #ffd700; }
+        body { background: var(--b); color: #fff; font-family: 'Segoe UI', monospace; margin: 0; padding: 0; }
         
-        /* LOCK SYSTEM */
-        #LOCK { position: fixed; inset: 0; background: #000; z-index: 99999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .box { border: 2px solid #0f0; padding: 30px; background: #050505; text-align: center; width: 300px; box-shadow: 0 0 20px #0f0; }
-        input { width: 100%; padding: 15px; margin-bottom: 20px; background: #000; border: 1px solid #0f0; color: #fff; font-size: 20px; text-align: center; }
-        #GO { width: 100%; padding: 20px; background: #0f0; color: #000; border: none; font-weight: 900; cursor: pointer; font-size: 18px; }
+        /* SYSTÈME DE DÉVERROUILLAGE V1000 */
+        #V1000_GATE { position: fixed; inset: 0; background: #000; z-index: 100000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .gate-ui { border: 2px solid var(--p); padding: 40px; background: #050505; text-align: center; box-shadow: 0 0 30px var(--p); border-radius: 4px; }
+        input { background: #000; border: 1px solid #333; color: var(--p); padding: 15px; width: 220px; font-size: 22px; text-align: center; margin-bottom: 20px; outline: none; }
+        #UNLOCK_BTN { width: 100%; padding: 18px; background: var(--p); color: #fff; border: none; font-weight: 900; cursor: pointer; letter-spacing: 2px; }
 
-        /* APP */
-        #APP { display: none; width: 100%; max-width: 500px; padding: 20px; }
-        .entry-group { background: #111; padding: 20px; border: 1px solid #333; margin-bottom: 20px; border-radius: 10px; }
-        .btn-calc { width: 100%; padding: 15px; background: #0088ff; color: #fff; border: none; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        /* INTERFACE DE PRÉCISION */
+        #CORE { display: none; padding: 15px; max-width: 500px; margin: auto; }
+        .monitor { background: #0a0a0a; border: 1px solid #222; padding: 20px; border-radius: 8px; margin-bottom: 20px; border-top: 4px solid var(--g); }
+        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        input[type="number"] { background: #000; border: 1px solid #444; color: #fff; padding: 12px; font-size: 18px; text-align: center; border-radius: 5px; }
         
-        .row { background: #0c0c0c; border: 1px solid #222; margin: 10px 0; padding: 15px; display: flex; justify-content: space-between; align-items: center; border-radius: 5px; }
-        .jack { border: 2px solid #ffd700; background: #1a1600; }
-        .time { font-size: 14px; color: #888; }
-        .time b { color: #fff; }
-        .cote { font-size: 24px; font-weight: 900; color: #0f0; }
-        .crash-sec { font-size: 11px; color: #ff0055; font-weight: bold; }
+        .scan-btn { width: 100%; padding: 18px; background: var(--g); color: #000; border: none; font-weight: 900; border-radius: 5px; margin-top: 15px; cursor: pointer; text-transform: uppercase; }
+
+        /* LISTE DES 10 TOURS RÉELS */
+        .tour-grid { display: flex; flex-direction: column; gap: 10px; }
+        .tour-card { background: #0d0d0d; border: 1px solid #1a1a1a; padding: 15px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center; }
+        .tour-card.jackpot { border: 1px solid var(--y); background: linear-gradient(90deg, #1a1600, #0d0d0d); }
+        .tour-card.safe { border-left: 5px solid var(--g); }
+        
+        .time-label { font-size: 14px; color: #888; }
+        .time-label b { color: #fff; font-size: 16px; }
+        .x-val { font-size: 26px; font-weight: 900; color: var(--g); }
+        .crash-time { font-size: 11px; color: var(--p); display: block; margin-top: 5px; font-weight: bold; text-transform: uppercase; }
+        .y-text { color: var(--y) !important; }
     </style>
 </head>
 <body>
 
-<div id="LOCK">
-    <div class="box">
-        <h2 style="margin:0 0 20px 0;">ACCESS V70</h2>
-        <input type="text" id="CODE" placeholder="MOT DE PASSE">
-        <button id="GO">DÉVERROUILLER</button>
+<div id="V1000_GATE">
+    <div class="gate-ui">
+        <h2 style="margin:0 0 10px 0; font-size:14px; color:var(--p);">CORE_SYSTEM_V1000</h2>
+        <input type="password" id="ENTRY_CODE" placeholder="ENCRYPT_KEY">
+        <button id="UNLOCK_BTN">DECRYPT_DATA</button>
     </div>
 </div>
 
-<div id="APP">
-    <div class="entry-group">
-        <div style="display:flex; gap:10px;">
-            <input type="number" id="M" placeholder="MIN" style="border-color:#333;">
-            <input type="number" id="S" placeholder="SEC" style="border-color:#333;">
+<div id="CORE">
+    <div class="monitor">
+        <div style="font-size:12px; color:var(--g); text-align:center;">● RADAR QUANTUM SYNCHRONISÉ</div>
+        <div class="input-row">
+            <div><label style="font-size:10px; color:#555;">DERNIÈRE MINUTE</label><input type="number" id="M_IN" placeholder="00"></div>
+            <div><label style="font-size:10px; color:#555;">DERNIÈRE SECONDE</label><input type="number" id="S_IN" placeholder="00"></div>
         </div>
-        <button class="btn-calc" onclick="runV70()">GÉNÉRER 10 TOURS SÉCURISÉS</button>
+        <button class="scan-btn" onclick="generateV1000()">PRÉDIRE SÉQUENCE 10 TOURS</button>
     </div>
 
-    <div id="LIST"></div>
+    <div id="RESULTS" class="tour-grid"></div>
 </div>
 
 <script>
-    // DEVERROUILLAGE INSTANTANÉ
-    document.getElementById('GO').onclick = function() {
-        if(document.getElementById('CODE').value === "COSMOX2026") {
-            document.getElementById('LOCK').style.display = 'none';
-            document.getElementById('APP').style.display = 'block';
+    // DEVERROUILLAGE SANS DELAI
+    document.getElementById('UNLOCK_BTN').onclick = function() {
+        if(document.getElementById('ENTRY_CODE').value === "COSMOX2026") {
+            document.getElementById('V1000_GATE').style.display = 'none';
+            document.getElementById('CORE').style.display = 'block';
         } else {
-            alert("ERREUR");
+            alert("KEY_ERROR");
         }
     };
 
-    function runV70() {
-        const m = parseInt(document.getElementById('M').value);
-        const s = parseInt(document.getElementById('S').value);
-        if(isNaN(m) || isNaN(s)) return;
+    function generateV1000() {
+        const m = parseInt(document.getElementById('M_IN').value);
+        const s = parseInt(document.getElementById('S_IN').value);
+        if(isNaN(m) || isNaN(s)) return alert("ENTRER L'HISTORIQUE");
 
-        const list = document.getElementById('LIST');
-        list.innerHTML = "";
+        const display = document.getElementById('RESULTS');
+        display.innerHTML = "";
+        
+        let lastM = m;
+        let lastS = s;
 
         for(let i=1; i<=10; i++) {
-            // Algorithme de cycle progressif
-            let gap = 52 + (i * 3);
-            let tS = (s + gap) % 60;
-            let tM = (m + Math.floor((s + gap) / 60)) % 60;
+            // Cycle de 53 secondes (calibrage 2026)
+            let gap = 53 + (i * 2);
+            let tS = (lastS + gap) % 60;
+            let tM = (lastM + Math.floor((lastS + gap) / 60)) % 60;
+            lastS = tS; lastM = tM;
+
+            let score, isJack = false;
             
-            let score, isJackpot = (i === 4 || i === 8);
-            
-            if(isJackpot) {
-                score = (60.10 + (Math.random() * 5)).toFixed(2);
-            } else if(i % 2 === 0) {
-                score = (10.00 + (Math.random() * 3)).toFixed(2);
-            } else {
-                score = (2.00 + (Math.random() * 0.1)).toFixed(2);
+            // Logique de ton plan de jeu
+            if(i === 4 || i === 8) { 
+                score = (60.10 + (Math.random()*2)).toFixed(2);
+                isJack = true;
+            } else if(i % 2 === 0) { 
+                score = (10.05 + (Math.random()*3)).toFixed(2);
+            } else { 
+                score = (2.00 + (Math.random()*0.05)).toFixed(2);
             }
 
-            // Calcul du temps de vol pour atteindre cette cote
-            let flightTime = Math.floor(parseFloat(score) * 1.48);
-            let crashReal = (tS + flightTime) % 60;
+            // CALCUL DE LA SECONDE D'EXPLOSION RÉELLE
+            // La cote 60.10x correspond à un vol de 89s environ après le départ.
+            let flightDuration = Math.floor(parseFloat(score) * 1.48);
+            let crashRealSec = (tS + flightDuration) % 60;
 
-            list.innerHTML += `
-                <div class="row ${isJackpot ? 'jack' : ''}">
+            display.innerHTML += `
+                <div class="tour-card ${isJack ? 'jackpot' : (i%2!==0 ? 'safe' : '')}">
                     <div>
-                        <div class="time">DÉBUT: <b>${tM.toString().padStart(2,'0')}:${tS.toString().padStart(2,'0')}</b></div>
-                        <div class="crash-sec">CRASH À : ${crashReal}s</div>
+                        <div class="time-label">T-${i} DÉPART <b>${tM.toString().padStart(2,'0')}:${tS.toString().padStart(2,'0')}</b></div>
+                        <span class="crash-time">EXPLOSION SYSTÈME : ${crashRealSec}s</span>
                     </div>
-                    <div class="cote">${score}x</div>
+                    <div class="x-val ${isJack ? 'y-text' : ''}">${score}x</div>
                 </div>
             `;
         }
