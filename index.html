@@ -2,64 +2,37 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ENGINE V13 - FEEDBACK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>V13 - GAMER NO-LOCK</title>
     <style>
-        :root { --win: #00ff88; --loss: #ff0055; --violet: #a020f0; --rose: #ff00ff; --bg: #000; }
-        body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; padding: 10px; }
+        :root { --neon: #00ff41; --blue: #0077ff; --violet: #a020f0; --rose: #ff00ff; --danger: #ff003c; --bg: #050505; }
+        body { background: var(--bg); color: #fff; font-family: 'Orbitron', sans-serif; margin: 0; padding: 15px; }
         
-        #LOCK { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .box { border: 1px solid var(--win); padding: 25px; text-align: center; background: #050505; }
+        .header { text-align: center; border-bottom: 2px solid var(--neon); padding-bottom: 10px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0, 255, 65, 0.1); }
+        .header h1 { font-size: 18px; letter-spacing: 3px; margin: 0; color: var(--neon); }
+
+        .monitor-panel { background: #0a0a0a; border: 1px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
+        label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
         
-        #APP { display: none; max-width: 450px; margin: auto; }
-        .monitor { border: 1px solid #333; padding: 15px; background: #0a0a0a; margin-bottom: 20px; border-radius: 8px; }
-        
-        input { background: #000; border: 1px solid #444; color: #fff; padding: 12px; margin: 5px 0; text-align: center; border-radius: 4px; }
-        .btn-calc { width: 100%; padding: 15px; background: var(--win); color: #000; border: none; font-weight: 900; cursor: pointer; margin-top: 10px; border-radius: 4px; }
+        input { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; margin: 8px 0 15px 0; border-radius: 8px; font-size: 16px; text-align: center; box-sizing: border-box; }
+        input:focus { border-color: var(--neon); outline: none; }
 
-        .card { border: 1px solid #222; margin: 10px 0; padding: 15px; border-radius: 6px; position: relative; }
-        .is-win { border-left: 6px solid var(--win); background: rgba(0, 255, 136, 0.05); }
-        .is-loss { border-left: 6px solid var(--loss); background: rgba(255, 0, 85, 0.05); opacity: 0.7; }
-        
-        .palier-5 { border: 1px solid var(--violet); box-shadow: 0 0 10px var(--violet); }
-        .palier-10 { border: 1px solid var(--rose); box-shadow: 0 0 10px var(--rose); }
+        .btn-predict { width: 100%; padding: 18px; background: var(--neon); color: #000; border: none; font-weight: 900; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 14px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); }
+        .btn-predict:active { transform: scale(0.98); }
 
-        .label { font-size: 10px; font-weight: bold; margin-bottom: 5px; }
-        .time { font-size: 14px; color: #aaa; }
-        .val { position: absolute; right: 15px; top: 20px; font-size: 28px; font-weight: 900; }
-        .info-sec { font-size: 11px; color: #777; margin-top: 5px; }
-    </style>
-</head>
-<body>
+        /* ALERTE COTE BLEUE */
+        #ALERT_BOX { display: none; background: rgba(0, 119, 255, 0.1); border: 1px solid var(--blue); color: var(--blue); padding: 10px; border-radius: 8px; text-align: center; font-size: 11px; margin-bottom: 15px; font-weight: bold; animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
 
-<div id="LOCK">
-    <div class="box">
-        <h3 style="color:var(--win);">ENGINE_V13_LOCKED</h3>
-        <input type="password" id="PASS" placeholder="PASSWORD">
-        <button onclick="unlock()" style="background:var(--win); padding:10px 20px; border:none; cursor:pointer; font-weight:bold;">ENTRER</button>
-    </div>
-</div>
+        /* RESULT CARDS */
+        .card { background: #111; border-radius: 10px; padding: 15px; margin-bottom: 12px; border-left: 5px solid #333; position: relative; }
+        .is-win { border-left-color: var(--neon); }
+        .is-loss { border-left-color: var(--danger); opacity: 0.7; }
+        .is-5x { border: 1px solid var(--violet); box-shadow: 0 0 10px var(--violet); }
+        .is-10x { border: 1px solid var(--rose); box-shadow: 0 0 10px var(--rose); }
 
-<div id="APP">
-    <h2 style="text-align:center; color:var(--win);">V13 FEEDBACK ENGINE</h2>
-    
-    <div class="monitor">
-        <label style="font-size:11px; color:var(--win);">1. ANALYSE DU DERNIER TOUR</label>
-        <div style="display:flex; gap:10px; margin-top:5px;">
-            <input type="number" id="LAST_COTE" placeholder="COTE (ex: 1.50)" step="0.01" style="width:100%;">
-        </div>
-        
-        <label style="font-size:11px; color:#555; margin-top:10px; display:block;">2. SYNCHRONISATION TEMPORELLE</label>
-        <div style="display:flex; gap:10px;">
-            <input type="number" id="M" placeholder="MIN" style="width:50%;">
-            <input type="number" id="S" placeholder="SEC" style="width:50%;">
-        </div>
-        <button class="btn-calc" onclick="calculateFeedback()">PRÉDIRE PALIERS 5x & 10x</button>
-    </div>
-
-    <div id="RESULTS"></div>
-</div>
-
-<script>
-    function unlock() {
-        if(document.getElementById('PASS').value === "COSMOX202
+        .tag { font-size: 9px; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; }
+        .time-start { font-size: 14px; color: #aaa; }
+        .time-start b { color: #fff; }
+        .cote-val { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 28px; font-weight: 900; }
+        .crash-time { font-size: 10px; color: var(--danger); display: block; margin-top:
