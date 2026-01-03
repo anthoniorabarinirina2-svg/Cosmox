@@ -3,115 +3,63 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ROSE CHRONO V13</title>
+    <title>ENGINE V13 - FEEDBACK</title>
     <style>
-        :root { --rose: #ff00ff; --win: #00ff88; --loss: #ff0055; --bg: #000; }
+        :root { --win: #00ff88; --loss: #ff0055; --violet: #a020f0; --rose: #ff00ff; --bg: #000; }
         body { background: var(--bg); color: #fff; font-family: 'Courier New', monospace; padding: 10px; }
         
-        /* SYSTÈME D'ACCÈS */
-        #LOCK { position: fixed; inset: 0; background: #000; z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; }
-        .gate { border: 1px solid var(--rose); padding: 25px; text-align: center; background: #050505; }
-        input { background: #000; border: 1px solid #333; color: var(--rose); padding: 12px; margin: 10px 0; width: 180px; text-align: center; }
-        #GO { background: var(--rose); color: #fff; border: none; padding: 12px 25px; font-weight: bold; cursor: pointer; }
-
-        /* INTERFACE DE CALCUL */
-        #APP { display: none; max-width: 450px; margin: auto; }
-        .monitor { border: 1px solid #222; padding: 15px; background: #0a0a0a; margin-bottom: 20px; }
-        .btn-scan { width: 100%; padding: 15px; background: #fff; color: #000; border: none; font-weight: 900; cursor: pointer; margin-top: 10px; }
+        #LOCK { position: fixed; inset: 0; background: #000; z-index: 1000; display: flex; flex-direction: column; justify-content: center; align-items: center; }
+        .box { border: 1px solid var(--win); padding: 25px; text-align: center; background: #050505; }
         
-        /* CARTES DE PRÉDICTION */
-        .tour-card { border: 1px solid #222; margin: 10px 0; padding: 15px; border-radius: 4px; position: relative; }
-        .tour-rose { border: 2px solid var(--rose); background: rgba(255, 0, 255, 0.05); box-shadow: 0 0 10px var(--rose); }
-        .tour-win { border-left: 6px solid var(--win); }
-        .tour-loss { border-left: 6px solid var(--loss); opacity: 0.5; }
+        #APP { display: none; max-width: 450px; margin: auto; }
+        .monitor { border: 1px solid #333; padding: 15px; background: #0a0a0a; margin-bottom: 20px; border-radius: 8px; }
+        
+        input { background: #000; border: 1px solid #444; color: #fff; padding: 12px; margin: 5px 0; text-align: center; border-radius: 4px; }
+        .btn-calc { width: 100%; padding: 15px; background: var(--win); color: #000; border: none; font-weight: 900; cursor: pointer; margin-top: 10px; border-radius: 4px; }
 
-        .type-label { font-size: 10px; font-weight: bold; margin-bottom: 5px; }
-        .time-data { font-size: 14px; }
-        .time-data b { color: #fff; font-size: 18px; }
-        .cote-data { position: absolute; right: 15px; top: 20px; font-size: 28px; font-weight: 900; }
-        .sec-crash { font-size: 11px; color: var(--loss); font-weight: bold; margin-top: 5px; }
+        .card { border: 1px solid #222; margin: 10px 0; padding: 15px; border-radius: 6px; position: relative; }
+        .is-win { border-left: 6px solid var(--win); background: rgba(0, 255, 136, 0.05); }
+        .is-loss { border-left: 6px solid var(--loss); background: rgba(255, 0, 85, 0.05); opacity: 0.7; }
+        
+        .palier-5 { border: 1px solid var(--violet); box-shadow: 0 0 10px var(--violet); }
+        .palier-10 { border: 1px solid var(--rose); box-shadow: 0 0 10px var(--rose); }
+
+        .label { font-size: 10px; font-weight: bold; margin-bottom: 5px; }
+        .time { font-size: 14px; color: #aaa; }
+        .val { position: absolute; right: 15px; top: 20px; font-size: 28px; font-weight: 900; }
+        .info-sec { font-size: 11px; color: #777; margin-top: 5px; }
     </style>
 </head>
 <body>
 
 <div id="LOCK">
-    <div class="gate">
-        <h3 style="color:var(--rose);">ENGINE_V13_LOCKED</h3>
-        <input type="password" id="CODE" placeholder="PASSWORD">
-        <button id="GO">DECRYPT</button>
+    <div class="box">
+        <h3 style="color:var(--win);">ENGINE_V13_LOCKED</h3>
+        <input type="password" id="PASS" placeholder="PASSWORD">
+        <button onclick="unlock()" style="background:var(--win); padding:10px 20px; border:none; cursor:pointer; font-weight:bold;">ENTRER</button>
     </div>
 </div>
 
 <div id="APP">
-    <h2 style="text-align:center; color:var(--rose);">ROSE CHRONO ENGINE</h2>
+    <h2 style="text-align:center; color:var(--win);">V13 FEEDBACK ENGINE</h2>
     
     <div class="monitor">
-        <label style="font-size:11px; color:#555;">MINUTE & SECONDE DU DERNIER CRASH</label>
-        <div style="display:flex; gap:10px; margin-top:10px;">
+        <label style="font-size:11px; color:var(--win);">1. ANALYSE DU DERNIER TOUR</label>
+        <div style="display:flex; gap:10px; margin-top:5px;">
+            <input type="number" id="LAST_COTE" placeholder="COTE (ex: 1.50)" step="0.01" style="width:100%;">
+        </div>
+        
+        <label style="font-size:11px; color:#555; margin-top:10px; display:block;">2. SYNCHRONISATION TEMPORELLE</label>
+        <div style="display:flex; gap:10px;">
             <input type="number" id="M" placeholder="MIN" style="width:50%;">
             <input type="number" id="S" placeholder="SEC" style="width:50%;">
         </div>
-        <button class="btn-scan" onclick="chronoScan()">SCANNER LES 3 PROCHAINS TOURS</button>
+        <button class="btn-calc" onclick="calculateFeedback()">PRÉDIRE PALIERS 5x & 10x</button>
     </div>
 
     <div id="RESULTS"></div>
 </div>
 
 <script>
-    document.getElementById('GO').onclick = function() {
-        if(document.getElementById('CODE').value === "COSMOX2026") {
-            document.getElementById('LOCK').style.display = 'none';
-            document.getElementById('APP').style.display = 'block';
-        }
-    };
-
-    function chronoScan() {
-        const m = parseInt(document.getElementById('M').value);
-        const s = parseInt(document.getElementById('S').value);
-        if(isNaN(m) || isNaN(s)) return;
-
-        const res = document.getElementById('RESULTS');
-        res.innerHTML = "";
-        let lM = m, lS = s;
-
-        for(let i=1; i<=3; i++) {
-            // Cycle de décalage technique
-            let gap = 53 + (i * 2);
-            let tS = (lS + gap) % 60;
-            let tM = (lM + Math.floor((lS + gap) / 60)) % 60;
-            lS = tS; lM = tM;
-
-            let cote, typeClass, label;
-            let rand = Math.random();
-
-            if (i === 3 || rand > 0.85) { // Priorité au Rose sur le tour 3
-                cote = (rand > 0.5) ? "60.10" : "12.40";
-                typeClass = "tour-rose";
-                label = "PRÉDICTION : ROSE DÉTECTÉ ⚡";
-            } else if (rand > 0.4) {
-                cote = (2.00 + (Math.random()*0.15)).toFixed(2);
-                typeClass = "tour-win";
-                label = "PRÉDICTION : GAGNÉ ✅";
-            } else {
-                cote = (1.20 + (Math.random()*0.3)).toFixed(2);
-                typeClass = "tour-loss";
-                label = "PRÉDICTION : PERDU ❌";
-            }
-
-            // Calcul de la seconde de crash exacte
-            let flightTime = Math.floor(parseFloat(cote) * 1.48);
-            let crashS = (tS + flightTime) % 60;
-
-            res.innerHTML += `
-                <div class="tour-card ${typeClass}">
-                    <div class="type-label" style="color:${typeClass==='tour-rose'?'#ff00ff':(typeClass==='tour-win'?'#00ff88':'#ff0055')}">${label}</div>
-                    <div class="time-data">START : <b>${tM}:${tS.toString().padStart(2,'0')}</b></div>
-                    <div class="sec-crash">EXPLOSION RÉELLE : ${crashS}s</div>
-                    <div class="cote-data" style="color:${typeClass==='tour-rose'?'#ff00ff':''}">${cote}x</div>
-                </div>
-            `;
-        }
-    }
-</script>
-</body>
-</html>
+    function unlock() {
+        if(document.getElementById('PASS').value === "COSMOX202
