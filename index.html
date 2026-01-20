@@ -2,131 +2,235 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>V13 - GAMER NO-LOCK</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prédiction Aviator</title>
     <style>
-        :root { --neon: #00ff41; --blue: #0077ff; --violet: #a020f0; --rose: #ff00ff; --danger: #ff003c; --bg: #050505; }
-        body { background: var(--bg); color: #fff; font-family: 'Orbitron', sans-serif; margin: 0; padding: 15px; }
-        
-        .header { text-align: center; border-bottom: 2px solid var(--neon); padding-bottom: 10px; margin-bottom: 20px; box-shadow: 0 5px 15px rgba(0, 255, 65, 0.1); }
-        .header h1 { font-size: 18px; letter-spacing: 3px; margin: 0; color: var(--neon); }
-
-        .monitor-panel { background: #0a0a0a; border: 1px solid #222; padding: 20px; border-radius: 12px; margin-bottom: 20px; }
-        label { font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px; }
-        
-        input { width: 100%; background: #000; border: 1px solid #333; color: #fff; padding: 12px; margin: 8px 0 15px 0; border-radius: 8px; font-size: 16px; text-align: center; box-sizing: border-box; }
-        input:focus { border-color: var(--neon); outline: none; }
-
-        .btn-predict { width: 100%; padding: 18px; background: var(--neon); color: #000; border: none; font-weight: 900; border-radius: 8px; cursor: pointer; text-transform: uppercase; font-size: 14px; box-shadow: 0 0 20px rgba(0, 255, 65, 0.2); }
-        .btn-predict:active { transform: scale(0.98); }
-
-        /* ALERTE COTE BLEUE */
-        #ALERT_BOX { display: none; background: rgba(0, 119, 255, 0.1); border: 1px solid var(--blue); color: var(--blue); padding: 10px; border-radius: 8px; text-align: center; font-size: 11px; margin-bottom: 15px; font-weight: bold; animation: blink 1s infinite; }
-        @keyframes blink { 50% { opacity: 0.5; } }
-
-        /* RESULT CARDS */
-        .card { background: #111; border-radius: 10px; padding: 15px; margin-bottom: 12px; border-left: 5px solid #333; position: relative; }
-        .is-win { border-left-color: var(--neon); }
-        .is-loss { border-left-color: var(--danger); opacity: 0.7; }
-        .is-5x { border: 1px solid var(--violet); box-shadow: 0 0 10px var(--violet); }
-        .is-10x { border: 1px solid var(--rose); box-shadow: 0 0 10px var(--rose); }
-
-        .tag { font-size: 9px; font-weight: 900; text-transform: uppercase; margin-bottom: 5px; }
-        .time-start { font-size: 14px; color: #aaa; }
-        .time-start b { color: #fff; }
-        .cote-val { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); font-size: 28px; font-weight: 900; }
-        .crash-time { font-size: 10px; color: var(--danger); display: block; margin-top: 5px; }
-    </style>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
-</head>
-<body>
-
-<div class="header">
-    <h1>ENGINE V13 <span style="color:#fff;">| GAMER PRO</span></h1>
-</div>
-
-<div class="monitor-panel">
-    <div id="ALERT_BOX">⚠️ ALERTE : COTE BLEUE SUCCESSIVE DÉTECTÉE</div>
-    
-    <label>Dernière Cote (ex: 1.45)</label>
-    <input type="number" id="LAST_COTE" step="0.01" placeholder="0.00">
-    
-    <div style="display: flex; gap: 10px;">
-        <div style="flex:1;">
-            <label>Minute</label>
-            <input type="number" id="M" placeholder="MIN">
-        </div>
-        <div style="flex:1;">
-            <label>Seconde</label>
-            <input type="number" id="S" placeholder="SEC">
-        </div>
-    </div>
-    
-    <button class="btn-predict" onclick="runGamerEngine()">Lancer la prédiction</button>
-</div>
-
-<div id="RESULTS"></div>
-
-<script>
-    function runGamerEngine() {
-        const lastCote = parseFloat(document.getElementById('LAST_COTE').value);
-        const m = parseInt(document.getElementById('M').value);
-        const s = parseInt(document.getElementById('S').value);
-        const alertBox = document.getElementById('ALERT_BOX');
-        const res = document.getElementById('RESULTS');
-
-        if(isNaN(lastCote) || isNaN(m) || isNaN(s)) return;
-
-        // Activation de l'alerte Bleue
-        if(lastCote < 2.00) {
-            alertBox.style.display = 'block';
-        } else {
-            alertBox.style.display = 'none';
+        /* Général */
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #1A1A2E; /* Fond sombre bleu */
+            color: #E0E0E0; /* Texte clair */
+            overflow-x: hidden;
         }
 
-        res.innerHTML = "";
-        let lM = m, lS = s;
+        header {
+            background-color: #0E1A47; /* Bleu nuit */
+            color: #1F75FE; /* Bleu clair pour le titre */
+            text-align: center;
+            padding: 20px 0;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+        }
 
-        for(let i=1; i<=3; i++) {
-            let gap = 53 + (i * 2);
-            let tS = (lS + gap) % 60;
-            let tM = (lM + Math.floor((lS + gap) / 60)) % 60;
-            lS = tS; lM = tM;
+        h1 {
+            margin: 0;
+        }
 
-            let cote, typeClass, label, color;
-            let rand = Math.random();
+        /* Conteneur principal */
+        .container {
+            width: 60%;
+            margin: 40px auto;
+            background-color: #121B3A; /* Bleu nuit plus foncé */
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
+        }
 
-            if (i === 2) { // Cible 5x
-                cote = (5.20 + rand).toFixed(2);
-                typeClass = "is-5x is-win";
-                label = "PALIER 5x DÉTECTÉ";
-                color = "var(--violet)";
-            } else if (i === 3) { // Cible 10x
-                cote = (10.15 + rand).toFixed(2);
-                typeClass = "is-10x is-win";
-                label = "OBJECTIF 10x ROSE";
-                color = "var(--rose)";
-            } else { // Tour de chauffe
-                let win = lastCote < 2.00 ? rand > 0.4 : rand > 0.2;
-                cote = win ? (2.05).toFixed(2) : (1.30).toFixed(2);
-                typeClass = win ? "is-win" : "is-loss";
-                label = win ? "PRÉDICTION : GAGNÉ" : "PRÉDICTION : PERDU";
-                color = win ? "var(--neon)" : "var(--danger)";
+        h2 {
+            color: #1F75FE;
+        }
+
+        label {
+            font-size: 1.2em;
+            color: #A1A1A1;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 12px 0;
+            border: none;
+            border-radius: 5px;
+            font-size: 1em;
+            background-color: #2D2D5B; /* Bleu sombre pour les champs */
+            color: #FFFFFF;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        input[type="submit"] {
+            background-color: #1F75FE; /* Bleu clair */
+            color: white;
+            cursor: pointer;
+            border: none;
+            font-size: 1.2em;
+            padding: 15px;
+            margin-top: 10px;
+            transition: 0.3s;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #0B59D3; /* Bleu un peu plus foncé au survol */
+        }
+
+        .result {
+            background-color: #2A3D66; /* Bleu foncé avec effet */
+            padding: 15px;
+            margin-top: 30px;
+            border-radius: 8px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-size: 1.1em;
+            color: #1F75FE;
+            background-color: #1A1A2E;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
+        }
+
+        .chat-box {
+            background-color: #2D2D5B; /* Bleu sombre */
+            padding: 20px;
+            margin-top: 30px;
+            border-radius: 8px;
+            color: #FFFFFF;
+            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.6);
+        }
+
+        .chat-message {
+            background-color: #3D3D75;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            color: #E0E0E0;
+        }
+
+        .task-list {
+            margin-top: 20px;
+            background-color: #2A3D66;
+            padding: 20px;
+            border-radius: 8px;
+            color: #E0E0E0;
+        }
+
+        .task-item {
+            background-color: #3D3D75;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn {
+            background-color: #1F75FE;
+            color: white;
+            padding: 10px 20px;
+            margin-top: 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1.1em;
+        }
+
+        .btn:hover {
+            background-color: #0B59D3;
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            .container {
+                width: 80%;
             }
 
-            let flight = Math.floor(parseFloat(cote) * 1.48);
-            let cS = (tS + flight) % 60;
-
-            res.innerHTML += `
-                <div class="card ${typeClass}">
-                    <div class="tag" style="color:${color}">${label}</div>
-                    <div class="time-start">DÉPART : <b>${tM}:${tS.toString().padStart(2,'0')}</b></div>
-                    <div class="crash-time">CRASH RÉEL : ${cS}s</div>
-                    <div class="cote-val" style="color:${color}">${cote}x</div>
-                </div>
-            `;
+            header {
+                font-size: 2em;
+            }
         }
-    }
-</script>
-</body>
-</html>
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Prédiction Aviator</h1>
+    </header>
+
+    <div class="container">
+        <h2>Entrez l'heure, la minute et la seconde pour prédire l'événement</h2>
+
+        <form method="POST" action="/predict">
+            <label for="hour">Heure :</label>
+            <input type="number" id="hour" name="hour" required><br>
+
+            <label for="minute">Minute :</label>
+            <input type="number" id="minute" name="minute" required><br>
+
+            <label for="second">Seconde :</label>
+            <input type="number" id="second" name="second" required><br>
+
+            <input type="submit" value="Faire la prédiction">
+        </form>
+
+        <!-- Résultat de la prédiction -->
+        <div class="result" id="prediction-result" style="display: none;">
+            <h3>Résultat de la Prédiction</h3>
+            <p id="result-message"></p>
+        </div>
+
+        <!-- Feedback de la prédiction -->
+        <div class="feedback" id="feedback-message" style="display: none;">
+            <p></p>
+        </div>
+    </div>
+
+    <!-- Chat pour les critiques -->
+    <div class="chat-box">
+        <h3>Chat Critique et Suggestions</h3>
+        <div id="chat-messages">
+            <div class="chat-message">Critique : Pas assez de données pour des prédictions fiables. Ajustez le modèle.</div>
+        </div>
+        <button class="btn" id="btn-adjust-model">Ajuster le modèle automatiquement</button>
+    </div>
+
+    <!-- Tâches de développement -->
+    <div class="task-list">
+        <h3>Tâches d'amélioration</h3>
+        <div class="task-item">Améliorer la précision du modèle de prédiction</div>
+        <div class="task-item">Ajouter plus de données historiques pour une meilleure estimation</div>
+    </div>
+
+    <script>
+        // Simuler un résultat basé sur la saisie de l'utilisateur
+        document.querySelector('form').onsubmit = function(event) {
+            event.preventDefault();
+            let hour = document.getElementById('hour').value;
+            let minute = document.getElementById('minute').value;
+            let second = document.getElementById('second').value;
+
+            // Ici, on simule la prédiction, dans un vrai cas tu appellerais un modèle ML
+            let prediction = Math.random() > 0.5 ? 'Gagner' : 'Perdre';  // Random pour la démonstration
+            document.getElementById('prediction-result').style.display = 'block';
+            document.getElementById('result-message').innerText = `La prédiction est : ${prediction}`;
+
+            // Feedback basé sur la prédiction
+            let feedbackMessage = (prediction === 'Gagner') ? 'Félicitations! Vous avez gagné!' : 'Dommage, vous avez perdu. Réessayez!';
+            document.getElementById('feedback-message').style.display = 'block';
+            document.getElementById('feedback-message').innerText = feedbackMessage;
+
+            // Ajouter la tâche pour ajuster le modèle (démonstration)
+            let taskList = document.getElementById('chat-messages');
+            let message = document.createElement('div');
+            message.classList.add('chat-message');
+            message.innerText = `Critique : Ajustez le modèle de prédiction en fonction des données réelles.`;
+            taskList.appendChild(message);
+        };
+
+        // Simuler un ajustement du modèle (démonstration)
+        document.getElementById('btn-adjust-model').onclick = function() {
+            alert("Modèle ajusté automatiquement !");
+            let newTask = document.createElement('div');
+            newTask.classList.add('task-item');
+            newTask.innerText = "Réentraîner le modèle avec de nouvelles données.";
+            document.querySelector('.task-list').appendChild(newTask);
+        };
