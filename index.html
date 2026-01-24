@@ -2,156 +2,178 @@
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
-<title>AVIATOR IA MAX</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AVIATOR RNG PREDICTOR</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-:root{
- --blue:#6ecbff;
- --red:#ff4b4b;
- --bg:#060b18;
-}
-*{box-sizing:border-box;font-family:Arial}
 body{
- margin:0;
- background:
- linear-gradient(rgba(6,11,24,.92),rgba(6,11,24,.92)),
- url("https://wallpapercave.com/wp/wp8355542.jpg");
- background-size:cover;
- color:white;
+  margin:0;
+  font-family:system-ui,Arial;
+  background:linear-gradient(135deg,#0ea5e9,#ef4444);
+  color:#fff;
 }
-header{text-align:center;padding:14px}
-.progress{height:8px;background:#222;border-radius:8px;overflow:hidden}
-.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--red))}
-.box{background:rgba(255,255,255,.1);padding:14px;border-radius:18px;margin:12px}
-input,button{width:100%;padding:12px;border-radius:12px;border:none;margin-top:6px}
-.blue{background:var(--blue)}
-.red{background:var(--red)}
-.green{background:#2ecc71}
-.card{background:white;color:black;border-radius:22px;padding:18px;text-align:center}
-.hidden{display:none}
+.app{
+  max-width:420px;
+  margin:auto;
+  padding:16px;
+}
+.card{
+  background:rgba(0,0,0,0.55);
+  border-radius:14px;
+  padding:16px;
+  margin-bottom:14px;
+  box-shadow:0 0 0 1px rgba(255,255,255,0.1);
+}
+h2,h3{margin:0 0 10px}
+input,button{
+  width:100%;
+  padding:12px;
+  margin-top:8px;
+  border-radius:10px;
+  border:none;
+  font-size:15px;
+}
+input{background:#020617;color:#fff}
+button{background:#22c55e;color:#000;font-weight:600}
+button.red{background:#ef4444;color:#fff}
+button.gray{background:#94a3b8}
+.small{font-size:12px;opacity:.8}
+.pred{
+  font-size:20px;
+  margin:6px 0;
+}
+.good{color:#22c55e}
+.warn{color:#facc15}
+.bad{color:#f87171}
+.progress{
+  height:10px;
+  background:#020617;
+  border-radius:6px;
+  overflow:hidden;
+}
+.bar{
+  height:100%;
+  background:linear-gradient(90deg,#22c55e,#38bdf8);
+  width:0%;
+}
 </style>
 </head>
 
 <body>
+<div class="app">
 
-<header>
-<h2>AVIATOR IA MAX</h2>
-<div class="progress"><span id="iaBar"></span></div>
-<p>
-IA: <b><span id="iaLevel">0</span>%</b> |
-Gagné: <span id="win">0</span> |
-Perdu: <span id="lose">0</span>
-</p>
-</header>
-
-<section id="login" class="box">
-<input id="user" placeholder="Pseudo">
-<input id="pass" placeholder="Mot de passe">
-<button class="blue" onclick="login()">Connexion</button>
-</section>
-
-<section id="home" class="hidden">
 <div class="card">
-<h3>AVIATOR PREDICTOR</h3>
-<p>IA mathématique adaptative</p>
-<button class="blue" onclick="openIA()">Accéder</button>
+  <h2>AVIATOR RNG PREDICTOR</h2>
+  <div class="small">Simulateur • Analyse temps • Auto-apprentissage</div>
 </div>
 
-<div class="box">
-<h4>Membres</h4>
-<div id="members"></div>
-</div>
-</section>
-
-<section id="ia" class="hidden">
-<div class="box">
-<input id="h" placeholder="Heure du rose">
-<input id="m" placeholder="Minute">
-<input id="s" placeholder="Seconde">
-<input id="c" placeholder="Cote rose">
-<button class="blue" onclick="analyse()">ANALYSER</button>
+<div class="card">
+  <input id="hour" type="number" placeholder="Heure (0-23)">
+  <input id="minute" type="number" placeholder="Minute (0-59)">
+  <input id="second" type="number" placeholder="Seconde (0-59)">
+  <input id="last" type="number" step="0.01" placeholder="Dernier ROSE (≥4.00)">
+  <button onclick="predict()">Analyser</button>
 </div>
 
-<div class="box">
-<div id="result">---</div>
-<button class="green" onclick="feedback(true)">GAGNÉ</button>
-<button class="red" onclick="feedback(false)">PERDU</button>
+<div class="card" id="out" style="display:none">
+  <h3>Prédictions</h3>
+  <div id="list"></div>
+  <div class="small" id="range"></div>
 </div>
-</section>
+
+<div class="card">
+  <button onclick="record(true)">GAGNÉ</button>
+  <button class="red" onclick="record(false)">PERDU</button>
+</div>
+
+<div class="card">
+  <h3>Progression IA</h3>
+  <div class="progress"><div class="bar" id="bar"></div></div>
+  <div class="small" id="stats"></div>
+  <button class="gray" onclick="resetStats()">Reset stats</button>
+</div>
+
+</div>
 
 <script>
-let DB = JSON.parse(localStorage.getItem("AVIATOR_DB")) || {
- admin:{pass:"admin"},
- users:{},
- ia:{win:0,lose:0,level:0}
+/* ========= IA STOCKÉE ========= */
+let IA = JSON.parse(localStorage.getItem("aviatorIA")) || {
+  wins:0,
+  losses:0,
+  wTime:1,
+  wChaos:1,
+  bias:0.5
 };
-function save(){localStorage.setItem("AVIATOR_DB",JSON.stringify(DB))}
+let lastPreds=[];
 
-function login(){
- let u=user.value,p=pass.value;
- if(u==="admin" && p===DB.admin.pass){
-  login.style.display="none";
-  home.classList.remove("hidden");
-  loadMembers();
-  return;
- }
- if(DB.users[u] && DB.users[u].pass===p && DB.users[u].ok){
-  login.style.display="none";
-  home.classList.remove("hidden");
- }else{
-  if(!DB.users[u]){
-   DB.users[u]={pass:p,ok:false};
-   save();
-   alert("Compte en attente validation admin");
-  }else alert("Accès refusé");
- }
+/* ========= RNG & MATH ========= */
+function chaos(seed){
+  return Math.abs(Math.sin(seed*12.9898)*43758.5453)%1;
 }
+function clamp(v,min,max){return Math.max(min,Math.min(max,v));}
 
-function loadMembers(){
- members.innerHTML="";
- for(let u in DB.users){
-  members.innerHTML+=`
-   ${u} - ${DB.users[u].ok?"✅":"⏳"}
-   <button onclick="approve('${u}')">OK</button><br>`;
- }
-}
-function approve(u){
- DB.users[u].ok=true; save(); loadMembers();
-}
+/* ========= PREDICTION ========= */
+function predict(){
+  const h=+hour.value,m=+minute.value,s=+second.value,last=+last.value;
+  if(
+    isNaN(h)||isNaN(m)||isNaN(s)||isNaN(last)||
+    h<0||h>23||m<0||m>59||s<0||s>59||last<4
+  ){
+    alert("Valeurs invalides");
+    return;
+  }
 
-function openIA(){
- home.classList.add("hidden");
- ia.classList.remove("hidden");
-}
+  lastPreds=[];
+  let base = (h/24 + m/60 + s/60) * IA.wTime;
+  let noise = chaos(Date.now()) * IA.wChaos;
+  let history = (IA.wins-IA.losses) * 0.02;
+  let core = last*0.15 + base + noise + history + IA.bias;
 
-function analyse(){
- let h1=+h.value,m1=+m.value,s1=+s.value,c1=+c.value;
- let math =
-  Math.abs(
-   Math.sin(h1*2.7)+
-   Math.cos(m1*1.9)+
-   Math.tan((s1+1)/60)+
-   Math.log(c1+1)*4
-  )*10;
- let min=(math%3+2).toFixed(2);
- let max=(math%7+5).toFixed(2);
- result.innerHTML=`
- 📊 Entrée estimée: ${m1}:${(s1+25)%60}<br>
- 📉 Cote min: ${min}x<br>
- 📈 Cote max: ${max}x`;
+  let min=999,max=0;
+  for(let i=0;i<4;i++){
+    let seed = core + chaos(i+Date.now());
+    let v = clamp(seed*5,1.2,20);
+    lastPreds.push(v.toFixed(2));
+    min=Math.min(min,v);
+    max=Math.max(max,v);
+  }
+
+  list.innerHTML = lastPreds.map(p=>
+    `<div class="pred">${p}x</div>`
+  ).join("");
+  range.innerText=`Estimation: ${min.toFixed(2)}x → ${max.toFixed(2)}x`;
+  out.style.display="block";
 }
 
-function feedback(win){
- win?DB.ia.win++:DB.ia.lose++;
- let t=DB.ia.win+DB.ia.lose;
- DB.ia.level=Math.min(100,Math.floor(DB.ia.win/t*100));
- document.getElementById("win").innerText=DB.ia.win;
- document.getElementById("lose").innerText=DB.ia.lose;
- iaBar.style.width=DB.ia.level+"%";
- iaLevel.innerText=DB.ia.level;
- save();
+/* ========= APPRENTISSAGE ========= */
+function record(win){
+  if(!lastPreds.length) return;
+  if(win){
+    IA.wins++;
+    IA.wTime+=0.03;
+    IA.bias+=0.02;
+  }else{
+    IA.losses++;
+    IA.wChaos+=0.03;
+    IA.bias-=0.02;
+  }
+  IA.bias=clamp(IA.bias,-1,1);
+  save();
 }
+
+/* ========= UI ========= */
+function save(){
+  localStorage.setItem("aviatorIA",JSON.stringify(IA));
+  let total=IA.wins+IA.losses||1;
+  let rate=Math.round((IA.wins/total)*100);
+  bar.style.width=rate+"%";
+  stats.innerText=`Gagné: ${IA.wins} | Perdu: ${IA.losses} | Taux IA: ${rate}%`;
+}
+function resetStats(){
+  IA.wins=0;IA.losses=0;
+  save();
+}
+save();
 </script>
 
 </body>
