@@ -3,32 +3,33 @@
 <head>
 <meta charset="UTF-8">
 <title>Aviator RNG Predictor</title>
+
 <style>
 body{
+  margin:0;
+  font-family:Arial,Helvetica,sans-serif;
   background:#0b1220;
   color:#eaf4ff;
-  font-family:Arial,Helvetica,sans-serif;
-  margin:0;
 }
 header{
-  background:linear-gradient(90deg,#3bc9ff,#ff4d4d);
-  padding:15px;
+  padding:14px;
   text-align:center;
   font-weight:bold;
+  background:linear-gradient(90deg,#3bc9ff,#ff4d4d);
 }
-.container{padding:15px;max-width:600px;margin:auto}
+.container{max-width:600px;margin:auto;padding:15px}
 .card{
   background:#121b2f;
-  border-radius:8px;
+  border-radius:10px;
   padding:15px;
   margin-bottom:15px;
 }
 button{
-  padding:8px 12px;
   border:none;
-  border-radius:5px;
-  cursor:pointer;
+  border-radius:6px;
+  padding:7px 12px;
   font-weight:bold;
+  cursor:pointer;
 }
 .blue{background:#3bc9ff;color:#001}
 .red{background:#ff4d4d;color:#fff}
@@ -37,11 +38,10 @@ button{
   justify-content:space-between;
   align-items:center;
   background:#0e1628;
+  border-radius:6px;
   padding:8px;
-  border-radius:5px;
-  margin:6px 0;
+  margin-top:6px;
 }
-.small{font-size:12px;opacity:.8}
 </style>
 </head>
 
@@ -72,56 +72,64 @@ button{
 </div>
 
 <script>
-// ================= IA STATE =================
-let IA = JSON.parse(localStorage.getItem("aviatorIA")) || {
-  wins:0,
-  losses:0,
-  wTime:1,
-  wMinute:1,
-  wSecond:1,
-  entropy:Math.random()
-};
+// ================= SÉCURITÉ =================
+function safe(n,def){ return (isNaN(n)||n===undefined)?def:n }
+function clamp(v,min,max){ return Math.max(min,Math.min(max,v)) }
 
-let lastPreds = [];
+// ================= IA INIT =================
+let IA = JSON.parse(localStorage.getItem("aviatorIA")) || {};
+IA.wins     = safe(IA.wins,0);
+IA.losses  = safe(IA.losses,0);
+IA.wTime   = safe(IA.wTime,1);
+IA.wMinute = safe(IA.wMinute,1);
+IA.wSecond = safe(IA.wSecond,1);
+IA.entropy = safe(IA.entropy,Math.random());
+
+let lastPreds=[];
 
 function save(){
   localStorage.setItem("aviatorIA",JSON.stringify(IA));
   updateUI();
 }
 
-function clamp(v,min,max){return v<min?min:v>max?max:v}
-
 // ================= RNG PRO =================
 function rng(){
   let d=new Date();
-  let t=d.getHours()*IA.wTime;
-  let m=d.getMinutes()*IA.wMinute;
-  let s=d.getSeconds()*IA.wSecond;
-  let noise=Math.random()+IA.entropy;
-  return (t+m+s+noise)%1;
+  let h=d.getHours()+1;
+  let m=d.getMinutes()+1;
+  let s=d.getSeconds()+1;
+
+  let mix =
+    h*IA.wTime +
+    m*IA.wMinute +
+    s*IA.wSecond +
+    IA.entropy*100 +
+    Math.random()*10;
+
+  return (mix%100)/100;
 }
 
-// ================= PREDICT =================
+// ================= PREDICTION =================
 function predict(){
   lastPreds=[];
   for(let i=0;i<4;i++){
     let r=rng();
-    let base=1.5+r*4;
-    let adj=(IA.wins-IA.losses)*0.01;
-    let val=clamp(base+adj,1.2,20);
+    let base=1.4 + r*5;
+    let adapt=(IA.wins-IA.losses)*0.02;
+    let val=clamp(base+adapt,1.2,50);
     lastPreds.push(val.toFixed(2));
   }
   drawPreds();
 }
 
-// ================= DISPLAY =================
+// ================= AFFICHAGE =================
 function drawPreds(){
   let div=document.getElementById("preds");
   div.innerHTML="";
   lastPreds.forEach((p,i)=>{
     div.innerHTML+=`
       <div class="pred">
-        <span>${p}x</span>
+        <b>${p}x</b>
         <div>
           <button class="blue" onclick="feedback(${i},true)">GAGNÉ</button>
           <button class="red" onclick="feedback(${i},false)">PERDU</button>
@@ -131,19 +139,19 @@ function drawPreds(){
   });
 }
 
-// ================= FEEDBACK IA =================
+// ================= APPRENTISSAGE IA =================
 function feedback(i,win){
   let v=parseFloat(lastPreds[i]);
   if(win){
     IA.wins++;
-    IA.wSecond+=0.01;
-    IA.entropy+=v*0.001;
+    IA.wSecond+=0.02;
+    IA.entropy+=v*0.002;
   }else{
     IA.losses++;
-    IA.wMinute+=0.015;
-    IA.entropy-=0.002;
+    IA.wMinute+=0.03;
+    IA.entropy-=0.01;
   }
-  IA.entropy=clamp(IA.entropy,0,1);
+  IA.entropy=clamp(IA.entropy,0.01,1);
   save();
 }
 
@@ -152,8 +160,8 @@ function updateUI(){
   document.getElementById("wins").textContent=IA.wins;
   document.getElementById("losses").textContent=IA.losses;
   let total=IA.wins+IA.losses;
-  let prog=total?Math.round((IA.wins/total)*100):0;
-  document.getElementById("progress").textContent=prog;
+  document.getElementById("progress").textContent=
+    total?Math.round((IA.wins/total)*100):0;
 }
 
 function resetStats(){
