@@ -1,236 +1,158 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Prédiction Aviator</title>
-    <style>
-        /* Général */
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #1A1A2E; /* Fond sombre bleu */
-            color: #E0E0E0; /* Texte clair */
-            overflow-x: hidden;
-        }
+<meta charset="UTF-8">
+<title>AVIATOR IA MAX</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-        header {
-            background-color: #0E1A47; /* Bleu nuit */
-            color: #1F75FE; /* Bleu clair pour le titre */
-            text-align: center;
-            padding: 20px 0;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
-        }
-
-        h1 {
-            margin: 0;
-        }
-
-        /* Conteneur principal */
-        .container {
-            width: 60%;
-            margin: 40px auto;
-            background-color: #121B3A; /* Bleu nuit plus foncé */
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.5);
-        }
-
-        h2 {
-            color: #1F75FE;
-        }
-
-        label {
-            font-size: 1.2em;
-            color: #A1A1A1;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 12px 0;
-            border: none;
-            border-radius: 5px;
-            font-size: 1em;
-            background-color: #2D2D5B; /* Bleu sombre pour les champs */
-            color: #FFFFFF;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        input[type="submit"] {
-            background-color: #1F75FE; /* Bleu clair */
-            color: white;
-            cursor: pointer;
-            border: none;
-            font-size: 1.2em;
-            padding: 15px;
-            margin-top: 10px;
-            transition: 0.3s;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #0B59D3; /* Bleu un peu plus foncé au survol */
-        }
-
-        .result {
-            background-color: #2A3D66; /* Bleu foncé avec effet */
-            padding: 15px;
-            margin-top: 30px;
-            border-radius: 8px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        .feedback {
-            margin-top: 15px;
-            font-size: 1.1em;
-            color: #1F75FE;
-            background-color: #1A1A2E;
-            padding: 10px;
-            border-radius: 5px;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.4);
-        }
-
-        .chat-box {
-            background-color: #2D2D5B; /* Bleu sombre */
-            padding: 20px;
-            margin-top: 30px;
-            border-radius: 8px;
-            color: #FFFFFF;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.6);
-        }
-
-        .chat-message {
-            background-color: #3D3D75;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            color: #E0E0E0;
-        }
-
-        .task-list {
-            margin-top: 20px;
-            background-color: #2A3D66;
-            padding: 20px;
-            border-radius: 8px;
-            color: #E0E0E0;
-        }
-
-        .task-item {
-            background-color: #3D3D75;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.4);
-        }
-
-        .btn {
-            background-color: #1F75FE;
-            color: white;
-            padding: 10px 20px;
-            margin-top: 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 1.1em;
-        }
-
-        .btn:hover {
-            background-color: #0B59D3;
-        }
-
-        /* Mobile responsiveness */
-        @media (max-width: 768px) {
-            .container {
-                width: 80%;
-            }
-
-            header {
-                font-size: 2em;
-            }
-        }
-    </style>
+<style>
+:root{
+ --blue:#6ecbff;
+ --red:#ff4b4b;
+ --bg:#060b18;
+}
+*{box-sizing:border-box;font-family:Arial}
+body{
+ margin:0;
+ background:
+ linear-gradient(rgba(6,11,24,.92),rgba(6,11,24,.92)),
+ url("https://wallpapercave.com/wp/wp8355542.jpg");
+ background-size:cover;
+ color:white;
+}
+header{text-align:center;padding:14px}
+.progress{height:8px;background:#222;border-radius:8px;overflow:hidden}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--red))}
+.box{background:rgba(255,255,255,.1);padding:14px;border-radius:18px;margin:12px}
+input,button{width:100%;padding:12px;border-radius:12px;border:none;margin-top:6px}
+.blue{background:var(--blue)}
+.red{background:var(--red)}
+.green{background:#2ecc71}
+.card{background:white;color:black;border-radius:22px;padding:18px;text-align:center}
+.hidden{display:none}
+</style>
 </head>
+
 <body>
-    <header>
-        <h1>Prédiction Aviator</h1>
-    </header>
 
-    <div class="container">
-        <h2>Entrez l'heure, la minute et la seconde pour prédire l'événement</h2>
+<header>
+<h2>AVIATOR IA MAX</h2>
+<div class="progress"><span id="iaBar"></span></div>
+<p>
+IA: <b><span id="iaLevel">0</span>%</b> |
+Gagné: <span id="win">0</span> |
+Perdu: <span id="lose">0</span>
+</p>
+</header>
 
-        <form method="POST" action="/predict">
-            <label for="hour">Heure :</label>
-            <input type="number" id="hour" name="hour" required><br>
+<section id="login" class="box">
+<input id="user" placeholder="Pseudo">
+<input id="pass" placeholder="Mot de passe">
+<button class="blue" onclick="login()">Connexion</button>
+</section>
 
-            <label for="minute">Minute :</label>
-            <input type="number" id="minute" name="minute" required><br>
+<section id="home" class="hidden">
+<div class="card">
+<h3>AVIATOR PREDICTOR</h3>
+<p>IA mathématique adaptative</p>
+<button class="blue" onclick="openIA()">Accéder</button>
+</div>
 
-            <label for="second">Seconde :</label>
-            <input type="number" id="second" name="second" required><br>
+<div class="box">
+<h4>Membres</h4>
+<div id="members"></div>
+</div>
+</section>
 
-            <input type="submit" value="Faire la prédiction">
-        </form>
+<section id="ia" class="hidden">
+<div class="box">
+<input id="h" placeholder="Heure du rose">
+<input id="m" placeholder="Minute">
+<input id="s" placeholder="Seconde">
+<input id="c" placeholder="Cote rose">
+<button class="blue" onclick="analyse()">ANALYSER</button>
+</div>
 
-        <!-- Résultat de la prédiction -->
-        <div class="result" id="prediction-result" style="display: none;">
-            <h3>Résultat de la Prédiction</h3>
-            <p id="result-message"></p>
-        </div>
+<div class="box">
+<div id="result">---</div>
+<button class="green" onclick="feedback(true)">GAGNÉ</button>
+<button class="red" onclick="feedback(false)">PERDU</button>
+</div>
+</section>
 
-        <!-- Feedback de la prédiction -->
-        <div class="feedback" id="feedback-message" style="display: none;">
-            <p></p>
-        </div>
-    </div>
+<script>
+let DB = JSON.parse(localStorage.getItem("AVIATOR_DB")) || {
+ admin:{pass:"admin"},
+ users:{},
+ ia:{win:0,lose:0,level:0}
+};
+function save(){localStorage.setItem("AVIATOR_DB",JSON.stringify(DB))}
 
-    <!-- Chat pour les critiques -->
-    <div class="chat-box">
-        <h3>Chat Critique et Suggestions</h3>
-        <div id="chat-messages">
-            <div class="chat-message">Critique : Pas assez de données pour des prédictions fiables. Ajustez le modèle.</div>
-        </div>
-        <button class="btn" id="btn-adjust-model">Ajuster le modèle automatiquement</button>
-    </div>
+function login(){
+ let u=user.value,p=pass.value;
+ if(u==="admin" && p===DB.admin.pass){
+  login.style.display="none";
+  home.classList.remove("hidden");
+  loadMembers();
+  return;
+ }
+ if(DB.users[u] && DB.users[u].pass===p && DB.users[u].ok){
+  login.style.display="none";
+  home.classList.remove("hidden");
+ }else{
+  if(!DB.users[u]){
+   DB.users[u]={pass:p,ok:false};
+   save();
+   alert("Compte en attente validation admin");
+  }else alert("Accès refusé");
+ }
+}
 
-    <!-- Tâches de développement -->
-    <div class="task-list">
-        <h3>Tâches d'amélioration</h3>
-        <div class="task-item">Améliorer la précision du modèle de prédiction</div>
-        <div class="task-item">Ajouter plus de données historiques pour une meilleure estimation</div>
-    </div>
+function loadMembers(){
+ members.innerHTML="";
+ for(let u in DB.users){
+  members.innerHTML+=`
+   ${u} - ${DB.users[u].ok?"✅":"⏳"}
+   <button onclick="approve('${u}')">OK</button><br>`;
+ }
+}
+function approve(u){
+ DB.users[u].ok=true; save(); loadMembers();
+}
 
-    <script>
-        // Simuler un résultat basé sur la saisie de l'utilisateur
-        document.querySelector('form').onsubmit = function(event) {
-            event.preventDefault();
-            let hour = document.getElementById('hour').value;
-            let minute = document.getElementById('minute').value;
-            let second = document.getElementById('second').value;
+function openIA(){
+ home.classList.add("hidden");
+ ia.classList.remove("hidden");
+}
 
-            // Ici, on simule la prédiction, dans un vrai cas tu appellerais un modèle ML
-            let prediction = Math.random() > 0.5 ? 'Gagner' : 'Perdre';  // Random pour la démonstration
-            document.getElementById('prediction-result').style.display = 'block';
-            document.getElementById('result-message').innerText = `La prédiction est : ${prediction}`;
+function analyse(){
+ let h1=+h.value,m1=+m.value,s1=+s.value,c1=+c.value;
+ let math =
+  Math.abs(
+   Math.sin(h1*2.7)+
+   Math.cos(m1*1.9)+
+   Math.tan((s1+1)/60)+
+   Math.log(c1+1)*4
+  )*10;
+ let min=(math%3+2).toFixed(2);
+ let max=(math%7+5).toFixed(2);
+ result.innerHTML=`
+ 📊 Entrée estimée: ${m1}:${(s1+25)%60}<br>
+ 📉 Cote min: ${min}x<br>
+ 📈 Cote max: ${max}x`;
+}
 
-            // Feedback basé sur la prédiction
-            let feedbackMessage = (prediction === 'Gagner') ? 'Félicitations! Vous avez gagné!' : 'Dommage, vous avez perdu. Réessayez!';
-            document.getElementById('feedback-message').style.display = 'block';
-            document.getElementById('feedback-message').innerText = feedbackMessage;
+function feedback(win){
+ win?DB.ia.win++:DB.ia.lose++;
+ let t=DB.ia.win+DB.ia.lose;
+ DB.ia.level=Math.min(100,Math.floor(DB.ia.win/t*100));
+ document.getElementById("win").innerText=DB.ia.win;
+ document.getElementById("lose").innerText=DB.ia.lose;
+ iaBar.style.width=DB.ia.level+"%";
+ iaLevel.innerText=DB.ia.level;
+ save();
+}
+</script>
 
-            // Ajouter la tâche pour ajuster le modèle (démonstration)
-            let taskList = document.getElementById('chat-messages');
-            let message = document.createElement('div');
-            message.classList.add('chat-message');
-            message.innerText = `Critique : Ajustez le modèle de prédiction en fonction des données réelles.`;
-            taskList.appendChild(message);
-        };
-
-        // Simuler un ajustement du modèle (démonstration)
-        document.getElementById('btn-adjust-model').onclick = function() {
-            alert("Modèle ajusté automatiquement !");
-            let newTask = document.createElement('div');
-            newTask.classList.add('task-item');
-            newTask.innerText = "Réentraîner le modèle avec de nouvelles données.";
-            document.querySelector('.task-list').appendChild(newTask);
-        };
+</body>
+</html>
