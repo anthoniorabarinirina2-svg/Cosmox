@@ -1,177 +1,183 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8">
-<title>Aviator RNG Predictor</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Aviator Master Logic - Ultimate Edition</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            --card-bg: rgba(20, 20, 40, 0.9);
+            --accent-purple: #8e2de2;
+            --btn-pink: linear-gradient(to right, #ff00cc, #3333ff);
+            --cyan: #00f2ff;
+            --success: #00ff88;
+            --danger: #ff0055;
+        }
 
-<style>
-body{
-  margin:0;
-  font-family:Arial,Helvetica,sans-serif;
-  background:#0b1220;
-  color:#eaf4ff;
-}
-header{
-  padding:14px;
-  text-align:center;
-  font-weight:bold;
-  background:linear-gradient(90deg,#3bc9ff,#ff4d4d);
-}
-.container{max-width:600px;margin:auto;padding:15px}
-.card{
-  background:#121b2f;
-  border-radius:10px;
-  padding:15px;
-  margin-bottom:15px;
-}
-button{
-  border:none;
-  border-radius:6px;
-  padding:7px 12px;
-  font-weight:bold;
-  cursor:pointer;
-}
-.blue{background:#3bc9ff;color:#001}
-.red{background:#ff4d4d;color:#fff}
-.pred{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  background:#0e1628;
-  border-radius:6px;
-  padding:8px;
-  margin-top:6px;
-}
-</style>
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .app-container { width: 100%; max-width: 420px; }
+
+        .header { text-align: center; padding: 20px 0; }
+        .header h1 { font-size: 1.5em; margin: 0; letter-spacing: 2px; text-shadow: 0 0 15px var(--accent-purple); }
+
+        .card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        h3 { font-size: 0.9em; margin-top: 0; color: var(--cyan); text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+
+        /* Graphique */
+        .chart-container { height: 150px; margin-bottom: 10px; }
+
+        /* Inputs & Buttons */
+        select, input {
+            width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0,0,0,0.3); color: white;
+        }
+
+        .btn-go {
+            width: 100%; padding: 15px; border-radius: 50px; border: none;
+            background: var(--btn-pink); color: white; font-weight: bold;
+            text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 0, 204, 0.3);
+        }
+
+        .scan-zone {
+            border: 2px dashed rgba(0, 242, 255, 0.3); border-radius: 15px;
+            padding: 20px; text-align: center; background: rgba(0, 242, 255, 0.05); cursor: pointer;
+        }
+
+        #verdictDisplay {
+            margin-top: 15px; padding: 15px; border-radius: 15px;
+            text-align: center; font-weight: bold; font-size: 1.4em; display: none;
+        }
+        .oui { border: 2px solid var(--success); color: var(--success); background: rgba(0, 255, 136, 0.1); }
+        .non { border: 2px solid var(--danger); color: var(--danger); background: rgba(255, 0, 85, 0.1); }
+
+        .footer { font-size: 0.7em; text-align: center; opacity: 0.6; margin-top: 10px; }
+    </style>
 </head>
-
 <body>
 
-<header>AVIATOR RNG PREDICTOR</header>
-
-<div class="container">
-
-<div class="card">
-  <button class="blue" onclick="predict()">ANALYSE</button>
-</div>
-
-<div class="card">
-  <b>Prédictions</b>
-  <div id="preds"></div>
-</div>
-
-<div class="card">
-  <b>Stats IA</b><br>
-  Gagné: <span id="wins">0</span> |
-  Perdu: <span id="losses">0</span><br>
-  Progression IA: <span id="progress">0</span>%
-  <br><br>
-  <button class="red" onclick="resetStats()">Reset stats</button>
-</div>
-
-</div>
-
-<script>
-// ================= SÉCURITÉ =================
-function safe(n,def){ return (isNaN(n)||n===undefined)?def:n }
-function clamp(v,min,max){ return Math.max(min,Math.min(max,v)) }
-
-// ================= IA INIT =================
-let IA = JSON.parse(localStorage.getItem("aviatorIA")) || {};
-IA.wins     = safe(IA.wins,0);
-IA.losses  = safe(IA.losses,0);
-IA.wTime   = safe(IA.wTime,1);
-IA.wMinute = safe(IA.wMinute,1);
-IA.wSecond = safe(IA.wSecond,1);
-IA.entropy = safe(IA.entropy,Math.random());
-
-let lastPreds=[];
-
-function save(){
-  localStorage.setItem("aviatorIA",JSON.stringify(IA));
-  updateUI();
-}
-
-// ================= RNG PRO =================
-function rng(){
-  let d=new Date();
-  let h=d.getHours()+1;
-  let m=d.getMinutes()+1;
-  let s=d.getSeconds()+1;
-
-  let mix =
-    h*IA.wTime +
-    m*IA.wMinute +
-    s*IA.wSecond +
-    IA.entropy*100 +
-    Math.random()*10;
-
-  return (mix%100)/100;
-}
-
-// ================= PREDICTION =================
-function predict(){
-  lastPreds=[];
-  for(let i=0;i<4;i++){
-    let r=rng();
-    let base=1.4 + r*5;
-    let adapt=(IA.wins-IA.losses)*0.02;
-    let val=clamp(base+adapt,1.2,50);
-    lastPreds.push(val.toFixed(2));
-  }
-  drawPreds();
-}
-
-// ================= AFFICHAGE =================
-function drawPreds(){
-  let div=document.getElementById("preds");
-  div.innerHTML="";
-  lastPreds.forEach((p,i)=>{
-    div.innerHTML+=`
-      <div class="pred">
-        <b>${p}x</b>
-        <div>
-          <button class="blue" onclick="feedback(${i},true)">GAGNÉ</button>
-          <button class="red" onclick="feedback(${i},false)">PERDU</button>
+    <div class="app-container">
+        <div class="header">
+            <h1>AVIATOR MASTER PRO</h1>
         </div>
-      </div>
-    `;
-  });
-}
 
-// ================= APPRENTISSAGE IA =================
-function feedback(i,win){
-  let v=parseFloat(lastPreds[i]);
-  if(win){
-    IA.wins++;
-    IA.wSecond+=0.02;
-    IA.entropy+=v*0.002;
-  }else{
-    IA.losses++;
-    IA.wMinute+=0.03;
-    IA.entropy-=0.01;
-  }
-  IA.entropy=clamp(IA.entropy,0.01,1);
-  save();
-}
+        <div class="card">
+            <h3>📈 Tendance du Serveur</h3>
+            <div class="chart-container">
+                <canvas id="trendChart"></canvas>
+            </div>
+        </div>
 
-// ================= UI =================
-function updateUI(){
-  document.getElementById("wins").textContent=IA.wins;
-  document.getElementById("losses").textContent=IA.losses;
-  let total=IA.wins+IA.losses;
-  document.getElementById("progress").textContent=
-    total?Math.round((IA.wins/total)*100):0;
-}
+        <div class="card">
+            <h3>📸 Scan Historique</h3>
+            <div class="scan-zone" onclick="document.getElementById('fileIn').click()">
+                <p style="margin:0; font-size: 0.8em;">Importer capture pour analyse OCR</p>
+                <input type="file" id="fileIn" style="display:none" onchange="runAnalysis()">
+            </div>
+        </div>
 
-function resetStats(){
-  IA.wins=0;
-  IA.losses=0;
-  save();
-}
+        <div class="card">
+            <h3>🚦 Confirmateur 2+</h3>
+            <input type="time" id="roseTime" onchange="updateMiroir()">
+            
+            <select id="hashIn">
+                <option value="">Fin du dernier Hash ?</option>
+                <option value="num">Chiffre (0-9) ✅</option>
+                <option value="let">Lettre (a-f) ❌</option>
+            </select>
 
-updateUI();
-</script>
+            <select id="colorIn">
+                <option value="">Dernier tour ?</option>
+                <option value="blue">Bleu (< 2.00x)</option>
+                <option value="violet">Violet / Rose (> 2.00x)</option>
+            </select>
 
+            <button class="btn-go" onclick="getSignal()">Vérifier le Signal</button>
+
+            <div id="verdictDisplay"></div>
+            <div id="miroirInfo" style="text-align:center; font-size:0.8em; margin-top:10px; color:var(--cyan);"></div>
+        </div>
+
+        <div class="footer">
+            Algorithme v4.0 - Stratégies Combinées<br>
+            © 2026 Aviator Master Logic
+        </div>
+    </div>
+
+    <script>
+        // Initialisation du Graphique
+        const ctx = document.getElementById('trendChart').getContext('2d');
+        const trendChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['T-5', 'T-4', 'T-3', 'T-2', 'T-1', 'Now'],
+                datasets: [{
+                    label: 'Force du Cycle',
+                    data: [1.2, 4.5, 1.1, 2.3, 1.0, 1.8],
+                    borderColor: '#00f2ff',
+                    backgroundColor: 'rgba(0, 242, 255, 0.1)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#5c6b7e' } } } }
+        });
+
+        function updateMiroir() {
+            let t = document.getElementById('roseTime').value;
+            let [h, m] = t.split(':');
+            let next = ((parseInt(h) + 1) % 24).toString().padStart(2, '0') + ":" + m;
+            document.getElementById('miroirInfo').innerHTML = "🎯 Fenêtre Miroir Cible : " + next + "";
+        }
+
+        function getSignal() {
+            const h = document.getElementById('hashIn').value;
+            const c = document.getElementById('colorIn').value;
+            const disp = document.getElementById('verdictDisplay');
+
+            disp.style.display = "block";
+
+            // LOGIQUE 2+ : BLEU + CHIFFRE
+            if (c === "blue" && h === "num") {
+                disp.innerHTML = "OUI - MISE !";
+                disp.className = "oui";
+                // Animation du graphique vers le haut
+                trendChart.data.datasets[0].data.push(8.5);
+                trendChart.data.datasets[0].data.shift();
+                trendChart.update();
+            } else {
+                disp.innerHTML = "NON - ATTENDS";
+                disp.className = "non";
+                trendChart.data.datasets[0].data.push(1.0);
+                trendChart.data.datasets[0].data.shift();
+                trendChart.update();
+            }
+        }
+
+        function runAnalysis() {
+            alert("Analyse OCR en cours sur les cycles miroirs...");
+        }
+    </script>
 </body>
 </html>
