@@ -1,183 +1,502 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Aviator Master Logic - Ultimate Edition</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        :root {
-            --bg-gradient: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
-            --card-bg: rgba(20, 20, 40, 0.9);
-            --accent-purple: #8e2de2;
-            --btn-pink: linear-gradient(to right, #ff00cc, #3333ff);
-            --cyan: #00f2ff;
-            --success: #00ff88;
-            --danger: #ff0055;
-        }
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<title>AVIATOR V20 - EMOJI & COTE</title>
+<!-- Firebase SDKs -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+<!-- Google Sign-In -->
+<script src="https://apis.google.com/js/platform.js" async defer></script>
+<style>
+  /* Reset et Base */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Arial', sans-serif;
+    height: 100vh;
+    overflow: hidden;
+    background: linear-gradient(270deg, #1e3c72, #2a5298, #1e3c72);
+    background-size: 600% 600%;
+    animation: gradientBG 15s ease infinite;
+    color: #fff;
+  }
 
-        body {
-            background: var(--bg-gradient);
-            background-attachment: fixed;
-            color: #fff;
-            font-family: 'Segoe UI', sans-serif;
-            margin: 0;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+  @keyframes gradientBG {
+    0% {background-position: 0% 50%;}
+    50% {background-position: 100% 50%;}
+    100% {background-position: 0% 50%;}
+  }
 
-        .app-container { width: 100%; max-width: 420px; }
+  /* Animations */
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
 
-        .header { text-align: center; padding: 20px 0; }
-        .header h1 { font-size: 1.5em; margin: 0; letter-spacing: 2px; text-shadow: 0 0 15px var(--accent-purple); }
+  @keyframes bounceClick {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); }
+  }
 
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(10px);
-            border-radius: 20px;
-            padding: 15px;
-            margin-bottom: 15px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-        }
+  /* Containers */
+  .screen {
+    display: none;
+    height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .active {
+    display: flex;
+  }
 
-        h3 { font-size: 0.9em; margin-top: 0; color: var(--cyan); text-transform: uppercase; display: flex; align-items: center; gap: 8px; }
+  /* Card & Inputs */
+  .card {
+    background: rgba(0,0,0,0.6);
+    padding: 30px;
+    border-radius: 20px;
+    border: 1px solid #333;
+    width: 100%;
+    max-width: 350px;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+    animation: fadeIn 1s ease;
+  }
 
-        /* Graphique */
-        .chart-container { height: 150px; margin-bottom: 10px; }
+  h2 {
+    text-align: center;
+    color: #f00;
+    margin-bottom: 15px;
+    font-size: 24px;
+    animation: fadeIn 1s ease;
+  }
 
-        /* Inputs & Buttons */
-        select, input {
-            width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px;
-            border: 1px solid rgba(255, 255, 255, 0.1); background: rgba(0,0,0,0.3); color: white;
-        }
+  input {
+    width: 100%;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 10px;
+    border: 1px solid #333;
+    background: #000;
+    color: #fff;
+    text-align: center;
+    font-size: 14px;
+    transition: all 0.3s;
+  }
 
-        .btn-go {
-            width: 100%; padding: 15px; border-radius: 50px; border: none;
-            background: var(--btn-pink); color: white; font-weight: bold;
-            text-transform: uppercase; cursor: pointer; box-shadow: 0 5px 15px rgba(255, 0, 204, 0.3);
-        }
+  input:focus {
+    outline: none;
+    border-color: #f00;
+    box-shadow: 0 0 10px #f00;
+  }
 
-        .scan-zone {
-            border: 2px dashed rgba(0, 242, 255, 0.3); border-radius: 15px;
-            padding: 20px; text-align: center; background: rgba(0, 242, 255, 0.05); cursor: pointer;
-        }
+  /* Buttons */
+  .btn {
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    background: #f00;
+    color: #fff;
+    font-size: 16px;
+    margin-top: 10px;
+    transition: all 0.3s;
+  }
+  .btn:hover {
+    background: #c00;
+    animation: bounceClick 0.3s;
+  }
 
-        #verdictDisplay {
-            margin-top: 15px; padding: 15px; border-radius: 15px;
-            text-align: center; font-weight: bold; font-size: 1.4em; display: none;
-        }
-        .oui { border: 2px solid var(--success); color: var(--success); background: rgba(0, 255, 136, 0.1); }
-        .non { border: 2px solid var(--danger); color: var(--danger); background: rgba(255, 0, 85, 0.1); }
+  /* Tabs & Panels */
+  .tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 15px;
+    margin-top: 20px;
+  }
+  .tab {
+    flex: 1;
+    padding: 10px;
+    background: #111;
+    text-align: center;
+    border-radius: 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: background 0.3s, transform 0.2s;
+  }
+  .tab:hover {
+    background: #222;
+  }
+  .tab.active {
+    background: #f00;
+    color: #fff;
+    font-weight: bold;
+  }
 
-        .footer { font-size: 0.7em; text-align: center; opacity: 0.6; margin-top: 10px; }
-    </style>
+  .panel {
+    display: none;
+    width: 100%;
+    animation: fadeIn 0.5s ease;
+  }
+  .panel.active {
+    display: block;
+  }
+
+  /* Emoji Dot Row */
+  .dot-row {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    margin: 15px 0;
+  }
+  .dot {
+    width: 45px;
+    height: 45px;
+    background: #111;
+    border: 1px solid #f00;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .dot:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px #f00;
+  }
+
+  /* Results Grid */
+  .res-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 10px;
+  }
+
+  .res-box {
+    padding: 12px;
+    border-radius: 10px;
+    text-align: center;
+    font-size: 13px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  .res-box:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 8px #f00;
+  }
+
+  /* Color Themes */
+  .blue { background: #003366; border: 1px solid #0088ff; }
+  .rose { background: #440022; border: 1px solid #ff0055; }
+
+  /* Google Sign-In Button */
+  #google-signin {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+  }
+  .g-signin2 {
+    margin: 10px auto;
+  }
+
+  /* Gestion Membres & Approvals */
+  #members-section {
+    margin-top: 20px;
+    display: none; /* visible uniquement si admin */
+    background: rgba(0,0,0,0.6);
+    padding: 15px;
+    border-radius: 15px;
+    max-width: 400px;
+    width: 100%;
+  }
+  #members-list, #pending-list, #approbations {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 10px;
+  }
+  .member-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 6px 10px;
+    background: #222;
+    border-radius: 8px;
+    margin-bottom: 5px;
+    transition: background 0.3s;
+  }
+  .member-item:hover {
+    background: #333;
+  }
+  .btn-expulse {
+    background: #a00; 
+    padding: 4px 8px; 
+    border: none; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    font-size: 12px;
+  }
+</style>
 </head>
 <body>
 
-    <div class="app-container">
-        <div class="header">
-            <h1>AVIATOR MASTER PRO</h1>
-        </div>
-
-        <div class="card">
-            <h3>📈 Tendance du Serveur</h3>
-            <div class="chart-container">
-                <canvas id="trendChart"></canvas>
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>📸 Scan Historique</h3>
-            <div class="scan-zone" onclick="document.getElementById('fileIn').click()">
-                <p style="margin:0; font-size: 0.8em;">Importer capture pour analyse OCR</p>
-                <input type="file" id="fileIn" style="display:none" onchange="runAnalysis()">
-            </div>
-        </div>
-
-        <div class="card">
-            <h3>🚦 Confirmateur 2+</h3>
-            <input type="time" id="roseTime" onchange="updateMiroir()">
-            
-            <select id="hashIn">
-                <option value="">Fin du dernier Hash ?</option>
-                <option value="num">Chiffre (0-9) ✅</option>
-                <option value="let">Lettre (a-f) ❌</option>
-            </select>
-
-            <select id="colorIn">
-                <option value="">Dernier tour ?</option>
-                <option value="blue">Bleu (< 2.00x)</option>
-                <option value="violet">Violet / Rose (> 2.00x)</option>
-            </select>
-
-            <button class="btn-go" onclick="getSignal()">Vérifier le Signal</button>
-
-            <div id="verdictDisplay"></div>
-            <div id="miroirInfo" style="text-align:center; font-size:0.8em; margin-top:10px; color:var(--cyan);"></div>
-        </div>
-
-        <div class="footer">
-            Algorithme v4.0 - Stratégies Combinées<br>
-            © 2026 Aviator Master Logic
-        </div>
+<!-- Écran login -->
+<div id="login-screen" class="screen active" style="animation: fadeIn 1s ease;">
+  <div class="card" style="animation-delay: 0.2s;">
+    <h2 style="animation: fadeIn 1s ease;">AVIATOR V20</h2>
+    <button class="btn" onclick="signInWithGoogle()">Login with Google</button>
+    <!-- Google Sign-In -->
+    <div id="google-signin">
+      <div class="g-signin2" data-onsuccess="onGoogleSignIn" data-theme="dark"></div>
     </div>
+  </div>
+</div>
 
-    <script>
-        // Initialisation du Graphique
-        const ctx = document.getElementById('trendChart').getContext('2d');
-        const trendChart = new Chart(ctx, {
-            type: 'line',
-            data: {
-                labels: ['T-5', 'T-4', 'T-3', 'T-2', 'T-1', 'Now'],
-                datasets: [{
-                    label: 'Force du Cycle',
-                    data: [1.2, 4.5, 1.1, 2.3, 1.0, 1.8],
-                    borderColor: '#00f2ff',
-                    backgroundColor: 'rgba(0, 242, 255, 0.1)',
-                    fill: true,
-                    tension: 0.4
-                }]
-            },
-            options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { display: false }, x: { ticks: { color: '#5c6b7e' } } } }
-        });
+<!-- Écran principal -->
+<div id="app-screen" class="screen" style="justify-content:flex-start; padding-top:40px; flex-direction:column;">
+  <!-- Onglets -->
+  <div class="tabs">
+    <div id="t-sig" class="tab active" onclick="switchTab('sig')">STRAT EMOJI</div>
+    <div id="t-cot" class="tab" onclick="switchTab('cot')">STRAT COTE</div>
+    <div id="t-mem" class="tab" onclick="switchTab('mem')">MEMBRES</div>
+    <div id="t-approb" class="tab" onclick="switchTab('approb')">APPROBATION</div>
+  </div>
 
-        function updateMiroir() {
-            let t = document.getElementById('roseTime').value;
-            let [h, m] = t.split(':');
-            let next = ((parseInt(h) + 1) % 24).toString().padStart(2, '0') + ":" + m;
-            document.getElementById('miroirInfo').innerHTML = "🎯 Fenêtre Miroir Cible : " + next + "";
-        }
+  <!-- Panneaux -->
+  <div id="p-sig" class="panel active">
+    <div style="display:flex; gap:5px; justify-content:center;">
+      <button class="btn" style="background:#001a33;" onclick="addEmoji('💙')">💙</button>
+      <button class="btn" style="background:#1a0033;" onclick="addEmoji('💜')">💜</button>
+      <button class="btn" style="background:#330000;" onclick="addEmoji('🌹')">🌹</button>
+    </div>
+    <div class="dot-row">
+      <div class="dot" id="dot-0"></div>
+      <div class="dot" id="dot-1"></div>
+      <div class="dot" id="dot-2"></div>
+      <div class="dot" id="dot-3"></div>
+      <div class="dot" id="dot-4"></div>
+    </div>
+    <input type="time" id="time-sig" step="1" onchange="runCalc()" style="width:100%; margin-bottom:10px;">
+    <div id="res-sig" class="res-grid"></div>
+  </div>
 
-        function getSignal() {
-            const h = document.getElementById('hashIn').value;
-            const c = document.getElementById('colorIn').value;
-            const disp = document.getElementById('verdictDisplay');
+  <div id="p-cot" class="panel" style="margin-top:20px;">
+    <input type="number" id="val-cot" placeholder="Cote reçue" step="0.01" />
+    <input type="time" id="time-cot" step="1" onchange="runCote()" style="width:100%; margin-top:10px;">
+    <div id="res-cot" class="res-grid"></div>
+  </div>
 
-            disp.style.display = "block";
+  <!-- Gestion Membres et Approbat -->
+  <div id="p-mem" class="panel" style="display:none;">
+    <h3 style="text-align:center;">Gestion des Membres</h3>
+    <div><strong>Membres</strong></div>
+    <div id="members-list"></div>
+    <div style="margin-top:10px;"><strong>Demandes d'inscription</strong></div>
+    <div id="pending-list"></div>
+  </div>
 
-            // LOGIQUE 2+ : BLEU + CHIFFRE
-            if (c === "blue" && h === "num") {
-                disp.innerHTML = "OUI - MISE !";
-                disp.className = "oui";
-                // Animation du graphique vers le haut
-                trendChart.data.datasets[0].data.push(8.5);
-                trendChart.data.datasets[0].data.shift();
-                trendChart.update();
-            } else {
-                disp.innerHTML = "NON - ATTENDS";
-                disp.className = "non";
-                trendChart.data.datasets[0].data.push(1.0);
-                trendChart.data.datasets[0].data.shift();
-                trendChart.update();
-            }
-        }
+  <div id="p-approb" class="panel" style="display:none;">
+    <h3 style="text-align:center;">Demandes en attente</h3>
+    <div id="approbations"></div>
+  </div>
+</div>
 
-        function runAnalysis() {
-            alert("Analyse OCR en cours sur les cycles miroirs...");
-        }
-    </script>
+<!-- Firebase initialization -->
+<script>
+  // Remplacez par votre configuration Firebase
+  const firebaseConfig = { 
+    apiKey: "API", 
+    authDomain: "ID", 
+    databaseURL: "URL", 
+    projectId: "ID", 
+    storageBucket: "ID", 
+    messagingSenderId: "ID", 
+    appId: "ID" 
+  };
+  firebase.initializeApp(firebaseConfig);
+</script>
+
+<script>
+  let currentUser = null;
+  let isAdmin = false;
+
+  // Vérification de l'authentification
+  firebase.auth().onAuthStateChanged(user => {
+    if(user){
+      currentUser = user;
+      checkAdmin();
+    } else {
+      document.getElementById('login-screen').classList.add('active');
+      document.getElementById('app-screen').classList.remove('active');
+    }
+  });
+
+  function signInWithGoogle() {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase.auth().signInWithPopup(provider).then(result => {
+      currentUser = result.user;
+      document.getElementById('login-screen').classList.remove('active');
+      document.getElementById('app-screen').classList.add('active');
+      checkAdmin();
+    }).catch(error => alert(error.message));
+  }
+
+  function onGoogleSignIn(googleUser) {
+    // Non utilisé si on fait signInWithPopup, mais pour compatibilité
+    var profile = googleUser.getBasicProfile();
+    alert("Connecté: " + profile.getName());
+  }
+
+  function checkAdmin() {
+    if(currentUser){
+      // Modifier UID admin
+      isAdmin = (currentUser.uid === "votre-uid-admin");
+      if(isAdmin){
+        document.getElementById('p-mem').style.display='block';
+        document.getElementById('p-approb').style.display='block';
+        loadMembers();
+        loadPending();
+        loadApprovals();
+        document.getElementById('members-section').style.display='block';
+      } else {
+        document.getElementById('p-mem').style.display='none';
+        document.getElementById('p-approb').style.display='none';
+        document.getElementById('members-section').style.display='none';
+      }
+    }
+  }
+
+  function switchTab(id){
+    document.querySelectorAll('.panel').forEach(p => p.style.display='none');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('p-'+id).style.display='block';
+    document.getElementById('t-'+id).classList.add('active');
+  }
+
+  // --- Gestion Membres ---
+  const dbMembersRef = firebase.database().ref('members');
+  const dbPendingRef = firebase.database().ref('pending');
+
+  function loadMembers() {
+    dbMembersRef.on('value', snap => {
+      const list = document.getElementById('members-list');
+      list.innerHTML = '';
+      snap.forEach(s => {
+        const uid = s.key;
+        const email = s.val().email;
+        const div = document.createElement('div');
+        div.className='member-item';
+        div.innerHTML=`<span>${email}</span><button class="btn-expulse" onclick="expulseMember('${uid}')">Expulser</button>`;
+        list.appendChild(div);
+      });
+    });
+  }
+
+  function loadPending() {
+    dbPendingRef.on('value', snap => {
+      const list = document.getElementById('pending-list');
+      list.innerHTML = '';
+      snap.forEach(s => {
+        const uid=s.key;
+        const email=s.val().email;
+        const div = document.createElement('div');
+        div.className='member-item';
+        div.innerHTML=`<span>${email}</span>
+        <button style="background:#0a0; margin-left:10px;" onclick="approveRequest('${uid}')">Accepter</button>
+        <button class="btn-expulse" style="background:#a00; margin-left:5px;" onclick="refuseRequest('${uid}')">Refuser</button>`;
+        list.appendChild(div);
+      });
+    });
+  }
+
+  function expulseMember(uid){
+    if(confirm('Expulser ce membre ?')){
+      firebase.database().ref('members/'+uid).remove();
+    }
+  }
+
+  function approveRequest(uid){
+    firebase.database().ref('pending/'+uid).once('value', snap => {
+      const data=snap.val();
+      firebase.database().ref('members/'+uid).set(data);
+      firebase.database().ref('pending/'+uid).remove();
+    });
+  }
+
+  function refuseRequest(uid){
+    firebase.database().ref('pending/'+uid).remove();
+  }
+
+  // Emoji et stratégie
+  let currentSeq=[];
+  const patterns={
+    "💙💜🌹💙💙": [{m:3, c:"x60", s:"blue"},{m:7, c:"x25", s:"rose"}],
+    "💙💜🌹💙💜": [{m:8, c:"x15", s:"blue"},{m:13, c:"x70", s:"rose"}],
+    "💜💙🌹💙💜": [{m:3, c:"x25", s:"rose"},{m:11, c:"x30", s:"blue"}],
+    "💜💙🌹💙💙": [{m:3, c:"x70", s:"rose"},{m:8, c:"x200", s:"rose"}],
+    "💜💜🌹💙💜": [{m:7, c:"x20", s:"blue"},{m:9, c:"x300", s:"rose"}],
+    "💜💙🌹💜💜": [{m:3, c:"x10", s:"blue"},{m:10, c:"x20", s:"blue"}],
+    "💙💙🌹💜💜": [{m:9, c:"x10", s:"blue"},{m:13, c:"x30", s:"blue"}],
+    "💜💜🌹💜💙": [{m:5, c:"x50", s:"rose"},{m:21, c:"x10", s:"rose"}],
+    "💙💙🌹💙💙": [{m:3, c:"x400", s:"gold"},{m:17, c:"x50", s:"rose"}],
+    "💜💙🌹💜💙": [{m:7, c:"x50", s:"rose"},{m:13, c:"x100", s:"rose"}],
+    "💙💙🌹💙💜": [{m:3, c:"x80", s:"rose"},{m:25, c:"x3000", s:"gold"}],
+    "💙💜🌹💜💙": [{m:3, c:"x50", s:"blue"},{m:10, c:"x150", s:"rose"}]
+  };
+
+  function addEmoji(emoji) {
+    if(currentSeq.length >= 5){ currentSeq=[]; for(let i=0;i<5;i++) document.getElementById('dot-'+i).innerHTML=''; }
+    document.getElementById('dot-'+currentSeq.length).innerHTML=emoji;
+    currentSeq.push(emoji);
+    document.querySelectorAll('.dot').forEach(d => {
+      if(d.innerHTML===emoji){
+        d.animate([{transform:'scale(1)'},{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:300});
+      }
+    });
+    if(currentSeq.length===5) runCalc();
+  }
+
+  function runCalc() {
+    const time=document.getElementById("time-sig").value;
+    const grid=document.getElementById("res-sig");
+    if(!time || currentSeq.length<5) return;
+    const res=patterns[currentSeq.join('')];
+    if(res) display(time,res,grid);
+  }
+
+  function runCote() {
+    const val=parseFloat(document.getElementById("val-cot").value);
+    const time=document.getElementById("time-cot").value;
+    const grid=document.getElementById("res-cot");
+    if(!val || !time) return;
+    let s=[];
+    if(val>=2.50 && val<=3.50) s.push({m:2.166, c:"X3 IZY", s:"blue"});
+    else if(val>=4.50 && val<=6.50) s.push({m:4.166, c:"X5 FAKANA", s:"rose"});
+    else if(val>=6.50 && val<=9.99){ s.push({m:6.166, c:"X3 ASSURÉ", s:"blue"}); s.push({m:6.166, c:"X10 ROSE", s:"rose"}); }
+    if(s.length>0) display(time,s,grid);
+  }
+
+  function display(ts, list, container) {
+    const [h,m,sec]=ts.split(':').map(Number);
+    container.innerHTML= list.map(i => {
+      let d=new Date(); d.setHours(h,m,(sec||0)+(i.m*60));
+      return `<div class="res-box ${i.s}"><b>${i.c}</b><br>${d.toLocaleTimeString('fr-FR')}</div>`;
+    }).join('');
+  }
+
+  function switchTab(id){
+    document.querySelectorAll('.panel').forEach(p => p.style.display='none');
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById('p-'+id).style.display='block';
+    document.getElementById('t-'+id).classList.add('active');
+  }
+</script>
+
 </body>
 </html>
