@@ -55,6 +55,7 @@
             <div id="t-sig" class="tab active" onclick="switchTab('sig')">STRAT EMOJI</div>
             <div id="t-cot" class="tab" onclick="switchTab('cot')">STRAT COTE</div>
         </div>
+
         <div id="p-sig" class="panel active">
             <div style="display:flex; gap:5px; margin-bottom:10px;">
                 <button class="btn" style="background:#001a33; border:1px solid #0088ff;" onclick="addEmoji('💙')">💙</button>
@@ -68,15 +69,18 @@
             <div id="res-sig" class="res-grid"></div>
             <button class="btn" style="background:#222; margin-top:20px; font-size:12px;" onclick="resetSig()">RESET</button>
         </div>
+
         <div id="p-cot" class="panel">
             <input type="number" id="val-cot" placeholder="Cote reçue" step="0.01">
             <input type="time" id="time-cot" step="1" onchange="runCote()">
             <div id="res-cot" class="res-grid"></div>
         </div>
+        
         <button onclick="logout()" style="margin-top:auto; background:none; border:none; color:#555; cursor:pointer; padding:20px;">Déconnexion</button>
     </div>
 
 <script>
+    // Configuration Firebase validée selon tes captures
     const firebaseConfig = {
         apiKey: "AIzaSyC0Icj3B1W9RpWIueRJqrpcdoFbGSb4Nvs",
         authDomain: "aviator-85380.firebaseapp.com",
@@ -85,11 +89,13 @@
         storageBucket: "aviator-85380.firebasestorage.app",
         messagingSenderId: "206580715363",
         appId: "1:206580715363:web:79b0d5cb883e840e590d56",
-        measurementId: "G-8G0C82SS6N" // Ajouté pour correspondre à ta console
+        measurementId: "G-8G0C82SS6N"
     };
+    
     firebase.initializeApp(firebaseConfig);
     const auth = firebase.auth();
 
+    // Authentification
     function loginEmail() {
         const e = document.getElementById("l-email").value, p = document.getElementById("l-pass").value;
         auth.signInWithEmailAndPassword(e, p).catch(err => alert("Erreur: " + err.message));
@@ -97,13 +103,14 @@
 
     function registerEmail() {
         const e = document.getElementById("l-email").value, p = document.getElementById("l-pass").value;
-        if(p.length < 6) { alert("Le mot de passe doit faire 6 caractères minimum"); return; }
+        if(p.length < 6) return alert("Le mot de passe doit faire 6 caractères minimum");
         auth.createUserWithEmailAndPassword(e, p)
             .then(() => alert("Compte créé avec succès !"))
-            .catch(err => alert("Erreur d'inscription: " + err.message));
+            .catch(err => alert("Erreur inscription: " + err.message));
     }
 
     function loginGoogle() {
+        // signInWithRedirect est plus stable sur mobile que le Popup
         auth.signInWithRedirect(new firebase.auth.GoogleAuthProvider());
     }
 
@@ -121,6 +128,7 @@
         }
     });
 
+    // Navigation & Logique
     function switchTab(id) {
         document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
