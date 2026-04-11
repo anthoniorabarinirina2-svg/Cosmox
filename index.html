@@ -1,502 +1,238 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<title>AVIATOR V20 - EMOJI & COTE</title>
-<!-- Firebase SDKs -->
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-<!-- Google Sign-In -->
-<script src="https://apis.google.com/js/platform.js" async defer></script>
-<style>
-  /* Reset et Base */
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body {
-    font-family: 'Arial', sans-serif;
-    height: 100vh;
-    overflow: hidden;
-    background: linear-gradient(270deg, #1e3c72, #2a5298, #1e3c72);
-    background-size: 600% 600%;
-    animation: gradientBG 15s ease infinite;
-    color: #fff;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AVIATOR V20 - EMOJI & COTE</title>
+    
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  @keyframes gradientBG {
-    0% {background-position: 0% 50%;}
-    50% {background-position: 100% 50%;}
-    100% {background-position: 0% 50%;}
-  }
+    <style>
+        /* Base & Design */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: #000; 
+            color: #fff; 
+            height: 100vh; 
+            overflow: hidden; 
+            display: flex;
+            justify-content: center;
+        }
 
-  /* Animations */
-  @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
+        .screen { display: none; height: 100vh; flex-direction: column; align-items: center; justify-content: center; padding: 20px; width: 100%; max-width: 400px; }
+        .active { display: flex; }
 
-  @keyframes bounceClick {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
-  }
+        .card { 
+            background: #0d0d0d; 
+            padding: 25px; 
+            border-radius: 20px; 
+            border: 1px solid #222; 
+            width: 100%; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8); 
+        }
 
-  /* Containers */
-  .screen {
-    display: none;
-    height: 100vh;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .active {
-    display: flex;
-  }
+        h2 { text-align: center; color: #f00; margin-bottom: 20px; letter-spacing: 2px; }
 
-  /* Card & Inputs */
-  .card {
-    background: rgba(0,0,0,0.6);
-    padding: 30px;
-    border-radius: 20px;
-    border: 1px solid #333;
-    width: 100%;
-    max-width: 350px;
-    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
-    animation: fadeIn 1s ease;
-  }
+        input { 
+            width: 100%; padding: 12px; margin-bottom: 10px; border-radius: 10px; 
+            border: 1px solid #333; background: #111; color: #fff; text-align: center; font-size: 16px; 
+        }
 
-  h2 {
-    text-align: center;
-    color: #f00;
-    margin-bottom: 15px;
-    font-size: 24px;
-    animation: fadeIn 1s ease;
-  }
+        .btn { 
+            width: 100%; padding: 15px; border-radius: 10px; border: none; 
+            font-weight: bold; cursor: pointer; background: #f00; color: #fff; transition: 0.3s; 
+        }
+        .btn:active { transform: scale(0.98); }
 
-  input {
-    width: 100%;
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 10px;
-    border: 1px solid #333;
-    background: #000;
-    color: #fff;
-    text-align: center;
-    font-size: 14px;
-    transition: all 0.3s;
-  }
+        /* Onglets */
+        .tabs { display: flex; gap: 5px; margin-bottom: 15px; width: 100%; }
+        .tab { 
+            flex: 1; padding: 12px; background: #111; text-align: center; 
+            border-radius: 8px; font-size: 11px; cursor: pointer; font-weight: bold; border: 1px solid #222; 
+        }
+        .tab.active { background: #f00; border-color: #f00; }
 
-  input:focus {
-    outline: none;
-    border-color: #f00;
-    box-shadow: 0 0 10px #f00;
-  }
+        .panel { display: none; width: 100%; animation: fadeIn 0.4s ease; }
+        .panel.active { display: block; }
 
-  /* Buttons */
-  .btn {
-    width: 100%;
-    padding: 15px;
-    border-radius: 10px;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-    background: #f00;
-    color: #fff;
-    font-size: 16px;
-    margin-top: 10px;
-    transition: all 0.3s;
-  }
-  .btn:hover {
-    background: #c00;
-    animation: bounceClick 0.3s;
-  }
+        /* Emojis */
+        .dot-row { display: flex; gap: 8px; justify-content: center; margin: 15px 0; }
+        .dot { 
+            width: 45px; height: 45px; background: #111; border: 1px solid #f00; 
+            border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; 
+        }
 
-  /* Tabs & Panels */
-  .tabs {
-    display: flex;
-    gap: 5px;
-    margin-bottom: 15px;
-    margin-top: 20px;
-  }
-  .tab {
-    flex: 1;
-    padding: 10px;
-    background: #111;
-    text-align: center;
-    border-radius: 8px;
-    font-size: 12px;
-    cursor: pointer;
-    transition: background 0.3s, transform 0.2s;
-  }
-  .tab:hover {
-    background: #222;
-  }
-  .tab.active {
-    background: #f00;
-    color: #fff;
-    font-weight: bold;
-  }
+        /* Résultats */
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .res-box { padding: 12px; border-radius: 10px; text-align: center; font-size: 13px; font-weight: bold; }
+        .blue { background: linear-gradient(135deg, #003366, #0055aa); border: 1px solid #0088ff; }
+        .rose { background: linear-gradient(135deg, #440022, #770033); border: 1px solid #ff0055; }
+        .gold { background: linear-gradient(135deg, #664400, #aa8800); border: 1px solid #ffcc00; }
 
-  .panel {
-    display: none;
-    width: 100%;
-    animation: fadeIn 0.5s ease;
-  }
-  .panel.active {
-    display: block;
-  }
-
-  /* Emoji Dot Row */
-  .dot-row {
-    display: flex;
-    gap: 5px;
-    justify-content: center;
-    margin: 15px 0;
-  }
-  .dot {
-    width: 45px;
-    height: 45px;
-    background: #111;
-    border: 1px solid #f00;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 20px;
-    cursor: pointer;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .dot:hover {
-    transform: scale(1.1);
-    box-shadow: 0 0 10px #f00;
-  }
-
-  /* Results Grid */
-  .res-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    margin-top: 10px;
-  }
-
-  .res-box {
-    padding: 12px;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 13px;
-    transition: transform 0.2s, box-shadow 0.2s;
-  }
-  .res-box:hover {
-    transform: scale(1.05);
-    box-shadow: 0 0 8px #f00;
-  }
-
-  /* Color Themes */
-  .blue { background: #003366; border: 1px solid #0088ff; }
-  .rose { background: #440022; border: 1px solid #ff0055; }
-
-  /* Google Sign-In Button */
-  #google-signin {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-  }
-  .g-signin2 {
-    margin: 10px auto;
-  }
-
-  /* Gestion Membres & Approvals */
-  #members-section {
-    margin-top: 20px;
-    display: none; /* visible uniquement si admin */
-    background: rgba(0,0,0,0.6);
-    padding: 15px;
-    border-radius: 15px;
-    max-width: 400px;
-    width: 100%;
-  }
-  #members-list, #pending-list, #approbations {
-    max-height: 200px;
-    overflow-y: auto;
-    margin-top: 10px;
-  }
-  .member-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 6px 10px;
-    background: #222;
-    border-radius: 8px;
-    margin-bottom: 5px;
-    transition: background 0.3s;
-  }
-  .member-item:hover {
-    background: #333;
-  }
-  .btn-expulse {
-    background: #a00; 
-    padding: 4px 8px; 
-    border: none; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    font-size: 12px;
-  }
-</style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
 </head>
 <body>
 
-<!-- Écran login -->
-<div id="login-screen" class="screen active" style="animation: fadeIn 1s ease;">
-  <div class="card" style="animation-delay: 0.2s;">
-    <h2 style="animation: fadeIn 1s ease;">AVIATOR V20</h2>
-    <button class="btn" onclick="signInWithGoogle()">Login with Google</button>
-    <!-- Google Sign-In -->
-    <div id="google-signin">
-      <div class="g-signin2" data-onsuccess="onGoogleSignIn" data-theme="dark"></div>
+    <div id="login-screen" class="screen active">
+        <div class="card">
+            <h2>AVIATOR V20</h2>
+            <input type="email" id="l-email" placeholder="Email">
+            <input type="password" id="l-pass" placeholder="Password">
+            <button class="btn" onclick="loginEmail()">CONNEXION</button>
+            
+            <div style="margin: 15px 0; color: #444; text-align: center; font-size: 12px;">OU</div>
+            
+            <button class="btn" onclick="loginGoogle()" style="background: #fff; color: #000; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="18">
+                Continuer avec Google
+            </button>
+        </div>
     </div>
-  </div>
-</div>
 
-<!-- Écran principal -->
-<div id="app-screen" class="screen" style="justify-content:flex-start; padding-top:40px; flex-direction:column;">
-  <!-- Onglets -->
-  <div class="tabs">
-    <div id="t-sig" class="tab active" onclick="switchTab('sig')">STRAT EMOJI</div>
-    <div id="t-cot" class="tab" onclick="switchTab('cot')">STRAT COTE</div>
-    <div id="t-mem" class="tab" onclick="switchTab('mem')">MEMBRES</div>
-    <div id="t-approb" class="tab" onclick="switchTab('approb')">APPROBATION</div>
-  </div>
+    <div id="app-screen" class="screen" style="justify-content: flex-start; padding-top: 40px;">
+        <div class="tabs">
+            <div id="t-sig" class="tab active" onclick="switchTab('sig')">STRAT EMOJI</div>
+            <div id="t-cot" class="tab" onclick="switchTab('cot')">STRAT COTE</div>
+        </div>
 
-  <!-- Panneaux -->
-  <div id="p-sig" class="panel active">
-    <div style="display:flex; gap:5px; justify-content:center;">
-      <button class="btn" style="background:#001a33;" onclick="addEmoji('💙')">💙</button>
-      <button class="btn" style="background:#1a0033;" onclick="addEmoji('💜')">💜</button>
-      <button class="btn" style="background:#330000;" onclick="addEmoji('🌹')">🌹</button>
+        <div id="p-sig" class="panel active">
+            <div style="display:flex; gap:5px; margin-bottom:10px;">
+                <button class="btn" style="background:#001a33; border:1px solid #0088ff;" onclick="addEmoji('💙')">💙</button>
+                <button class="btn" style="background:#1a0033; border:1px solid #8800ff;" onclick="addEmoji('💜')">💜</button>
+                <button class="btn" style="background:#330000; border:1px solid #ff0000;" onclick="addEmoji('🌹')">🌹</button>
+            </div>
+            <div class="dot-row">
+                <div class="dot" id="dot-0"></div>
+                <div class="dot" id="dot-1"></div>
+                <div class="dot" id="dot-2"></div>
+                <div class="dot" id="dot-3"></div>
+                <div class="dot" id="dot-4"></div>
+            </div>
+            <input type="time" id="time-sig" step="1" onchange="runCalc()">
+            <div id="res-sig" class="res-grid"></div>
+            <button class="btn" style="background:#222; margin-top:20px; font-size:12px;" onclick="resetSig()">RESET</button>
+        </div>
+
+        <div id="p-cot" class="panel">
+            <input type="number" id="val-cot" placeholder="Cote reçue (ex: 2.50)" step="0.01">
+            <input type="time" id="time-cot" step="1" onchange="runCote()">
+            <div id="res-cot" class="res-grid"></div>
+        </div>
+        
+        <button onclick="logout()" style="margin-top:auto; background:none; border:none; color:#555; cursor:pointer; padding:20px;">Déconnexion</button>
     </div>
-    <div class="dot-row">
-      <div class="dot" id="dot-0"></div>
-      <div class="dot" id="dot-1"></div>
-      <div class="dot" id="dot-2"></div>
-      <div class="dot" id="dot-3"></div>
-      <div class="dot" id="dot-4"></div>
-    </div>
-    <input type="time" id="time-sig" step="1" onchange="runCalc()" style="width:100%; margin-bottom:10px;">
-    <div id="res-sig" class="res-grid"></div>
-  </div>
-
-  <div id="p-cot" class="panel" style="margin-top:20px;">
-    <input type="number" id="val-cot" placeholder="Cote reçue" step="0.01" />
-    <input type="time" id="time-cot" step="1" onchange="runCote()" style="width:100%; margin-top:10px;">
-    <div id="res-cot" class="res-grid"></div>
-  </div>
-
-  <!-- Gestion Membres et Approbat -->
-  <div id="p-mem" class="panel" style="display:none;">
-    <h3 style="text-align:center;">Gestion des Membres</h3>
-    <div><strong>Membres</strong></div>
-    <div id="members-list"></div>
-    <div style="margin-top:10px;"><strong>Demandes d'inscription</strong></div>
-    <div id="pending-list"></div>
-  </div>
-
-  <div id="p-approb" class="panel" style="display:none;">
-    <h3 style="text-align:center;">Demandes en attente</h3>
-    <div id="approbations"></div>
-  </div>
-</div>
-
-<!-- Firebase initialization -->
-<script>
-  // Remplacez par votre configuration Firebase
-  const firebaseConfig = { 
-    apiKey: "API", 
-    authDomain: "ID", 
-    databaseURL: "URL", 
-    projectId: "ID", 
-    storageBucket: "ID", 
-    messagingSenderId: "ID", 
-    appId: "ID" 
-  };
-  firebase.initializeApp(firebaseConfig);
-</script>
 
 <script>
-  let currentUser = null;
-  let isAdmin = false;
+    // --- CONFIGURATION FIREBASE ---
+    const firebaseConfig = {
+        apiKey: "VOTRE_API_KEY",
+        authDomain: "aviator-85380.firebaseapp.com",
+        databaseURL: "VOTRE_DB_URL",
+        projectId: "aviator-85380",
+        storageBucket: "aviator-85380.appspot.com",
+        messagingSenderId: "VOTRE_SENDER_ID",
+        appId: "VOTRE_APP_ID"
+    };
+    firebase.initializeApp(firebaseConfig);
 
-  // Vérification de l'authentification
-  firebase.auth().onAuthStateChanged(user => {
-    if(user){
-      currentUser = user;
-      checkAdmin();
-    } else {
-      document.getElementById('login-screen').classList.add('active');
-      document.getElementById('app-screen').classList.remove('active');
+    let currentSeq = [];
+    const patterns = {
+        "💙💜🌹💙💙": [{m:3, c:"x60", s:"blue"}, {m:7, c:"x25", s:"rose"}],
+        "💙💜🌹💙💜": [{m:8, c:"x15", s:"blue"}, {m:13, c:"x70", s:"rose"}],
+        "💜💙🌹💙💜": [{m:3, c:"x25", s:"rose"}, {m:11, c:"x30", s:"blue"}],
+        "💜💙🌹💙💙": [{m:3, c:"x70", s:"rose"}, {m:8, c:"x200", s:"rose"}],
+        "💜💜🌹💙💜": [{m:7, c:"x20", s:"blue"}, {m:9, c:"x300", s:"rose"}],
+        "💜💙🌹💜💜": [{m:3, c:"x10", s:"blue"}, {m:10, c:"x20", s:"blue"}],
+        "💙💙🌹💜💜": [{m:9, c:"x10", s:"blue"}, {m:13, c:"x30", s:"blue"}],
+        "💜💜🌹💜💙": [{m:5, c:"x50", s:"rose"}, {m:21, c:"x10", s:"rose"}],
+        "💙💙🌹💙💙": [{m:3, c:"x400", s:"gold"}, {m:17, c:"x50", s:"rose"}],
+        "💜💙🌹💜💙": [{m:7, c:"x50", s:"rose"}, {m:13, c:"x100", s:"rose"}],
+        "💙💙🌹💙💜": [{m:3, c:"x80", s:"rose"}, {m:25, c:"x3000", s:"gold"}],
+        "💙💜🌹💜💙": [{m:3, c:"x50", s:"blue"}, {m:10, c:"x150", s:"rose"}]
+    };
+
+    // --- AUTHENTIFICATION ---
+    function loginEmail() {
+        const e = document.getElementById("l-email").value, p = document.getElementById("l-pass").value;
+        firebase.auth().signInWithEmailAndPassword(e, p).catch(err => alert(err.message));
     }
-  });
 
-  function signInWithGoogle() {
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider).then(result => {
-      currentUser = result.user;
-      document.getElementById('login-screen').classList.remove('active');
-      document.getElementById('app-screen').classList.add('active');
-      checkAdmin();
-    }).catch(error => alert(error.message));
-  }
-
-  function onGoogleSignIn(googleUser) {
-    // Non utilisé si on fait signInWithPopup, mais pour compatibilité
-    var profile = googleUser.getBasicProfile();
-    alert("Connecté: " + profile.getName());
-  }
-
-  function checkAdmin() {
-    if(currentUser){
-      // Modifier UID admin
-      isAdmin = (currentUser.uid === "votre-uid-admin");
-      if(isAdmin){
-        document.getElementById('p-mem').style.display='block';
-        document.getElementById('p-approb').style.display='block';
-        loadMembers();
-        loadPending();
-        loadApprovals();
-        document.getElementById('members-section').style.display='block';
-      } else {
-        document.getElementById('p-mem').style.display='none';
-        document.getElementById('p-approb').style.display='none';
-        document.getElementById('members-section').style.display='none';
-      }
+    function loginGoogle() {
+        const provider = new firebase.auth.GoogleAuthProvider();
+        firebase.auth().signInWithPopup(provider).catch(err => alert(err.message));
     }
-  }
 
-  function switchTab(id){
-    document.querySelectorAll('.panel').forEach(p => p.style.display='none');
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('p-'+id).style.display='block';
-    document.getElementById('t-'+id).classList.add('active');
-  }
+    function logout() { firebase.auth().signOut(); }
 
-  // --- Gestion Membres ---
-  const dbMembersRef = firebase.database().ref('members');
-  const dbPendingRef = firebase.database().ref('pending');
-
-  function loadMembers() {
-    dbMembersRef.on('value', snap => {
-      const list = document.getElementById('members-list');
-      list.innerHTML = '';
-      snap.forEach(s => {
-        const uid = s.key;
-        const email = s.val().email;
-        const div = document.createElement('div');
-        div.className='member-item';
-        div.innerHTML=`<span>${email}</span><button class="btn-expulse" onclick="expulseMember('${uid}')">Expulser</button>`;
-        list.appendChild(div);
-      });
+    firebase.auth().onAuthStateChanged((user) => {
+        if (user) {
+            document.getElementById('login-screen').classList.remove('active');
+            document.getElementById('app-screen').classList.add('active');
+        } else {
+            document.getElementById('login-screen').classList.add('active');
+            document.getElementById('app-screen').classList.remove('active');
+        }
     });
-  }
 
-  function loadPending() {
-    dbPendingRef.on('value', snap => {
-      const list = document.getElementById('pending-list');
-      list.innerHTML = '';
-      snap.forEach(s => {
-        const uid=s.key;
-        const email=s.val().email;
-        const div = document.createElement('div');
-        div.className='member-item';
-        div.innerHTML=`<span>${email}</span>
-        <button style="background:#0a0; margin-left:10px;" onclick="approveRequest('${uid}')">Accepter</button>
-        <button class="btn-expulse" style="background:#a00; margin-left:5px;" onclick="refuseRequest('${uid}')">Refuser</button>`;
-        list.appendChild(div);
-      });
-    });
-  }
-
-  function expulseMember(uid){
-    if(confirm('Expulser ce membre ?')){
-      firebase.database().ref('members/'+uid).remove();
+    // --- NAVIGATION ---
+    function switchTab(id) {
+        document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        document.getElementById('p-'+id).classList.add('active');
+        document.getElementById('t-'+id).classList.add('active');
     }
-  }
 
-  function approveRequest(uid){
-    firebase.database().ref('pending/'+uid).once('value', snap => {
-      const data=snap.val();
-      firebase.database().ref('members/'+uid).set(data);
-      firebase.database().ref('pending/'+uid).remove();
-    });
-  }
+    // --- LOGIQUE EMOJI ---
+    function addEmoji(emoji) {
+        if(currentSeq.length >= 5) resetSig();
+        document.getElementById('dot-' + currentSeq.length).innerHTML = emoji;
+        currentSeq.push(emoji);
+        if(currentSeq.length === 5) runCalc();
+    }
 
-  function refuseRequest(uid){
-    firebase.database().ref('pending/'+uid).remove();
-  }
+    function resetSig() {
+        currentSeq = [];
+        for(let i=0; i<5; i++) document.getElementById('dot-'+i).innerHTML = "";
+        document.getElementById('res-sig').innerHTML = "";
+    }
 
-  // Emoji et stratégie
-  let currentSeq=[];
-  const patterns={
-    "💙💜🌹💙💙": [{m:3, c:"x60", s:"blue"},{m:7, c:"x25", s:"rose"}],
-    "💙💜🌹💙💜": [{m:8, c:"x15", s:"blue"},{m:13, c:"x70", s:"rose"}],
-    "💜💙🌹💙💜": [{m:3, c:"x25", s:"rose"},{m:11, c:"x30", s:"blue"}],
-    "💜💙🌹💙💙": [{m:3, c:"x70", s:"rose"},{m:8, c:"x200", s:"rose"}],
-    "💜💜🌹💙💜": [{m:7, c:"x20", s:"blue"},{m:9, c:"x300", s:"rose"}],
-    "💜💙🌹💜💜": [{m:3, c:"x10", s:"blue"},{m:10, c:"x20", s:"blue"}],
-    "💙💙🌹💜💜": [{m:9, c:"x10", s:"blue"},{m:13, c:"x30", s:"blue"}],
-    "💜💜🌹💜💙": [{m:5, c:"x50", s:"rose"},{m:21, c:"x10", s:"rose"}],
-    "💙💙🌹💙💙": [{m:3, c:"x400", s:"gold"},{m:17, c:"x50", s:"rose"}],
-    "💜💙🌹💜💙": [{m:7, c:"x50", s:"rose"},{m:13, c:"x100", s:"rose"}],
-    "💙💙🌹💙💜": [{m:3, c:"x80", s:"rose"},{m:25, c:"x3000", s:"gold"}],
-    "💙💜🌹💜💙": [{m:3, c:"x50", s:"blue"},{m:10, c:"x150", s:"rose"}]
-  };
+    function runCalc() {
+        const time = document.getElementById("time-sig").value, grid = document.getElementById("res-sig");
+        if(!time || currentSeq.length < 5) return;
+        const res = patterns[currentSeq.join('')];
+        display(time, res || [], grid);
+    }
 
-  function addEmoji(emoji) {
-    if(currentSeq.length >= 5){ currentSeq=[]; for(let i=0;i<5;i++) document.getElementById('dot-'+i).innerHTML=''; }
-    document.getElementById('dot-'+currentSeq.length).innerHTML=emoji;
-    currentSeq.push(emoji);
-    document.querySelectorAll('.dot').forEach(d => {
-      if(d.innerHTML===emoji){
-        d.animate([{transform:'scale(1)'},{transform:'scale(1.2)'},{transform:'scale(1)'}],{duration:300});
-      }
-    });
-    if(currentSeq.length===5) runCalc();
-  }
+    // --- LOGIQUE COTE ---
+    function runCote() {
+        const val = parseFloat(document.getElementById("val-cot").value);
+        const time = document.getElementById("time-cot").value;
+        const grid = document.getElementById("res-cot");
+        if(!val || !time) return;
+        
+        let s = [];
+        if (val >= 2.5 && val <= 3.5) s.push({m: 2.16, c: "X3 IZY", s: "blue"});
+        else if (val >= 4.5 && val <= 6.5) s.push({m: 4.16, c: "X5 FAKANA", s: "rose"});
+        else if (val >= 6.5 && val <= 9.99) {
+            s.push({m: 6.16, c: "X3 ASSURÉ", s: "blue"});
+            s.push({m: 12.3, c: "X10 ROSE", s: "rose"});
+        }
+        display(time, s, grid);
+    }
 
-  function runCalc() {
-    const time=document.getElementById("time-sig").value;
-    const grid=document.getElementById("res-sig");
-    if(!time || currentSeq.length<5) return;
-    const res=patterns[currentSeq.join('')];
-    if(res) display(time,res,grid);
-  }
-
-  function runCote() {
-    const val=parseFloat(document.getElementById("val-cot").value);
-    const time=document.getElementById("time-cot").value;
-    const grid=document.getElementById("res-cot");
-    if(!val || !time) return;
-    let s=[];
-    if(val>=2.50 && val<=3.50) s.push({m:2.166, c:"X3 IZY", s:"blue"});
-    else if(val>=4.50 && val<=6.50) s.push({m:4.166, c:"X5 FAKANA", s:"rose"});
-    else if(val>=6.50 && val<=9.99){ s.push({m:6.166, c:"X3 ASSURÉ", s:"blue"}); s.push({m:6.166, c:"X10 ROSE", s:"rose"}); }
-    if(s.length>0) display(time,s,grid);
-  }
-
-  function display(ts, list, container) {
-    const [h,m,sec]=ts.split(':').map(Number);
-    container.innerHTML= list.map(i => {
-      let d=new Date(); d.setHours(h,m,(sec||0)+(i.m*60));
-      return `<div class="res-box ${i.s}"><b>${i.c}</b><br>${d.toLocaleTimeString('fr-FR')}</div>`;
-    }).join('');
-  }
-
-  function switchTab(id){
-    document.querySelectorAll('.panel').forEach(p => p.style.display='none');
-    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-    document.getElementById('p-'+id).style.display='block';
-    document.getElementById('t-'+id).classList.add('active');
-  }
+    // --- AFFICHAGE ---
+    function display(ts, list, container) {
+        if(list.length === 0) { container.innerHTML = "<p style='grid-column:1/3; font-size:11px; color:#444; text-align:center;'>Aucun signal</p>"; return; }
+        const [h, m, sec] = ts.split(':').map(Number);
+        container.innerHTML = list.map(i => {
+            let d = new Date(); d.setHours(h, m, (sec || 0) + (i.m * 60));
+            return `<div class="res-box ${i.s}"><b>${i.c}</b><br>${d.toLocaleTimeString('fr-FR')}</div>`;
+        }).join('');
+    }
 </script>
-
 </body>
 </html>
