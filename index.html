@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AVIATOR V20 - STRATÉGIES COMPLÈTES</title>
+    <title>AVIATOR V20 - ELITE OMNI FULL</title>
     
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
     <style>
-        :root { --cyan: #00f2ff; --rose: #ff007b; --bg: #030303; }
+        :root { --cyan: #00f2ff; --rose: #ff007b; --bg: #030303; --glass: rgba(255, 255, 255, 0.05); }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Orbitron', sans-serif; font-weight: bold; }
+        
         body { background: var(--bg); color: #fff; height: 100vh; display: flex; justify-content: center; background-image: radial-gradient(circle at center, #001a1a 0%, #030303 100%); overflow: hidden; }
 
         .screen { display: none; width: 100%; max-width: 450px; padding: 20px; animation: fadeIn 0.3s ease; }
@@ -25,15 +26,33 @@
         .tab { flex: 1; padding: 12px; background: #111; text-align: center; border-radius: 10px; font-size: 9px; cursor: pointer; color: var(--cyan); border: 1px solid #222; }
         .tab.active { background: var(--rose); color: #fff; border-color: var(--rose); }
 
-        .user-item { background: #0a0a0a; padding: 15px; margin: 8px 0; border-radius: 12px; border-left: 4px solid var(--cyan); display: flex; justify-content: space-between; align-items: center; }
-        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .res-box { padding: 15px; border-radius: 8px; text-align: center; font-size: 13px; font-weight: 900; }
-        .blue { background: #0044ff; color: #fff; } 
-        .rose-box { background: #ff007b; color: #fff; } 
-        .gold { background: #ffcc00; color: #000; }
+        /* DESIGN PROFESSIONNEL DES RÉSULTATS */
+        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
+        .res-box { 
+            padding: 18px 10px; 
+            border-radius: 15px; 
+            text-align: center; 
+            border: 1px solid rgba(255,255,255,0.1);
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+        .res-box .cote-val { font-size: 18px; display: block; margin-bottom: 5px; letter-spacing: 1px; }
+        .res-box .time-val { font-size: 11px; opacity: 0.8; font-family: monospace; color: var(--cyan); }
+        
+        .blue { border-top: 4px solid #0044ff; }
+        .rose-box { border-top: 4px solid #ff007b; }
+        .gold { border-top: 4px solid #ffcc00; }
+        .gold .time-val { color: #ffcc00; }
 
         .dot-row { display: flex; gap: 8px; justify-content: center; margin: 15px 0; }
         .dot { width: 42px; height: 42px; background: #000; border: 2px solid var(--cyan); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
+        
+        /* ADMIN LIST */
+        .user-item { background: #0a0a0a; padding: 15px; margin: 8px 0; border-radius: 12px; border-left: 4px solid var(--cyan); display: flex; flex-direction: column; gap: 10px; }
+        .user-info { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
+        .action-row { display: flex; gap: 10px; }
+        .act-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; font-size: 10px; cursor: pointer; text-transform: uppercase; font-weight: 900; color: #fff; }
     </style>
 </head>
 <body>
@@ -49,7 +68,7 @@
     <div id="wait-screen" class="screen">
         <div class="card">
             <h2 style="color:var(--rose);">SÉCURITÉ</h2>
-            <p style="font-size: 11px; margin: 15px 0;">Licence en attente d'approbation...</p>
+            <p style="font-size: 11px; margin: 15px 0;">Validation en cours par l'administrateur...</p>
             <button class="btn" style="background:#222;" onclick="location.reload()">ACTUALISER</button>
         </div>
     </div>
@@ -61,7 +80,7 @@
             <div id="at-calc" class="tab" onclick="switchAdminTab('calc')">CALCULS</div>
         </div>
         <div id="ap-mem" style="display:block;"><div id="user-list" style="max-height: 400px; overflow-y: auto;"></div></div>
-        <div id="ap-calc" style="display:none;"><button class="btn" onclick="showScreen('app-screen')">INTERFACE CALCULS</button></div>
+        <div id="ap-calc" style="display:none;"><button class="btn" onclick="showScreen('app-screen')">ACCÉDER AUX CALCULS</button></div>
         <button class="btn" style="background:#111; margin-top: 20px;" onclick="location.reload()">DÉCONNEXION</button>
     </div>
 
@@ -81,16 +100,15 @@
             <input type="time" id="time-sig" step="1">
             <button class="btn" onclick="runCalc()">CALCULER SIGNAL</button>
             <div id="res-sig" class="res-grid"></div>
-            <p onclick="resetSig()" style="text-align:center; color:#444; margin-top:10px; font-size:10px; cursor:pointer;">EFFACER</p>
+            <p onclick="resetSig()" style="text-align:center; color:#444; margin-top:10px; font-size:10px; cursor:pointer;">RESET SÉQUENCE</p>
         </div>
 
         <div id="p-cot" style="display:none; width:100%;">
-            <input type="number" id="val-cot" placeholder="ENTRER DERNIÈRE COTE" step="0.01">
+            <input type="number" id="val-cot" placeholder="ENTRER COTE" step="0.01">
             <input type="time" id="time-cot" step="1">
-            <button class="btn" onclick="runCote()">PRÉDIRE PROCHAINE COTE</button>
+            <button class="btn" onclick="runCote()">GÉNÉRER PRÉDICTION</button>
             <div id="res-cot" class="res-grid"></div>
         </div>
-
         <button id="adm-back" class="btn" style="background:#111; margin-top:20px; display:none;" onclick="showScreen('admin-screen')">RETOUR ADMIN</button>
     </div>
 
@@ -121,7 +139,7 @@
             const u = s.val();
             if(!u) return;
             if(u.status === 'active') showScreen('app-screen');
-            else if(u.status === 'banned') { alert("ACCÈS RÉVOQUÉ"); location.reload(); }
+            else if(u.status === 'banned') { alert("BANNI PAR L'ADMINISTRATEUR"); location.reload(); }
             else showScreen('wait-screen');
         });
     }
@@ -131,11 +149,12 @@
             const list = document.getElementById('user-list'); list.innerHTML = "";
             s.forEach(c => {
                 const u = c.val();
-                list.innerHTML += `<div class="user-item">
-                    <span style="font-size:12px;">${u.name} (${u.status})</span>
-                    <div style="display:flex; gap:5px;">
-                        <button class="btn" style="background:green; padding:8px; margin:0;" onclick="db.ref('members/${c.key}').update({status:'active'})">OK</button>
-                        <button class="btn" style="background:red; padding:8px; margin:0;" onclick="db.ref('members/${c.key}').update({status:'banned'})">BAN</button>
+                list.innerHTML += `
+                <div class="user-item">
+                    <div class="user-info"><span>${u.name}</span> <span>[${u.status}]</span></div>
+                    <div class="action-row">
+                        <button class="act-btn" style="background:#006600;" onclick="db.ref('members/${c.key}').update({status:'active'})">ACCEPTER</button>
+                        <button class="act-btn" style="background:#660000;" onclick="db.ref('members/${c.key}').update({status:'banned'})">EXPULSER</button>
                     </div>
                 </div>`;
             });
@@ -161,21 +180,21 @@
         document.getElementById('t-cot').className = 'tab ' + (id === 'cot' ? 'active' : '');
     }
 
-    // --- STRATÉGIE 1 : 12 PATTERNS EMOJI ---
+    // --- STRATÉGIE 1 : LES 12 MOTIFS ---
     let currentSeq = [];
     const patterns = {
-        "💙💜🌹💙💙": [{m:3, c:"x60", s:"blue"}, {m:7, c:"x25", s:"rose-box"}],
-        "💙💜🌹💙💜": [{m:8, c:"x15", s:"blue"}, {m:13, c:"x70", s:"rose-box"}],
-        "💜💙🌹💙💜": [{m:3, c:"x25", s:"rose-box"}, {m:11, c:"x30", s:"blue"}],
-        "💜💙🌹💙💙": [{m:3, c:"x70", s:"rose-box"}, {m:8, c:"x200", s:"rose-box"}],
-        "💜💜🌹💙💜": [{m:7, c:"x20", s:"blue"}, {m:9, c:"x300", s:"rose-box"}],
-        "💜💙🌹💜💜": [{m:3, c:"x10", s:"blue"}, {m:10, c:"x20", s:"blue"}],
-        "💙💙🌹💜💜": [{m:9, c:"x10", s:"blue"}, {m:13, c:"x30", s:"blue"}],
-        "💜💜🌹💜💙": [{m:5, c:"x50", s:"rose-box"}, {m:21, c:"x10", s:"rose-box"}],
-        "💙💙🌹💙💙": [{m:3, c:"x400", s:"gold"}, {m:17, c:"x50", s:"rose-box"}],
-        "💜💙🌹💜💙": [{m:7, c:"x50", s:"rose-box"}, {m:13, c:"x100", s:"rose-box"}],
-        "💙💙🌹💙💜": [{m:3, c:"x80", s:"rose-box"}, {m:25, c:"x3000", s:"gold"}],
-        "💙💜🌹💜💙": [{m:3, c:"x50", s:"blue"}, {m:10, c:"x150", s:"rose-box"}]
+        "💙💜🌹💙💙": [{m:3, c:"X60.00", s:"blue"}, {m:7, c:"X25.00", s:"rose-box"}],
+        "💙💜🌹💙💜": [{m:8, c:"X15.00", s:"blue"}, {m:13, c:"X70.00", s:"rose-box"}],
+        "💜💙🌹💙💜": [{m:3, c:"X25.00", s:"rose-box"}, {m:11, c:"X30.00", s:"blue"}],
+        "💜💙🌹💙💙": [{m:3, c:"X70.00", s:"rose-box"}, {m:8, c:"X200.00", s:"rose-box"}],
+        "💜💜🌹💙💜": [{m:7, c:"X20.00", s:"blue"}, {m:9, c:"X300.00", s:"rose-box"}],
+        "💜💙🌹💜💜": [{m:3, c:"X10.00", s:"blue"}, {m:10, c:"X20.00", s:"blue"}],
+        "💙💙🌹💜💜": [{m:9, c:"X10.00", s:"blue"}, {m:13, c:"X30.00", s:"blue"}],
+        "💜💜🌹💜💙": [{m:5, c:"X50.00", s:"rose-box"}, {m:21, c:"X10.00", s:"rose-box"}],
+        "💙💙🌹💙💙": [{m:3, c:"X400.00", s:"gold"}, {m:17, c:"X50.00", s:"rose-box"}],
+        "💜💙🌹💜💙": [{m:7, c:"X50.00", s:"rose-box"}, {m:13, c:"X100.00", s:"rose-box"}],
+        "💙💙🌹💙💜": [{m:3, c:"X80.00", s:"rose-box"}, {m:25, c:"X3000.00", s:"gold"}],
+        "💙💜🌹💜💙": [{m:3, c:"X50.00", s:"blue"}, {m:10, c:"X150.00", s:"rose-box"}]
     };
 
     function addEmoji(e) { if(currentSeq.length < 5) { document.getElementById('dot-'+currentSeq.length).innerHTML = e; currentSeq.push(e); } }
@@ -186,7 +205,7 @@
         if(t && currentSeq.length === 5) display(t, patterns[currentSeq.join('')] || [], document.getElementById("res-sig"));
     }
 
-    // --- STRATÉGIE 2 : 3 PALIERS DE COTE ---
+    // --- STRATÉGIE 2 : LES 3 PALIERS DE COTE ---
     function runCote() {
         const v = parseFloat(document.getElementById("val-cot").value), t = document.getElementById("time-cot").value;
         if(!v || !t) return;
@@ -198,11 +217,16 @@
     }
 
     function display(ts, list, container) {
-        if(list.length === 0) { container.innerHTML = "<p style='grid-column:1/3; opacity:0.3; font-size:10px;'>PAS DE SIGNAL CORRESPONDANT</p>"; return; }
+        if(list.length === 0) { container.innerHTML = "<p style='grid-column:1/3; opacity:0.3;'>AUCUN SIGNAL</p>"; return; }
         const [h, m, sec] = ts.split(':').map(Number);
         container.innerHTML = list.map(i => {
             let d = new Date(); d.setHours(h, m, (sec || 0) + (i.m * 60));
-            return `<div class="res-box ${i.s}">${i.c}<br>${d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'})}</div>`;
+            const exactTime = d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+            return `
+            <div class="res-box ${i.s}">
+                <span class="cote-val">${i.c}</span>
+                <span class="time-val">${exactTime}</span>
+            </div>`;
         }).join('');
     }
 </script>
