@@ -2,233 +2,400 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>AVIATOR V20 - ELITE OMNI FULL</title>
-    
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>AVIATOR V20 | ANTHONIO ELITE HUB</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        :root { --cyan: #00f2ff; --rose: #ff007b; --bg: #030303; --glass: rgba(255, 255, 255, 0.05); }
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Orbitron', sans-serif; font-weight: bold; }
-        
-        body { background: var(--bg); color: #fff; height: 100vh; display: flex; justify-content: center; background-image: radial-gradient(circle at center, #001a1a 0%, #030303 100%); overflow: hidden; }
-
-        .screen { display: none; width: 100%; max-width: 450px; padding: 20px; animation: fadeIn 0.3s ease; }
-        .active { display: flex; flex-direction: column; justify-content: center; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .card { background: rgba(0, 0, 0, 0.95); padding: 30px; border-radius: 25px; border: 2px solid var(--cyan); text-align: center; }
-        input { width: 100%; padding: 15px; margin-bottom: 15px; border-radius: 10px; border: 1px solid #333; background: #000; color: #fff; text-align: center; font-size: 16px; border-bottom: 2px solid var(--cyan); }
-        .btn { width: 100%; padding: 16px; border-radius: 12px; border: none; cursor: pointer; background: linear-gradient(90deg, var(--cyan), var(--rose)); color: #fff; text-transform: uppercase; font-size: 11px; margin-bottom: 8px; }
-
-        .tabs { display: flex; gap: 8px; margin-bottom: 20px; }
-        .tab { flex: 1; padding: 12px; background: #111; text-align: center; border-radius: 10px; font-size: 9px; cursor: pointer; color: var(--cyan); border: 1px solid #222; }
-        .tab.active { background: var(--rose); color: #fff; border-color: var(--rose); }
-
-        /* DESIGN PROFESSIONNEL DES RÉSULTATS */
-        .res-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 20px; }
-        .res-box { 
-            padding: 18px 10px; 
-            border-radius: 15px; 
-            text-align: center; 
-            border: 1px solid rgba(255,255,255,0.1);
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
-        .res-box .cote-val { font-size: 18px; display: block; margin-bottom: 5px; letter-spacing: 1px; }
-        .res-box .time-val { font-size: 11px; opacity: 0.8; font-family: monospace; color: var(--cyan); }
-        
-        .blue { border-top: 4px solid #0044ff; }
-        .rose-box { border-top: 4px solid #ff007b; }
-        .gold { border-top: 4px solid #ffcc00; }
-        .gold .time-val { color: #ffcc00; }
 
-        .dot-row { display: flex; gap: 8px; justify-content: center; margin: 15px 0; }
-        .dot { width: 42px; height: 42px; background: #000; border: 2px solid var(--cyan); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; }
-        
-        /* ADMIN LIST */
-        .user-item { background: #0a0a0a; padding: 15px; margin: 8px 0; border-radius: 12px; border-left: 4px solid var(--cyan); display: flex; flex-direction: column; gap: 10px; }
-        .user-info { display: flex; justify-content: space-between; align-items: center; font-size: 12px; }
-        .action-row { display: flex; gap: 10px; }
-        .act-btn { flex: 1; padding: 10px; border-radius: 8px; border: none; font-size: 10px; cursor: pointer; text-transform: uppercase; font-weight: 900; color: #fff; }
+        :root {
+            --bg-void: #03050b;
+            --surface-deep: #0a0e17;
+            --surface-card: #11161f;
+            --neon-pink: #ff2d8f;
+            --neon-cyan: #00e5ff;
+            --neon-purple: #b967ff;
+            --gold-bright: #ffcd4a;
+            --emerald: #2de3a2;
+            --danger-fire: #ff4d5a;
+            --text-glow: #f0f3ff;
+            --text-muted: #8b95af;
+            --border-subtle: #20273a;
+            --card-radius: 28px;
+            --chat-bg: #0d1220;
+        }
+
+        body {
+            background: radial-gradient(circle at 15% 0%, #0b0e1c, var(--bg-void));
+            font-family: 'Space Grotesk', sans-serif;
+            color: var(--text-glow);
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* SPLASH */
+        .splash-orbital {
+            position: fixed;
+            inset: 0;
+            background: radial-gradient(ellipse at center, #0f1222 0%, #000000 100%);
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+        }
+        .splash-icon { font-size: 85px; background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; animation: boost 1.8s infinite ease; }
+        @keyframes boost { 0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-12px) scale(1.05);} }
+        .splash-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 32px; letter-spacing: 6px; background: linear-gradient(120deg, #fff, var(--neon-cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; margin-top: 20px; }
+
+        .screen { display: none; width: 100%; max-width: 620px; margin: 0 auto; height: 100vh; flex-direction: column; padding: 16px 14px; overflow-y: auto; scrollbar-width: thin; }
+        .screen.active { display: flex; }
+
+        .premium-card { background: rgba(17, 22, 31, 0.92); backdrop-filter: blur(12px); border-radius: var(--card-radius); border: 1px solid rgba(0, 229, 255, 0.2); padding: 22px 18px; margin-bottom: 18px; box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.7); }
+
+        /* TABS */
+        .tab-constellation { display: flex; gap: 10px; background: #080c14; padding: 6px; border-radius: 60px; margin-bottom: 18px; }
+        .tab-star { flex: 1; background: transparent; border: none; padding: 12px 0; font-weight: 700; font-size: 12px; border-radius: 50px; color: var(--text-muted); font-family: 'Syne', sans-serif; cursor: pointer; transition: all 0.2s; }
+        .tab-star.active { background: linear-gradient(95deg, var(--neon-pink), #aa2e6e); color: white; box-shadow: 0 5px 15px rgba(255, 45, 143, 0.4); }
+
+        .input-cosmic { width: 100%; background: #070b12; border: 1.5px solid #262f40; border-radius: 50px; padding: 14px 20px; font-size: 15px; font-weight: 500; color: white; margin: 12px 0; font-family: 'Space Grotesk', monospace; }
+        .input-cosmic:focus { border-color: var(--neon-cyan); outline: none; box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.2); }
+
+        .btn-neon { background: linear-gradient(100deg, var(--neon-pink), #c41e6e); border: none; border-radius: 60px; padding: 14px; font-weight: 800; font-size: 15px; letter-spacing: 1px; color: white; width: 100%; cursor: pointer; transition: transform 0.1s; }
+        .btn-neon:active { transform: scale(0.97); }
+        .btn-outline { background: transparent; border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); margin-top: 8px; }
+
+        /* PATTERN */
+        .pattern-deck { display: flex; gap: 18px; justify-content: center; margin-bottom: 24px; }
+        .pattern-orb { background: #131a26; width: 70px; padding: 12px 0; font-size: 38px; border-radius: 60px; border: none; cursor: pointer; transition: 0.1s; }
+        .slot-preview { display: flex; justify-content: center; gap: 12px; background: #080c14; padding: 15px; border-radius: 80px; margin: 18px 0; }
+        .slot-cell { width: 55px; height: 55px; background: #0f141f; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 1px solid #2a344c; }
+
+        /* RESULTS GLAMOUR */
+        .prediction-galaxy { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-height: 460px; overflow-y: auto; padding: 6px; }
+        .oracle-card { background: linear-gradient(145deg, #0f1623, #090d18); border-radius: 28px; padding: 20px 16px; position: relative; border: 1px solid rgba(0, 229, 255, 0.3); transition: all 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
+        .oracle-card:hover { transform: translateY(-3px); border-color: var(--neon-pink); box-shadow: 0 12px 28px rgba(255,45,143,0.2); }
+        .badge-safe { position: absolute; top: -12px; right: 16px; background: linear-gradient(135deg, var(--gold-bright), #ffaa2a); color: #0a0c12; font-size: 9px; font-weight: 900; padding: 5px 14px; border-radius: 40px; letter-spacing: 1px; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .pred-cote { font-size: 26px; font-weight: 800; font-family: monospace; background: linear-gradient(135deg, var(--emerald), #a0ffc0); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px; letter-spacing: -0.5px; }
+        .pred-time { font-size: 20px; font-weight: 600; font-family: monospace; color: var(--neon-cyan); text-shadow: 0 0 4px rgba(0,229,255,0.3); display: flex; align-items: center; gap: 8px; }
+        .pred-time::before { content: "⏱️"; font-size: 18px; }
+
+        /* CHAT + HEADER */
+        .app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; }
+        .logout-btn { background: rgba(255,77,90,0.2); border: 1px solid var(--danger-fire); border-radius: 40px; padding: 8px 16px; font-size: 12px; font-weight: 600; color: var(--danger-fire); cursor: pointer; transition: 0.2s; }
+        .logout-btn:hover { background: var(--danger-fire); color: white; }
+
+        /* CHAT GLOBAL */
+        .chat-lounge { background: var(--chat-bg); border-radius: 28px; border: 1px solid #2a2f42; margin-top: 12px; overflow: hidden; }
+        .chat-messages { height: 180px; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: #0a0e18; }
+        .chat-message { background: #131a26; border-radius: 20px; padding: 10px 14px; max-width: 85%; font-size: 12px; border-left: 3px solid var(--neon-cyan); word-break: break-word; }
+        .chat-message .msg-name { font-weight: 800; color: var(--neon-pink); margin-right: 8px; }
+        .chat-message .msg-text { color: #e0e4f0; }
+        .chat-input-area { display: flex; gap: 8px; padding: 12px; background: #0c111c; border-top: 1px solid #1e2538; }
+        .chat-input { flex: 1; background: #070b12; border: 1px solid #2a344c; border-radius: 40px; padding: 10px 16px; color: white; font-size: 13px; }
+        .chat-send { background: var(--neon-purple); border: none; border-radius: 40px; padding: 8px 20px; font-weight: bold; cursor: pointer; }
+
+        /* ADMIN DASHBOARD */
+        .admin-dashboard { background: var(--surface-card); border-radius: 32px; padding: 6px; }
+        .sub-tab-bar { display: flex; gap: 5px; background: #0c101c; border-radius: 40px; padding: 6px; margin-bottom: 20px; }
+        .sub-tab { flex: 1; background: transparent; border: none; padding: 8px; border-radius: 30px; font-weight: 600; font-size: 10px; color: var(--text-muted); cursor: pointer; }
+        .sub-tab.active-sub { background: var(--neon-purple); color: white; }
+        .member-list-advanced { max-height: 340px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; }
+        .member-proto { background: #111722; border-radius: 24px; padding: 14px; border: 1px solid #2a2f42; }
+        .member-header { display: flex; justify-content: space-between; font-weight: 700; font-size: 15px; }
+        .status-badge { font-size: 9px; padding: 4px 12px; border-radius: 50px; }
+        .badge-active { background: #2de3a220; color: #2de3a2; border: 1px solid #2de3a240; }
+        .badge-pending { background: #ffcd4a20; color: #ffcd4a; }
+        .badge-expired { background: #ff4d5a20; color: #ff4d5a; }
+        .member-meta { font-size: 10px; color: var(--text-muted); margin: 10px 0; }
+        .admin-action-buttons { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
+        .tiny-btn { flex: 1; background: #1e2538; border: none; border-radius: 40px; padding: 8px; font-weight: 600; font-size: 10px; cursor: pointer; color: white; }
+        .stat-bento { background: #0a0e18; border-radius: 20px; padding: 14px; margin-bottom: 14px; text-align: center; }
+        .stat-number { font-size: 32px; font-weight: 800; color: var(--gold-bright); }
+        .member-online-list { font-size: 11px; background: #0a0e18; border-radius: 20px; padding: 12px; margin-bottom: 12px; }
     </style>
 </head>
 <body>
 
-    <div id="login-screen" class="screen active">
-        <div class="card">
-            <h2 style="color:var(--cyan); margin-bottom: 20px;">AVIATOR V20</h2>
-            <input type="text" id="user-name" placeholder="NOM OU CODE ADMIN">
-            <button class="btn" onclick="handleEntry()">VALIDER</button>
-        </div>
+<div id="splashPremium" class="splash-orbital">
+    <div class="splash-icon">✈️</div>
+    <div class="splash-title">AVIATOR V20</div>
+    <div style="font-size: 10px; letter-spacing: 4px; margin-top: 10px; color:#6a7c9e;">ANTHONIO · ELITE HUB</div>
+</div>
+
+<!-- LOGIN -->
+<div id="loginScreen" class="screen">
+    <div class="premium-card" style="margin-top: auto; margin-bottom: auto;">
+        <div style="text-align:center; margin-bottom: 18px;"><span style="font-size: 54px;">🔮</span><h2 style="font-weight:800;">ACCÈS HUB</h2></div>
+        <input type="text" id="loginIdentifier" class="input-cosmic" placeholder="Identifiant / Code Admin">
+        <button class="btn-neon" onclick="authUser()">ACTIVER</button>
+        <div id="loginFeed" style="text-align:center; margin-top: 15px; font-size: 11px; color: var(--neon-pink);"></div>
+    </div>
+</div>
+
+<!-- APP PRINCIPALE -->
+<div id="appScreen" class="screen">
+    <div class="app-header">
+        <span style="font-weight:700; font-size:18px; background:linear-gradient(135deg,#fff,var(--neon-cyan)); -webkit-background-clip:text; background-clip:text; color:transparent;">✈ AVIATOR V20</span>
+        <button class="logout-btn" onclick="logoutUser()">DÉCONNECTER</button>
+    </div>
+    <div class="tab-constellation">
+        <button class="tab-star active" data-main="patternTab">🌀 PATTERNS</button>
+        <button class="tab-star" data-main="coteTab">⚡ STRATÉGIES</button>
+        <button class="tab-star" id="adminNavBtn" style="display:none" data-main="adminMasterTab">👑 ADMIN</button>
+        <button class="tab-star" data-main="chatTab">💬 CHAT</button>
     </div>
 
-    <div id="wait-screen" class="screen">
-        <div class="card">
-            <h2 style="color:var(--rose);">SÉCURITÉ</h2>
-            <p style="font-size: 11px; margin: 15px 0;">Validation en cours par l'administrateur...</p>
-            <button class="btn" style="background:#222;" onclick="location.reload()">ACTUALISER</button>
-        </div>
-    </div>
-
-    <div id="admin-screen" class="screen" style="justify-content: flex-start; padding-top: 30px;">
-        <h2 style="text-align:center; color:var(--cyan); margin-bottom: 20px;">ADMIN PANEL</h2>
-        <div class="tabs">
-            <div id="at-mem" class="tab active" onclick="switchAdminTab('mem')">MEMBRES</div>
-            <div id="at-calc" class="tab" onclick="switchAdminTab('calc')">CALCULS</div>
-        </div>
-        <div id="ap-mem" style="display:block;"><div id="user-list" style="max-height: 400px; overflow-y: auto;"></div></div>
-        <div id="ap-calc" style="display:none;"><button class="btn" onclick="showScreen('app-screen')">ACCÉDER AUX CALCULS</button></div>
-        <button class="btn" style="background:#111; margin-top: 20px;" onclick="location.reload()">DÉCONNEXION</button>
-    </div>
-
-    <div id="app-screen" class="screen" style="justify-content: flex-start; padding-top: 30px;">
-        <div class="tabs">
-            <div id="t-sig" class="tab active" onclick="switchAppTab('sig')">STRAT EMOJI</div>
-            <div id="t-cot" class="tab" onclick="switchAppTab('cot')">STRAT COTE</div>
-        </div>
-
-        <div id="p-sig" style="display:block; width:100%;">
-            <div style="display:flex; gap:8px;">
-                <button class="btn" style="background:#001a33; flex:1;" onclick="addEmoji('💙')">💙</button>
-                <button class="btn" style="background:#1a0033; flex:1;" onclick="addEmoji('💜')">💜</button>
-                <button class="btn" style="background:#330000; flex:1;" onclick="addEmoji('🌹')">🌹</button>
+    <!-- PATTERNS -->
+    <div id="patternTab" class="main-pane">
+        <div class="premium-card">
+            <div class="pattern-deck">
+                <button class="pattern-orb" onclick="addPatternSymbol('💙')" style="background:#0044cc40;">💙</button>
+                <button class="pattern-orb" onclick="addPatternSymbol('💜')" style="background:#aa44aa40;">💜</button>
+                <button class="pattern-orb" onclick="addPatternSymbol('🌹')" style="background:#cc335540;">🌹</button>
             </div>
-            <div class="dot-row"><div class="dot" id="dot-0"></div><div class="dot" id="dot-1"></div><div class="dot" id="dot-2"></div><div class="dot" id="dot-3"></div><div class="dot" id="dot-4"></div></div>
-            <input type="time" id="time-sig" step="1">
-            <button class="btn" onclick="runCalc()">CALCULER SIGNAL</button>
-            <div id="res-sig" class="res-grid"></div>
-            <p onclick="resetSig()" style="text-align:center; color:#444; margin-top:10px; font-size:10px; cursor:pointer;">RESET SÉQUENCE</p>
+            <div class="slot-preview" id="patternPreviewArea"><div class="slot-cell">—</div><div class="slot-cell">—</div><div class="slot-cell">—</div><div class="slot-cell">—</div><div class="slot-cell">—</div></div>
+            <input type="time" id="patternTimeInput" class="input-cosmic" step="1">
+            <button class="btn-neon" onclick="runPatternPrediction()">DÉCODER PATTERN</button>
         </div>
-
-        <div id="p-cot" style="display:none; width:100%;">
-            <input type="number" id="val-cot" placeholder="ENTRER COTE" step="0.01">
-            <input type="time" id="time-cot" step="1">
-            <button class="btn" onclick="runCote()">GÉNÉRER PRÉDICTION</button>
-            <div id="res-cot" class="res-grid"></div>
-        </div>
-        <button id="adm-back" class="btn" style="background:#111; margin-top:20px; display:none;" onclick="showScreen('admin-screen')">RETOUR ADMIN</button>
+        <div id="patternResultZone" class="prediction-galaxy"></div>
     </div>
+
+    <!-- STRATÉGIES COTES -->
+    <div id="coteTab" class="main-pane" style="display:none">
+        <div class="premium-card">
+            <input type="number" id="oddValueInput" class="input-cosmic" placeholder="Dernière cote (ex: 4.80)" step="0.01">
+            <input type="time" id="oddBaseTime" class="input-cosmic" step="1">
+            <button class="btn-neon" onclick="runCoteStrategy()">SCAN HYPER</button>
+        </div>
+        <div id="coteResultZone" class="prediction-galaxy"></div>
+    </div>
+
+    <!-- ADMIN MASTER -->
+    <div id="adminMasterTab" class="main-pane" style="display:none">
+        <div class="premium-card" style="padding: 16px;">
+            <div class="sub-tab-bar">
+                <button class="sub-tab active-sub" data-subpanel="memberSub">📋 MEMBRES</button>
+                <button class="sub-tab" data-subpanel="statsSub">📊 STATS</button>
+                <button class="sub-tab" data-subpanel="toolsSub">🛠 OUTILS</button>
+            </div>
+            <div id="memberSub" class="sub-panel">
+                <div class="stat-bento"><div class="stat-number" id="totalMemberCount">0</div><div>MEMBRES ENREGISTRÉS</div></div>
+                <div id="advancedMemberList" class="member-list-advanced"></div>
+            </div>
+            <div id="statsSub" class="sub-panel" style="display:none">
+                <div class="stat-bento"><div class="stat-number" id="activeStatNum">0</div><div>ACTIFS</div></div>
+                <div class="stat-bento"><div class="stat-number" id="pendingStatNum">0</div><div>EN ATTENTE</div></div>
+                <div class="stat-bento"><div class="stat-number" id="expiredStatNum">0</div><div>EXPIRÉS</div></div>
+                <button class="tiny-btn" style="background:#2a2f42;" onclick="refreshAdminPanels()">⟳ SYNC</button>
+            </div>
+            <div id="toolsSub" class="sub-panel" style="display:none">
+                <button class="tiny-btn" style="background: #b967ff; margin-bottom:12px;" onclick="resetFullDatabase()">⚠️ RÉINIT DB TOTALE</button>
+                <button class="tiny-btn" style="background: #2de3a2; color:#000;" onclick="exportMembersJSON()">📎 EXPORTER JSON</button>
+                <button class="tiny-btn" style="background:#ff4d5a;" onclick="clearAllChat()">🗑 EFFACER CHAT</button>
+                <div style="font-size:9px; text-align:center; margin-top:12px;">Gestion des licences & validité</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- CHAT GLOBAL -->
+    <div id="chatTab" class="main-pane" style="display:none">
+        <div class="premium-card" style="padding: 16px;">
+            <div class="member-online-list" id="onlineMembersPreview">👥 Membres connectés : --</div>
+            <div class="chat-lounge">
+                <div class="chat-messages" id="globalChatMessages"></div>
+                <div class="chat-input-area">
+                    <input type="text" id="chatInputMsg" class="chat-input" placeholder="Message...">
+                    <button class="chat-send" onclick="sendChatMessage()">ENVOYER</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script>
-    const firebaseConfig = { databaseURL: "https://aviator-85380-default-rtdb.firebaseio.com" };
-    firebase.initializeApp(firebaseConfig);
-    const db = firebase.database();
-    const ADMIN_CODE = "161211";
+    // ========== BASE DE DONNEES & CHAT ==========
+    const MASTER_KEY = "161211";
+    let membersDB = JSON.parse(localStorage.getItem('aviator_v20_members')) || {};
+    let chatMessages = JSON.parse(localStorage.getItem('aviator_chat_msgs')) || [];
+    let currentLoggedUser = null;   // stocke le pseudo connecté
 
-    function handleEntry() {
-        const val = document.getElementById('user-name').value.trim();
-        if(!val) return;
-        if(val === ADMIN_CODE) { 
-            document.getElementById('adm-back').style.display = 'block';
-            showScreen('admin-screen'); loadMembers(); 
+    function persistMembers() { localStorage.setItem('aviator_v20_members', JSON.stringify(membersDB)); }
+    function persistChat() { localStorage.setItem('aviator_chat_msgs', JSON.stringify(chatMessages)); }
+
+    // SPLASH
+    setTimeout(() => { let s = document.getElementById('splashPremium'); if(s){ s.style.opacity='0'; setTimeout(()=>{ s.style.display='none'; document.getElementById('loginScreen').classList.add('active'); },600); } }, 2500);
+
+    function authUser() {
+        const val = document.getElementById('loginIdentifier').value.trim();
+        const msgDiv = document.getElementById('loginFeed');
+        if(!val) { msgDiv.innerText = "❌ Entrez un identifiant"; return; }
+        if(val === MASTER_KEY) {
+            currentLoggedUser = "ADMIN_ANTHONIO";
+            document.getElementById('adminNavBtn').style.display = 'block';
+            enterApplication();
+            renderAdminMaster();
+            renderChat();
+            return;
+        }
+        if(membersDB[val]) {
+            let member = membersDB[val];
+            if(member.status === 'active') {
+                const now = Date.now();
+                if(member.expiry !== 'perm' && now > member.expiry) {
+                    member.status = 'expired';
+                    persistMembers();
+                    msgDiv.innerText = "⌛ Licence expirée";
+                } else { currentLoggedUser = val; enterApplication(); renderChat(); }
+            } else if(member.status === 'pending') { msgDiv.innerText = "⏳ En attente d'activation"; }
+            else if(member.status === 'expired') { msgDiv.innerText = "❌ Accès expiré"; }
+            else { currentLoggedUser = val; enterApplication(); }
         } else {
-            const uid = btoa(val).replace(/=/g, "");
-            localStorage.setItem('aviator_uid', uid);
-            db.ref('members/' + uid).once('value', s => {
-                if(!s.exists()) db.ref('members/' + uid).set({ name: val, status: 'pending' });
-                checkStatus(uid);
-            });
+            membersDB[val] = { status: 'pending', registered: new Date().toLocaleString('fr-FR'), createdAt: Date.now(), expiry: null };
+            persistMembers();
+            msgDiv.innerText = "✅ Demande soumise. Un admin activera.";
         }
     }
 
-    function checkStatus(uid) {
-        db.ref('members/' + uid).on('value', s => {
-            const u = s.val();
-            if(!u) return;
-            if(u.status === 'active') showScreen('app-screen');
-            else if(u.status === 'banned') { alert("BANNI PAR L'ADMINISTRATEUR"); location.reload(); }
-            else showScreen('wait-screen');
-        });
+    function enterApplication() {
+        document.getElementById('loginScreen').classList.remove('active');
+        document.getElementById('appScreen').classList.add('active');
+        refreshAdminPanels();
+        renderChat();
+        updateOnlinePreview();
     }
 
-    function loadMembers() {
-        db.ref('members').on('value', s => {
-            const list = document.getElementById('user-list'); list.innerHTML = "";
-            s.forEach(c => {
-                const u = c.val();
-                list.innerHTML += `
-                <div class="user-item">
-                    <div class="user-info"><span>${u.name}</span> <span>[${u.status}]</span></div>
-                    <div class="action-row">
-                        <button class="act-btn" style="background:#006600;" onclick="db.ref('members/${c.key}').update({status:'active'})">ACCEPTER</button>
-                        <button class="act-btn" style="background:#660000;" onclick="db.ref('members/${c.key}').update({status:'banned'})">EXPULSER</button>
-                    </div>
-                </div>`;
-            });
-        });
+    function logoutUser() {
+        currentLoggedUser = null;
+        document.getElementById('appScreen').classList.remove('active');
+        document.getElementById('loginScreen').classList.add('active');
+        document.getElementById('loginIdentifier').value = '';
+        document.getElementById('loginFeed').innerText = '';
+        document.getElementById('adminNavBtn').style.display = 'none';
     }
 
-    function showScreen(id) {
-        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-        document.getElementById(id).classList.add('active');
-    }
-
-    function switchAdminTab(t) {
-        document.getElementById('ap-mem').style.display = t === 'mem' ? 'block' : 'none';
-        document.getElementById('ap-calc').style.display = t === 'calc' ? 'block' : 'none';
-        document.getElementById('at-mem').className = 'tab ' + (t === 'mem' ? 'active' : '');
-        document.getElementById('at-calc').className = 'tab ' + (t === 'calc' ? 'active' : '');
-    }
-
-    function switchAppTab(id) {
-        document.getElementById('p-sig').style.display = id === 'sig' ? 'block' : 'none';
-        document.getElementById('p-cot').style.display = id === 'cot' ? 'block' : 'none';
-        document.getElementById('t-sig').className = 'tab ' + (id === 'sig' ? 'active' : '');
-        document.getElementById('t-cot').className = 'tab ' + (id === 'cot' ? 'active' : '');
-    }
-
-    // --- STRATÉGIE 1 : LES 12 MOTIFS ---
-    let currentSeq = [];
-    const patterns = {
-        "💙💜🌹💙💙": [{m:3, c:"X60.00", s:"blue"}, {m:7, c:"X25.00", s:"rose-box"}],
-        "💙💜🌹💙💜": [{m:8, c:"X15.00", s:"blue"}, {m:13, c:"X70.00", s:"rose-box"}],
-        "💜💙🌹💙💜": [{m:3, c:"X25.00", s:"rose-box"}, {m:11, c:"X30.00", s:"blue"}],
-        "💜💙🌹💙💙": [{m:3, c:"X70.00", s:"rose-box"}, {m:8, c:"X200.00", s:"rose-box"}],
-        "💜💜🌹💙💜": [{m:7, c:"X20.00", s:"blue"}, {m:9, c:"X300.00", s:"rose-box"}],
-        "💜💙🌹💜💜": [{m:3, c:"X10.00", s:"blue"}, {m:10, c:"X20.00", s:"blue"}],
-        "💙💙🌹💜💜": [{m:9, c:"X10.00", s:"blue"}, {m:13, c:"X30.00", s:"blue"}],
-        "💜💜🌹💜💙": [{m:5, c:"X50.00", s:"rose-box"}, {m:21, c:"X10.00", s:"rose-box"}],
-        "💙💙🌹💙💙": [{m:3, c:"X400.00", s:"gold"}, {m:17, c:"X50.00", s:"rose-box"}],
-        "💜💙🌹💜💙": [{m:7, c:"X50.00", s:"rose-box"}, {m:13, c:"X100.00", s:"rose-box"}],
-        "💙💙🌹💙💜": [{m:3, c:"X80.00", s:"rose-box"}, {m:25, c:"X3000.00", s:"gold"}],
-        "💙💜🌹💜💙": [{m:3, c:"X50.00", s:"blue"}, {m:10, c:"X150.00", s:"rose-box"}]
+    // =============== PATTERN COMPLET ===============
+    const FULL_PATTERN_LIB = {
+        "💙💜🌹💙💙": [{m:3, c:"x60 / x10"}, {m:7, c:"x25"}],
+        "💙💜🌹💙💜": [{m:8, c:"x15"}, {m:5, c:"x70"}, {m:3, c:"x30 / x10"}],
+        "💜💙🌹💙💜": [{m:3, c:"x25"}, {m:8, c:"x10 / x30"}, {m:12, c:"x20"}, {m:18, c:"x20 💙 x40"}],
+        "💜💙🌹💙💙": [{m:3, c:"x40 / x20 / x70"}, {m:5, c:"x50 / x200"}, {m:8, c:"x40 / x15"}],
+        "💜💜🌹💙💜": [{m:7, c:"x20 /1min avant"}, {m:2, c:"x60 / x300"}, {m:12, c:"x10"}],
+        "💜💙🌹💜💜": [{m:3, c:"x10"}, {m:7, c:"x20 💙 x20"}],
+        "💙💙🌹💜💜": [{m:9, c:"x10 & x10"}, {m:4, c:"x15 / x30"}],
+        "💜💜🌹💜💙": [{m:5, c:"x50 / x15"}, {m:7, c:"x40"}, {m:9, c:"x10 auto"}, {m:12, c:"x10"}, {m:19, c:"x300"}],
+        "💙💙🌹💙💙": [{m:3, c:"x30 / x400 (1min)"}, {m:5, c:"x20 | x100"}, {m:9, c:"x50 auto"}, {m:11, c:"x25 💜 x10"}],
+        "💜💙🌹💜💙": [{m:7, c:"x50 & x20"}, {m:4, c:"x10"}, {m:2, c:"x100 / x10"}],
+        "💙💙🌹💙💜": [{m:3, c:"x80 / x10 / x25"}, {m:7, c:"x10 / x70"}, {m:15, c:"x3000 / x15"}],
+        "💙💜🌹💜💜": [{m:7, c:"x10 / x40"}, {m:3, c:"x30 / x10"}],
+        "💜💜🌹💙💙": [{m:5, c:"x300 / x20"}, {m:2, c:"x30 / x80"}, {m:7, c:"x10"}, {m:12, c:"x15"}],
+        "💙💜🌹💜💙": [{m:3, c:"x50"}, {m:7, c:"x150 / x25"}, {m:10, c:"x15"}]
     };
-
-    function addEmoji(e) { if(currentSeq.length < 5) { document.getElementById('dot-'+currentSeq.length).innerHTML = e; currentSeq.push(e); } }
-    function resetSig() { currentSeq = []; for(let i=0; i<5; i++) document.getElementById('dot-'+i).innerHTML = ""; document.getElementById('res-sig').innerHTML = ""; }
-    
-    function runCalc() {
-        const t = document.getElementById("time-sig").value;
-        if(t && currentSeq.length === 5) display(t, patterns[currentSeq.join('')] || [], document.getElementById("res-sig"));
+    let currentPatternSeq = [];
+    function addPatternSymbol(sym) { if(currentPatternSeq.length < 5) { currentPatternSeq.push(sym); updatePreviewUI(); } }
+    function updatePreviewUI() { const cells = document.querySelectorAll('.slot-cell'); cells.forEach((c,i)=> { c.innerText = currentPatternSeq[i] || "—"; }); }
+    function runPatternPrediction() {
+        const timeVal = document.getElementById('patternTimeInput').value;
+        const res = document.getElementById('patternResultZone');
+        if(!timeVal) { res.innerHTML = `<div class="oracle-card"><span class="badge-safe">⚠️</span>Heure requise</div>`; return; }
+        const key = currentPatternSeq.join('');
+        const strat = FULL_PATTERN_LIB[key];
+        if(!strat) { res.innerHTML = `<div class="oracle-card"><span class="badge-safe">PATTERN INVALIDE</span>5 symboles avec 🌹 central</div>`; return; }
+        let [h,m,s] = timeVal.split(':').map(Number);
+        let base = new Date(); base.setHours(h,m,s||0);
+        let cumul = 0;
+        const html = strat.map(item => { cumul += item.m; let fut = new Date(base.getTime() + cumul*60000); return `<div class="oracle-card"><span class="badge-safe">🔒 SÉCURITÉ X4 MIN</span><div class="pred-cote">🎲 ${item.c}</div><div class="pred-time">${fut.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})}</div></div>`; }).join('');
+        res.innerHTML = html;
+        currentPatternSeq = []; updatePreviewUI();
+    }
+    function runCoteStrategy() {
+        const cote = parseFloat(document.getElementById('oddValueInput').value);
+        const tRaw = document.getElementById('oddBaseTime').value;
+        const resDiv = document.getElementById('coteResultZone');
+        if(isNaN(cote)||!tRaw) { resDiv.innerHTML = `<div class="oracle-card">Cote valide requise</div>`; return; }
+        let addMin=0, pred="";
+        if(cote>=2.5 && cote<=3.5) { addMin=2; pred="CIBLE x3 MINIMUM"; }
+        else if(cote>=4.5 && cote<=6.5) { addMin=4; pred="CIBLE x4 MINIMUM"; }
+        else if(cote>=6.5 && cote<=9.99) { addMin=6; pred="CIBLE x6 MINIMUM"; }
+        else { addMin=10; pred="MEGA SIGNAL x10+"; }
+        let [h,m,s] = tRaw.split(':').map(Number);
+        let base = new Date(); base.setHours(h,m,s||0);
+        let future = new Date(base.getTime() + addMin*60000 + 10000);
+        resDiv.innerHTML = `<div class="oracle-card"><span class="badge-safe">📡 STRATÉGIE PRO</span><div class="pred-cote">⚡ ${pred}</div><div class="pred-time">DÉCLENCHEMENT : ${future.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})} (+${addMin}m10s)</div></div>`;
     }
 
-    // --- STRATÉGIE 2 : LES 3 PALIERS DE COTE ---
-    function runCote() {
-        const v = parseFloat(document.getElementById("val-cot").value), t = document.getElementById("time-cot").value;
-        if(!v || !t) return;
-        let s = [];
-        if (v >= 2.5 && v <= 3.5) s = [{m: 2.16, c: "X3 IZY", s: "blue"}];
-        else if (v >= 4.5 && v <= 6.5) s = [{m: 4.16, c: "X5 FAKANA", s: "rose-box"}];
-        else if (v >= 6.5) s = [{m: 6.16, c: "X3 ASSURÉ", s: "blue"}, {m: 12.3, c: "X10 ROSE", s: "rose-box"}];
-        display(t, s, document.getElementById("res-cot"));
+    // =============== CHAT GLOBAL avec prénoms ===============
+    function renderChat() {
+        const container = document.getElementById('globalChatMessages');
+        if(!container) return;
+        container.innerHTML = chatMessages.map(msg => `<div class="chat-message"><span class="msg-name">${escapeHtml(msg.user)}</span><span class="msg-text">${escapeHtml(msg.text)}</span><span style="font-size:9px; color:#666; margin-left:8px;">${msg.time}</span></div>`).join('');
+        container.scrollTop = container.scrollHeight;
+        updateOnlinePreview();
     }
+    function sendChatMessage() {
+        const input = document.getElementById('chatInputMsg');
+        const text = input.value.trim();
+        if(!text || !currentLoggedUser) return;
+        const newMsg = { user: currentLoggedUser, text: text, time: new Date().toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit'}) };
+        chatMessages.push(newMsg);
+        if(chatMessages.length > 100) chatMessages.shift();
+        persistChat();
+        renderChat();
+        input.value = '';
+    }
+    function updateOnlinePreview() {
+        const previewDiv = document.getElementById('onlineMembersPreview');
+        if(previewDiv && currentLoggedUser) {
+            let activeNames = Object.keys(membersDB).filter(m => membersDB[m].status === 'active').slice(0,8);
+            if(currentLoggedUser !== "ADMIN_ANTHONIO" && !activeNames.includes(currentLoggedUser)) activeNames.unshift(currentLoggedUser);
+            previewDiv.innerHTML = `👥 Membres actifs: ${activeNames.join(', ') || currentLoggedUser}`;
+        } else if(previewDiv) previewDiv.innerHTML = `👥 Connecté: ${currentLoggedUser || 'Invitée'}`;
+    }
+    function clearAllChat() { if(confirm("Effacer tout l'historique du chat ?")){ chatMessages = []; persistChat(); renderChat(); } }
+    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
 
-    function display(ts, list, container) {
-        if(list.length === 0) { container.innerHTML = "<p style='grid-column:1/3; opacity:0.3;'>AUCUN SIGNAL</p>"; return; }
-        const [h, m, sec] = ts.split(':').map(Number);
-        container.innerHTML = list.map(i => {
-            let d = new Date(); d.setHours(h, m, (sec || 0) + (i.m * 60));
-            const exactTime = d.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
-            return `
-            <div class="res-box ${i.s}">
-                <span class="cote-val">${i.c}</span>
-                <span class="time-val">${exactTime}</span>
-            </div>`;
+    // =============== ADMIN PANEL ===============
+    function renderAdminMaster() {
+        const container = document.getElementById('advancedMemberList');
+        if(!container) return;
+        const entries = Object.entries(membersDB);
+        document.getElementById('totalMemberCount').innerText = entries.length;
+        let ac=0, pc=0, ec=0;
+        entries.forEach(([n,d]) => { if(d.status==='active') ac++; else if(d.status==='pending') pc++; else ec++; });
+        document.getElementById('activeStatNum').innerText = ac;
+        document.getElementById('pendingStatNum').innerText = pc;
+        document.getElementById('expiredStatNum').innerText = ec;
+        if(!entries.length) { container.innerHTML = `<div style="padding:20px;text-align:center;">Aucun membre</div>`; return; }
+        container.innerHTML = entries.map(([name, data]) => {
+            let cls = data.status==='active'?'badge-active':(data.status==='pending'?'badge-pending':'badge-expired');
+            let label = data.status==='active'?'ACTIF ✓':(data.status==='pending'?'EN ATTENTE':'EXPIRÉ');
+            let expiryTxt = data.expiry === 'perm' ? '🔒 PERMANENT' : (data.expiry ? new Date(data.expiry).toLocaleString('fr-FR') : 'Non défini');
+            return `<div class="member-proto"><div class="member-header"><span>${name}</span><span class="status-badge ${cls}">${label}</span></div><div class="member-meta">📅 ${data.registered || '—'}<br>⏱️ ${expiryTxt}</div><div class="admin-action-buttons"><button class="tiny-btn" onclick="setMemberValidity('${name}', 1)">+1H</button><button class="tiny-btn" onclick="setMemberValidity('${name}', 24)">+24H</button><button class="tiny-btn" onclick="setMemberPermanent('${name}')">♾️ PERM</button><button class="tiny-btn" style="background:#c41e6e;" onclick="expelMember('${name}')">🚫 EXPULSER</button></div></div>`;
         }).join('');
     }
+    window.setMemberValidity = function(name, hours) { if(!membersDB[name]) return; let now=Date.now(); let cur = (membersDB[name].expiry && membersDB[name].expiry!=='perm' && membersDB[name].expiry>now)?membersDB[name].expiry:now; membersDB[name].status='active'; membersDB[name].expiry=cur+(hours*3600000); persistMembers(); renderAdminMaster(); updateOnlinePreview(); };
+    window.setMemberPermanent = function(name) { if(membersDB[name]){ membersDB[name].status='active'; membersDB[name].expiry='perm'; persistMembers(); renderAdminMaster(); updateOnlinePreview(); } };
+    window.expelMember = function(name) { if(confirm(`Expulser ${name} ?`)){ delete membersDB[name]; persistMembers(); renderAdminMaster(); updateOnlinePreview(); } };
+    window.resetFullDatabase = function() { if(confirm("RÉINIT COMPLÈTE ?")){ membersDB={}; chatMessages=[]; persistMembers(); persistChat(); renderAdminMaster(); renderChat(); updateOnlinePreview(); } };
+    window.exportMembersJSON = function() { const data=JSON.stringify(membersDB,null,2); const blob=new Blob([data],{type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`aviator_backup_${Date.now()}.json`; a.click(); URL.revokeObjectURL(blob); };
+    function refreshAdminPanels() { renderAdminMaster(); updateOnlinePreview(); }
+
+    // TABS
+    function initTabs() {
+        const btns = document.querySelectorAll('.tab-star');
+        const panes = { patternTab:document.getElementById('patternTab'), coteTab:document.getElementById('coteTab'), adminMasterTab:document.getElementById('adminMasterTab'), chatTab:document.getElementById('chatTab') };
+        btns.forEach(btn => { btn.addEventListener('click',()=>{ const t=btn.getAttribute('data-main'); if(!t||!panes[t]) return; btns.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); Object.values(panes).forEach(p=>{if(p)p.style.display='none';}); panes[t].style.display='block'; if(t==='adminMasterTab') renderAdminMaster(); if(t==='chatTab') renderChat(); }); });
+        const subTabs = document.querySelectorAll('.sub-tab');
+        const subPanels = { memberSub:document.getElementById('memberSub'), statsSub:document.getElementById('statsSub'), toolsSub:document.getElementById('toolsSub') };
+        subTabs.forEach(st=>{ st.addEventListener('click',()=>{ const sub=st.getAttribute('data-subpanel'); if(!sub||!subPanels[sub]) return; subTabs.forEach(s=>s.classList.remove('active-sub')); st.classList.add('active-sub'); Object.values(subPanels).forEach(p=>{if(p)p.style.display='none';}); subPanels[sub].style.display='block'; if(sub==='statsSub'||sub==='memberSub') renderAdminMaster(); }); });
+    }
+    document.addEventListener('DOMContentLoaded',()=>{ initTabs(); updatePreviewUI(); });
+    window.authUser=authUser; window.addPatternSymbol=addPatternSymbol; window.runPatternPrediction=runPatternPrediction; window.runCoteStrategy=runCoteStrategy; window.logoutUser=logoutUser; window.sendChatMessage=sendChatMessage; window.clearAllChat=clearAllChat; window.refreshAdminPanels=refreshAdminPanels;
 </script>
 </body>
 </html>
