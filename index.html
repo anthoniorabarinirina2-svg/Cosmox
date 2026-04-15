@@ -6,108 +6,56 @@
     <title>AVIATOR V20 | ANTHONIO ELITE HUB</title>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --bg-void: #03050b;
-            --surface-deep: #0a0e17;
-            --surface-card: #11161f;
-            --neon-pink: #ff2d8f;
-            --neon-cyan: #00e5ff;
-            --neon-purple: #b967ff;
-            --gold-bright: #ffcd4a;
-            --emerald: #2de3a2;
-            --danger-fire: #ff4d5a;
-            --text-glow: #f0f3ff;
-            --text-muted: #8b95af;
-            --border-subtle: #20273a;
-            --card-radius: 28px;
-            --chat-bg: #0d1220;
+            --bg-void: #03050b; --surface-deep: #0a0e17; --surface-card: #11161f;
+            --neon-pink: #ff2d8f; --neon-cyan: #00e5ff; --neon-purple: #b967ff;
+            --gold-bright: #ffcd4a; --emerald: #2de3a2; --danger-fire: #ff4d5a;
+            --text-glow: #f0f3ff; --text-muted: #8b95af; --border-subtle: #20273a;
+            --card-radius: 28px; --chat-bg: #0d1220;
         }
-
         body {
             background: radial-gradient(circle at 15% 0%, #0b0e1c, var(--bg-void));
             font-family: 'Space Grotesk', sans-serif;
             color: var(--text-glow);
-            height: 100vh;
-            overflow: hidden;
-            position: relative;
+            height: 100vh; overflow: hidden; position: relative;
         }
-
-        /* ANIMATION DE FOND DYNAMIQUE - VOYAGEUR COSMIQUE */
         body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: 
-                repeating-linear-gradient(0deg, rgba(0, 229, 255, 0.02) 0px, rgba(0, 229, 255, 0.02) 2px, transparent 2px, transparent 8px),
-                repeating-linear-gradient(90deg, rgba(255, 45, 143, 0.02) 0px, rgba(255, 45, 143, 0.02) 1px, transparent 1px, transparent 10px);
-            pointer-events: none;
-            z-index: 0;
-            animation: driftBackground 20s linear infinite;
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: repeating-linear-gradient(0deg, rgba(0, 229, 255, 0.02) 0px, rgba(0, 229, 255, 0.02) 2px, transparent 2px, transparent 8px),
+                        repeating-linear-gradient(90deg, rgba(255, 45, 143, 0.02) 0px, rgba(255, 45, 143, 0.02) 1px, transparent 1px, transparent 10px);
+            pointer-events: none; z-index: 0; animation: driftBackground 20s linear infinite;
         }
-        @keyframes driftBackground {
-            0% { background-position: 0 0, 0 0; }
-            100% { background-position: 100px 100px, 50px 50px; }
-        }
-
-        /* particules flottantes */
+        @keyframes driftBackground { 0% { background-position: 0 0, 0 0; } 100% { background-position: 100px 100px, 50px 50px; } }
         .nebula-particle {
-            position: fixed;
-            background: radial-gradient(circle, rgba(0,229,255,0.3), transparent);
-            border-radius: 50%;
-            filter: blur(40px);
-            pointer-events: none;
-            z-index: 0;
+            position: fixed; background: radial-gradient(circle, rgba(0,229,255,0.3), transparent);
+            border-radius: 50%; filter: blur(40px); pointer-events: none; z-index: 0;
             animation: floatParticle 12s infinite alternate ease-in-out;
         }
-        @keyframes floatParticle {
-            0% { transform: translate(0, 0) scale(1); opacity: 0.2; }
-            100% { transform: translate(30px, -40px) scale(1.3); opacity: 0.5; }
-        }
-
+        @keyframes floatParticle { 0% { transform: translate(0, 0) scale(1); opacity: 0.2; } 100% { transform: translate(30px, -40px) scale(1.3); opacity: 0.5; } }
         .splash-orbital {
-            position: fixed;
-            inset: 0;
-            background: radial-gradient(ellipse at center, #0f1222 0%, #000000 100%);
-            z-index: 2000;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
+            position: fixed; inset: 0; background: radial-gradient(ellipse at center, #0f1222 0%, #000000 100%);
+            z-index: 2000; display: flex; flex-direction: column; align-items: center; justify-content: center;
             transition: opacity 0.6s cubic-bezier(0.2, 0.9, 0.4, 1.1);
         }
         .splash-icon { font-size: 85px; background: linear-gradient(135deg, var(--neon-pink), var(--neon-cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; animation: boost 1.8s infinite ease; }
         @keyframes boost { 0%,100%{transform:translateY(0) scale(1);}50%{transform:translateY(-12px) scale(1.05);} }
         .splash-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 32px; letter-spacing: 6px; background: linear-gradient(120deg, #fff, var(--neon-cyan)); -webkit-background-clip: text; background-clip: text; color: transparent; margin-top: 20px; }
-
         .screen { display: none; width: 100%; max-width: 620px; margin: 0 auto; height: 100vh; flex-direction: column; padding: 16px 14px; overflow-y: auto; scrollbar-width: thin; position: relative; z-index: 2; }
         .screen.active { display: flex; }
-
         .premium-card { background: rgba(17, 22, 31, 0.92); backdrop-filter: blur(12px); border-radius: var(--card-radius); border: 1px solid rgba(0, 229, 255, 0.2); padding: 22px 18px; margin-bottom: 18px; box-shadow: 0 20px 35px -12px rgba(0, 0, 0, 0.7); }
         .tab-constellation { display: flex; gap: 10px; background: #080c14; padding: 6px; border-radius: 60px; margin-bottom: 18px; position: relative; z-index: 3; }
         .tab-star { flex: 1; background: transparent; border: none; padding: 12px 0; font-weight: 700; font-size: 12px; border-radius: 50px; color: var(--text-muted); font-family: 'Syne', sans-serif; cursor: pointer; transition: all 0.2s; }
         .tab-star.active { background: linear-gradient(95deg, var(--neon-pink), #aa2e6e); color: white; box-shadow: 0 5px 15px rgba(255, 45, 143, 0.4); }
-
         .input-cosmic { width: 100%; background: #070b12; border: 1.5px solid #262f40; border-radius: 50px; padding: 14px 20px; font-size: 15px; font-weight: 500; color: white; margin: 12px 0; font-family: 'Space Grotesk', monospace; }
         .input-cosmic:focus { border-color: var(--neon-cyan); outline: none; box-shadow: 0 0 0 3px rgba(0, 229, 255, 0.2); }
-
         .btn-neon { background: linear-gradient(100deg, var(--neon-pink), #c41e6e); border: none; border-radius: 60px; padding: 14px; font-weight: 800; font-size: 15px; letter-spacing: 1px; color: white; width: 100%; cursor: pointer; transition: transform 0.1s; }
         .btn-neon:active { transform: scale(0.97); }
         .btn-outline { background: transparent; border: 1.5px solid var(--neon-cyan); color: var(--neon-cyan); margin-top: 8px; }
-
         .pattern-deck { display: flex; gap: 18px; justify-content: center; margin-bottom: 24px; }
         .pattern-orb { background: #131a26; width: 70px; padding: 12px 0; font-size: 38px; border-radius: 60px; border: none; cursor: pointer; transition: 0.1s; }
         .slot-preview { display: flex; justify-content: center; gap: 12px; background: #080c14; padding: 15px; border-radius: 80px; margin: 18px 0; }
         .slot-cell { width: 55px; height: 55px; background: #0f141f; border-radius: 30px; display: flex; align-items: center; justify-content: center; font-size: 30px; border: 1px solid #2a344c; }
-
         .prediction-galaxy { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; max-height: 460px; overflow-y: auto; padding: 6px; }
         .oracle-card { background: linear-gradient(145deg, #0f1623, #090d18); border-radius: 28px; padding: 20px 16px; position: relative; border: 1px solid rgba(0, 229, 255, 0.3); transition: all 0.2s; box-shadow: 0 8px 20px rgba(0,0,0,0.4); backdrop-filter: blur(4px); }
         .oracle-card:hover { transform: translateY(-3px); border-color: var(--neon-pink); box-shadow: 0 12px 28px rgba(255,45,143,0.2); }
@@ -115,11 +63,9 @@
         .pred-cote { font-size: 26px; font-weight: 800; font-family: monospace; background: linear-gradient(135deg, var(--emerald), #a0ffc0); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 12px; letter-spacing: -0.5px; }
         .pred-time { font-size: 20px; font-weight: 600; font-family: monospace; color: var(--neon-cyan); text-shadow: 0 0 4px rgba(0,229,255,0.3); display: flex; align-items: center; gap: 8px; }
         .pred-time::before { content: "⏱️"; font-size: 18px; }
-
         .app-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; padding: 0 4px; }
         .logout-btn { background: rgba(255,77,90,0.2); border: 1px solid var(--danger-fire); border-radius: 40px; padding: 8px 16px; font-size: 12px; font-weight: 600; color: var(--danger-fire); cursor: pointer; transition: 0.2s; }
         .logout-btn:hover { background: var(--danger-fire); color: white; }
-
         .chat-lounge { background: var(--chat-bg); border-radius: 28px; border: 1px solid #2a2f42; margin-top: 12px; overflow: hidden; }
         .chat-messages { height: 180px; overflow-y: auto; padding: 12px; display: flex; flex-direction: column; gap: 8px; background: #0a0e18; }
         .chat-message { background: #131a26; border-radius: 20px; padding: 10px 14px; max-width: 85%; font-size: 12px; border-left: 3px solid var(--neon-cyan); word-break: break-word; }
@@ -128,7 +74,6 @@
         .chat-input-area { display: flex; gap: 8px; padding: 12px; background: #0c111c; border-top: 1px solid #1e2538; }
         .chat-input { flex: 1; background: #070b12; border: 1px solid #2a344c; border-radius: 40px; padding: 10px 16px; color: white; font-size: 13px; }
         .chat-send { background: var(--neon-purple); border: none; border-radius: 40px; padding: 8px 20px; font-weight: bold; cursor: pointer; }
-
         .admin-dashboard { background: var(--surface-card); border-radius: 32px; padding: 6px; }
         .sub-tab-bar { display: flex; gap: 5px; background: #0c101c; border-radius: 40px; padding: 6px; margin-bottom: 20px; }
         .sub-tab { flex: 1; background: transparent; border: none; padding: 8px; border-radius: 30px; font-weight: 600; font-size: 10px; color: var(--text-muted); cursor: pointer; }
@@ -146,6 +91,24 @@
         .stat-bento { background: #0a0e18; border-radius: 20px; padding: 14px; margin-bottom: 14px; text-align: center; }
         .stat-number { font-size: 32px; font-weight: 800; color: var(--gold-bright); }
         .member-online-list { font-size: 11px; background: #0a0e18; border-radius: 20px; padding: 12px; margin-bottom: 12px; }
+        /* BOUTON EFFACER */
+        .clear-pattern-btn {
+            background: rgba(255, 77, 90, 0.3);
+            border: 1px solid var(--danger-fire);
+            border-radius: 40px;
+            padding: 8px 12px;
+            margin-top: 8px;
+            font-size: 11px;
+            font-weight: bold;
+            color: var(--danger-fire);
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.2s;
+        }
+        .clear-pattern-btn:hover {
+            background: var(--danger-fire);
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -160,7 +123,7 @@
 <div id="loginScreen" class="screen">
     <div class="premium-card" style="margin-top: auto; margin-bottom: auto;">
         <div style="text-align:center; margin-bottom: 18px;"><span style="font-size: 54px;">🔮</span><h2 style="font-weight:800;">ACCÈS HUB</h2></div>
-        <input type="text" id="loginIdentifier" class="input-cosmic" placeholder="Identifiant / Code Admin">
+        <input type="text" id="loginIdentifier" class="input-cosmic" placeholder="Votre Prénom / Code Admin">
         <button class="btn-neon" onclick="authUser()">ACTIVER</button>
         <div id="loginFeed" style="text-align:center; margin-top: 15px; font-size: 11px; color: var(--neon-pink);"></div>
     </div>
@@ -190,6 +153,8 @@
             <div class="slot-preview" id="patternPreviewArea"><div class="slot-cell">—</div><div class="slot-cell">—</div><div class="slot-cell">—</div><div class="slot-cell">—</div><div class="slot-cell">—</div></div>
             <input type="time" id="patternTimeInput" class="input-cosmic" step="1">
             <button class="btn-neon" onclick="runPatternPrediction()">DÉCODER PATTERN</button>
+            <!-- BOUTON POUR EFFACER LES RESULTATS -->
+            <button class="clear-pattern-btn" onclick="clearPatternResults()">🗑️ EFFACER LES RÉSULTATS</button>
         </div>
         <div id="patternResultZone" class="prediction-galaxy"></div>
     </div>
@@ -200,6 +165,7 @@
             <input type="number" id="oddValueInput" class="input-cosmic" placeholder="Dernière cote (ex: 4.80)" step="0.01">
             <input type="time" id="oddBaseTime" class="input-cosmic" step="1">
             <button class="btn-neon" onclick="runCoteStrategy()">SCAN HYPER</button>
+            <button class="clear-pattern-btn" onclick="clearCoteResults()">🗑️ EFFACER RÉSULTAT</button>
         </div>
         <div id="coteResultZone" class="prediction-galaxy"></div>
     </div>
@@ -251,7 +217,7 @@
     const MASTER_KEY = "161211";
     let membersDB = JSON.parse(localStorage.getItem('aviator_v20_members')) || {};
     let chatMessages = JSON.parse(localStorage.getItem('aviator_chat_msgs')) || [];
-    let currentLoggedUser = null;   // stocke le pseudo connecté
+    let currentLoggedUser = null;
 
     function persistMembers() { localStorage.setItem('aviator_v20_members', JSON.stringify(membersDB)); }
     function persistChat() { localStorage.setItem('aviator_chat_msgs', JSON.stringify(chatMessages)); }
@@ -262,7 +228,6 @@
         if(s){ s.style.opacity='0'; setTimeout(()=>{ s.style.display='none'; document.getElementById('loginScreen').classList.add('active'); },600); } 
     }, 2500);
     
-    // générer des particules nébuleuses
     function createParticles() {
         for(let i=0;i<8;i++) {
             let particle = document.createElement('div');
@@ -291,6 +256,7 @@
             renderChat();
             return;
         }
+        // Vérifier dans la base
         if(membersDB[val]) {
             let member = membersDB[val];
             if(member.status === 'active') {
@@ -299,14 +265,27 @@
                     member.status = 'expired';
                     persistMembers();
                     msgDiv.innerText = "⌛ Licence expirée";
-                } else { currentLoggedUser = val; enterApplication(); renderChat(); }
-            } else if(member.status === 'pending') { msgDiv.innerText = "⏳ En attente d'activation"; }
-            else if(member.status === 'expired') { msgDiv.innerText = "❌ Accès expiré"; }
-            else { currentLoggedUser = val; enterApplication(); }
+                } else { 
+                    currentLoggedUser = val; 
+                    enterApplication(); 
+                    renderChat(); 
+                }
+            } else if(member.status === 'pending') { 
+                msgDiv.innerText = "⏳ En attente d'activation par Admin"; 
+            } else if(member.status === 'expired') { 
+                msgDiv.innerText = "❌ Accès expiré"; 
+            }
         } else {
-            membersDB[val] = { status: 'pending', registered: new Date().toLocaleString('fr-FR'), createdAt: Date.now(), expiry: null };
+            // Nouvelle inscription automatique en "pending"
+            membersDB[val] = { 
+                status: 'pending', 
+                registered: new Date().toLocaleString('fr-FR'), 
+                createdAt: Date.now(), 
+                expiry: null 
+            };
             persistMembers();
             msgDiv.innerText = "✅ Demande soumise. Un admin activera.";
+            // Rafraîchir l'affichage admin si déjà ouvert (pas nécessaire ici)
         }
     }
 
@@ -325,6 +304,8 @@
         document.getElementById('loginIdentifier').value = '';
         document.getElementById('loginFeed').innerText = '';
         document.getElementById('adminNavBtn').style.display = 'none';
+        // Réinitialiser les onglets principaux à Pattern
+        document.querySelector('.tab-star[data-main="patternTab"]').click();
     }
 
     // =============== PATTERN COMPLET ===============
@@ -347,6 +328,21 @@
     let currentPatternSeq = [];
     function addPatternSymbol(sym) { if(currentPatternSeq.length < 5) { currentPatternSeq.push(sym); updatePreviewUI(); } }
     function updatePreviewUI() { const cells = document.querySelectorAll('.slot-cell'); cells.forEach((c,i)=> { c.innerText = currentPatternSeq[i] || "—"; }); }
+    
+    // FONCTION POUR EFFACER LES RÉSULTATS PATTERN
+    function clearPatternResults() {
+        document.getElementById('patternResultZone').innerHTML = '';
+        currentPatternSeq = [];
+        updatePreviewUI();
+        document.getElementById('patternTimeInput').value = '';
+    }
+
+    function clearCoteResults() {
+        document.getElementById('coteResultZone').innerHTML = '';
+        document.getElementById('oddValueInput').value = '';
+        document.getElementById('oddBaseTime').value = '';
+    }
+
     function runPatternPrediction() {
         const timeVal = document.getElementById('patternTimeInput').value;
         const res = document.getElementById('patternResultZone');
@@ -359,8 +355,9 @@
         let cumul = 0;
         const html = strat.map(item => { cumul += item.m; let fut = new Date(base.getTime() + cumul*60000); return `<div class="oracle-card"><span class="badge-safe">🔒 SÉCURITÉ X4 MIN</span><div class="pred-cote">🎲 ${item.c}</div><div class="pred-time">${fut.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})}</div></div>`; }).join('');
         res.innerHTML = html;
-        currentPatternSeq = []; updatePreviewUI();
+        // On ne vide pas currentPatternSeq pour permettre de voir ce qui a été saisi, mais on laisse l'utilisateur effacer avec le bouton.
     }
+    
     function runCoteStrategy() {
         const cote = parseFloat(document.getElementById('oddValueInput').value);
         const tRaw = document.getElementById('oddBaseTime').value;
@@ -377,7 +374,7 @@
         resDiv.innerHTML = `<div class="oracle-card"><span class="badge-safe">📡 STRATÉGIE PRO</span><div class="pred-cote">⚡ ${pred}</div><div class="pred-time">DÉCLENCHEMENT : ${future.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})} (+${addMin}m10s)</div></div>`;
     }
 
-    // =============== CHAT GLOBAL avec prénoms ===============
+    // =============== CHAT GLOBAL ===============
     function renderChat() {
         const container = document.getElementById('globalChatMessages');
         if(!container) return;
@@ -385,6 +382,7 @@
         container.scrollTop = container.scrollHeight;
         updateOnlinePreview();
     }
+    
     function sendChatMessage() {
         const input = document.getElementById('chatInputMsg');
         const text = input.value.trim();
@@ -396,6 +394,7 @@
         renderChat();
         input.value = '';
     }
+    
     function updateOnlinePreview() {
         const previewDiv = document.getElementById('onlineMembersPreview');
         if(previewDiv && currentLoggedUser) {
@@ -404,10 +403,14 @@
             previewDiv.innerHTML = `👥 Membres actifs: ${activeNames.join(', ') || currentLoggedUser}`;
         } else if(previewDiv) previewDiv.innerHTML = `👥 Connecté: ${currentLoggedUser || 'Invitée'}`;
     }
+    
     function clearAllChat() { if(confirm("Effacer tout l'historique du chat ?")){ chatMessages = []; persistChat(); renderChat(); } }
-    function escapeHtml(str) { return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); }
+    function escapeHtml(str) { 
+        if(!str) return '';
+        return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); 
+    }
 
-    // =============== ADMIN PANEL - Correction affichage prénoms ===============
+    // =============== ADMIN PANEL - CORRECTION AFFICHAGE ===============
     function renderAdminMaster() {
         const container = document.getElementById('advancedMemberList');
         if(!container) return;
@@ -418,32 +421,166 @@
         document.getElementById('activeStatNum').innerText = ac;
         document.getElementById('pendingStatNum').innerText = pc;
         document.getElementById('expiredStatNum').innerText = ec;
+        
         if(!entries.length) { container.innerHTML = `<div style="padding:20px;text-align:center;">Aucun membre</div>`; return; }
-        container.innerHTML = entries.map(([name, data]) => {
+        
+        // Construction sans utiliser onclick avec des chaînes échappées de manière risquée.
+        // On utilise data-attributes et des event listeners globaux.
+        let html = '';
+        entries.forEach(([name, data]) => {
             let cls = data.status==='active'?'badge-active':(data.status==='pending'?'badge-pending':'badge-expired');
             let label = data.status==='active'?'ACTIF ✓':(data.status==='pending'?'EN ATTENTE':'EXPIRÉ');
             let expiryTxt = data.expiry === 'perm' ? '🔒 PERMANENT' : (data.expiry ? new Date(data.expiry).toLocaleString('fr-FR') : 'Non défini');
-            return `<div class="member-proto"><div class="member-header"><span>${escapeHtml(name)}</span><span class="status-badge ${cls}">${label}</span></div><div class="member-meta">📅 ${data.registered || '—'}<br>⏱️ ${expiryTxt}</div><div class="admin-action-buttons"><button class="tiny-btn" onclick="setMemberValidity('${escapeHtml(name).replace(/'/g, "\\'")}', 1)">+1H</button><button class="tiny-btn" onclick="setMemberValidity('${escapeHtml(name).replace(/'/g, "\\'")}', 24)">+24H</button><button class="tiny-btn" onclick="setMemberPermanent('${escapeHtml(name).replace(/'/g, "\\'")}')">♾️ PERM</button><button class="tiny-btn" style="background:#c41e6e;" onclick="expelMember('${escapeHtml(name).replace(/'/g, "\\'")}')">🚫 EXPULSER</button></div></div>`;
-        }).join('');
+            // On encode le nom pour l'utiliser dans data-name
+            const safeName = name.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
+            html += `<div class="member-proto" data-member-name="${safeName}">
+                <div class="member-header"><span>${escapeHtml(name)}</span><span class="status-badge ${cls}">${label}</span></div>
+                <div class="member-meta">📅 ${data.registered || '—'}<br>⏱️ ${expiryTxt}</div>
+                <div class="admin-action-buttons">
+                    <button class="tiny-btn" data-action="setValidity" data-hours="1">+1H</button>
+                    <button class="tiny-btn" data-action="setValidity" data-hours="24">+24H</button>
+                    <button class="tiny-btn" data-action="setPermanent">♾️ PERM</button>
+                    <button class="tiny-btn" style="background:#c41e6e;" data-action="expel">🚫 EXPULSER</button>
+                </div>
+            </div>`;
+        });
+        container.innerHTML = html;
+        
+        // Attacher les événements
+        container.querySelectorAll('.member-proto').forEach(card => {
+            const memberName = card.dataset.memberName;
+            card.querySelectorAll('button[data-action]').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const action = btn.dataset.action;
+                    if (action === 'setValidity') {
+                        const hours = parseInt(btn.dataset.hours);
+                        setMemberValidity(memberName, hours);
+                    } else if (action === 'setPermanent') {
+                        setMemberPermanent(memberName);
+                    } else if (action === 'expel') {
+                        expelMember(memberName);
+                    }
+                });
+            });
+        });
     }
-    window.setMemberValidity = function(name, hours) { if(!membersDB[name]) return; let now=Date.now(); let cur = (membersDB[name].expiry && membersDB[name].expiry!=='perm' && membersDB[name].expiry>now)?membersDB[name].expiry:now; membersDB[name].status='active'; membersDB[name].expiry=cur+(hours*3600000); persistMembers(); renderAdminMaster(); updateOnlinePreview(); };
-    window.setMemberPermanent = function(name) { if(membersDB[name]){ membersDB[name].status='active'; membersDB[name].expiry='perm'; persistMembers(); renderAdminMaster(); updateOnlinePreview(); } };
-    window.expelMember = function(name) { if(confirm(`Expulser ${name} ?`)){ delete membersDB[name]; persistMembers(); renderAdminMaster(); updateOnlinePreview(); } };
-    window.resetFullDatabase = function() { if(confirm("RÉINIT COMPLÈTE ?")){ membersDB={}; chatMessages=[]; persistMembers(); persistChat(); renderAdminMaster(); renderChat(); updateOnlinePreview(); } };
-    window.exportMembersJSON = function() { const data=JSON.stringify(membersDB,null,2); const blob=new Blob([data],{type:"application/json"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download=`aviator_backup_${Date.now()}.json`; a.click(); URL.revokeObjectURL(blob); };
-    function refreshAdminPanels() { renderAdminMaster(); updateOnlinePreview(); }
+    
+    // Fonctions globales pour l'admin (appelées via les listeners)
+    window.setMemberValidity = function(name, hours) { 
+        if(!membersDB[name]) return; 
+        let now=Date.now(); 
+        let cur = (membersDB[name].expiry && membersDB[name].expiry!=='perm' && membersDB[name].expiry>now) ? membersDB[name].expiry : now;
+        membersDB[name].status='active'; 
+        membersDB[name].expiry = cur + (hours*3600000); 
+        persistMembers(); 
+        renderAdminMaster(); 
+        updateOnlinePreview(); 
+    };
+    
+    window.setMemberPermanent = function(name) { 
+        if(membersDB[name]){ 
+            membersDB[name].status='active'; 
+            membersDB[name].expiry='perm'; 
+            persistMembers(); 
+            renderAdminMaster(); 
+            updateOnlinePreview(); 
+        } 
+    };
+    
+    window.expelMember = function(name) { 
+        if(confirm(`Expulser ${name} ?`)){ 
+            delete membersDB[name]; 
+            persistMembers(); 
+            renderAdminMaster(); 
+            updateOnlinePreview(); 
+        } 
+    };
+    
+    window.resetFullDatabase = function() { 
+        if(confirm("RÉINIT COMPLÈTE ?")){ 
+            membersDB={}; 
+            chatMessages=[]; 
+            persistMembers(); 
+            persistChat(); 
+            renderAdminMaster(); 
+            renderChat(); 
+            updateOnlinePreview(); 
+        } 
+    };
+    
+    window.exportMembersJSON = function() { 
+        const data=JSON.stringify(membersDB,null,2); 
+        const blob=new Blob([data],{type:"application/json"}); 
+        const a=document.createElement('a'); 
+        a.href=URL.createObjectURL(blob); 
+        a.download=`aviator_backup_${Date.now()}.json`; 
+        a.click(); 
+        URL.revokeObjectURL(blob); 
+    };
+    
+    function refreshAdminPanels() { 
+        renderAdminMaster(); 
+        updateOnlinePreview(); 
+    }
 
     // TABS
     function initTabs() {
         const btns = document.querySelectorAll('.tab-star');
-        const panes = { patternTab:document.getElementById('patternTab'), coteTab:document.getElementById('coteTab'), adminMasterTab:document.getElementById('adminMasterTab'), chatTab:document.getElementById('chatTab') };
-        btns.forEach(btn => { btn.addEventListener('click',()=>{ const t=btn.getAttribute('data-main'); if(!t||!panes[t]) return; btns.forEach(b=>b.classList.remove('active')); btn.classList.add('active'); Object.values(panes).forEach(p=>{if(p)p.style.display='none';}); panes[t].style.display='block'; if(t==='adminMasterTab') renderAdminMaster(); if(t==='chatTab') renderChat(); }); });
+        const panes = { 
+            patternTab:document.getElementById('patternTab'), 
+            coteTab:document.getElementById('coteTab'), 
+            adminMasterTab:document.getElementById('adminMasterTab'), 
+            chatTab:document.getElementById('chatTab') 
+        };
+        btns.forEach(btn => { 
+            btn.addEventListener('click',()=>{ 
+                const t=btn.getAttribute('data-main'); 
+                if(!t||!panes[t]) return; 
+                btns.forEach(b=>b.classList.remove('active')); 
+                btn.classList.add('active'); 
+                Object.values(panes).forEach(p=>{if(p)p.style.display='none';}); 
+                panes[t].style.display='block'; 
+                if(t==='adminMasterTab') renderAdminMaster(); 
+                if(t==='chatTab') renderChat(); 
+            }); 
+        });
+        
         const subTabs = document.querySelectorAll('.sub-tab');
-        const subPanels = { memberSub:document.getElementById('memberSub'), statsSub:document.getElementById('statsSub'), toolsSub:document.getElementById('toolsSub') };
-        subTabs.forEach(st=>{ st.addEventListener('click',()=>{ const sub=st.getAttribute('data-subpanel'); if(!sub||!subPanels[sub]) return; subTabs.forEach(s=>s.classList.remove('active-sub')); st.classList.add('active-sub'); Object.values(subPanels).forEach(p=>{if(p)p.style.display='none';}); subPanels[sub].style.display='block'; if(sub==='statsSub'||sub==='memberSub') renderAdminMaster(); }); });
+        const subPanels = { 
+            memberSub:document.getElementById('memberSub'), 
+            statsSub:document.getElementById('statsSub'), 
+            toolsSub:document.getElementById('toolsSub') 
+        };
+        subTabs.forEach(st=>{ 
+            st.addEventListener('click',()=>{ 
+                const sub=st.getAttribute('data-subpanel'); 
+                if(!sub||!subPanels[sub]) return; 
+                subTabs.forEach(s=>s.classList.remove('active-sub')); 
+                st.classList.add('active-sub'); 
+                Object.values(subPanels).forEach(p=>{if(p)p.style.display='none';}); 
+                subPanels[sub].style.display='block'; 
+                if(sub==='statsSub'||sub==='memberSub') renderAdminMaster(); 
+            }); 
+        });
     }
-    document.addEventListener('DOMContentLoaded',()=>{ initTabs(); updatePreviewUI(); });
-    window.authUser=authUser; window.addPatternSymbol=addPatternSymbol; window.runPatternPrediction=runPatternPrediction; window.runCoteStrategy=runCoteStrategy; window.logoutUser=logoutUser; window.sendChatMessage=sendChatMessage; window.clearAllChat=clearAllChat; window.refreshAdminPanels=refreshAdminPanels;
+    
+    document.addEventListener('DOMContentLoaded',()=>{ 
+        initTabs(); 
+        updatePreviewUI(); 
+    });
+    
+    // Rendre les fonctions globales
+    window.authUser = authUser;
+    window.addPatternSymbol = addPatternSymbol;
+    window.runPatternPrediction = runPatternPrediction;
+    window.clearPatternResults = clearPatternResults;
+    window.clearCoteResults = clearCoteResults;
+    window.runCoteStrategy = runCoteStrategy;
+    window.logoutUser = logoutUser;
+    window.sendChatMessage = sendChatMessage;
+    window.clearAllChat = clearAllChat;
+    window.refreshAdminPanels = refreshAdminPanels;
 </script>
 </body>
 </html>
