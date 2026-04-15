@@ -91,7 +91,6 @@
         .stat-bento { background: #0a0e18; border-radius: 20px; padding: 14px; margin-bottom: 14px; text-align: center; }
         .stat-number { font-size: 32px; font-weight: 800; color: var(--gold-bright); }
         .member-online-list { font-size: 11px; background: #0a0e18; border-radius: 20px; padding: 12px; margin-bottom: 12px; }
-        /* BOUTON EFFACER */
         .clear-pattern-btn {
             background: rgba(255, 77, 90, 0.3);
             border: 1px solid var(--danger-fire);
@@ -153,7 +152,6 @@
             <div class="slot-preview" id="patternPreviewArea"><div class="slot-cell">—</div><div class="slot-cell">—</div><div class="slot-cell">—</div><div class="slot-cell">—</div><div class="slot-cell">—</div></div>
             <input type="time" id="patternTimeInput" class="input-cosmic" step="1">
             <button class="btn-neon" onclick="runPatternPrediction()">DÉCODER PATTERN</button>
-            <!-- BOUTON POUR EFFACER LES RESULTATS -->
             <button class="clear-pattern-btn" onclick="clearPatternResults()">🗑️ EFFACER LES RÉSULTATS</button>
         </div>
         <div id="patternResultZone" class="prediction-galaxy"></div>
@@ -222,7 +220,7 @@
     function persistMembers() { localStorage.setItem('aviator_v20_members', JSON.stringify(membersDB)); }
     function persistChat() { localStorage.setItem('aviator_chat_msgs', JSON.stringify(chatMessages)); }
 
-    // SPLASH + fond animé particules
+    // SPLASH
     setTimeout(() => { 
         let s = document.getElementById('splashPremium'); 
         if(s){ s.style.opacity='0'; setTimeout(()=>{ s.style.display='none'; document.getElementById('loginScreen').classList.add('active'); },600); } 
@@ -256,7 +254,6 @@
             renderChat();
             return;
         }
-        // Vérifier dans la base
         if(membersDB[val]) {
             let member = membersDB[val];
             if(member.status === 'active') {
@@ -276,7 +273,6 @@
                 msgDiv.innerText = "❌ Accès expiré"; 
             }
         } else {
-            // Nouvelle inscription automatique en "pending"
             membersDB[val] = { 
                 status: 'pending', 
                 registered: new Date().toLocaleString('fr-FR'), 
@@ -285,7 +281,6 @@
             };
             persistMembers();
             msgDiv.innerText = "✅ Demande soumise. Un admin activera.";
-            // Rafraîchir l'affichage admin si déjà ouvert (pas nécessaire ici)
         }
     }
 
@@ -304,11 +299,10 @@
         document.getElementById('loginIdentifier').value = '';
         document.getElementById('loginFeed').innerText = '';
         document.getElementById('adminNavBtn').style.display = 'none';
-        // Réinitialiser les onglets principaux à Pattern
         document.querySelector('.tab-star[data-main="patternTab"]').click();
     }
 
-    // =============== PATTERN COMPLET ===============
+    // =============== PATTERN COMPLET AVEC TOUS LES INTERVALLES ===============
     const FULL_PATTERN_LIB = {
         "💙💜🌹💙💙": [{m:3, c:"x60 / x10"}, {m:7, c:"x25"}],
         "💙💜🌹💙💜": [{m:8, c:"x15"}, {m:5, c:"x70"}, {m:3, c:"x30 / x10"}],
@@ -325,11 +319,11 @@
         "💜💜🌹💙💙": [{m:5, c:"x300 / x20"}, {m:2, c:"x30 / x80"}, {m:7, c:"x10"}, {m:12, c:"x15"}],
         "💙💜🌹💜💙": [{m:3, c:"x50"}, {m:7, c:"x150 / x25"}, {m:10, c:"x15"}]
     };
+    
     let currentPatternSeq = [];
     function addPatternSymbol(sym) { if(currentPatternSeq.length < 5) { currentPatternSeq.push(sym); updatePreviewUI(); } }
     function updatePreviewUI() { const cells = document.querySelectorAll('.slot-cell'); cells.forEach((c,i)=> { c.innerText = currentPatternSeq[i] || "—"; }); }
     
-    // FONCTION POUR EFFACER LES RÉSULTATS PATTERN
     function clearPatternResults() {
         document.getElementById('patternResultZone').innerHTML = '';
         currentPatternSeq = [];
@@ -350,12 +344,23 @@
         const key = currentPatternSeq.join('');
         const strat = FULL_PATTERN_LIB[key];
         if(!strat) { res.innerHTML = `<div class="oracle-card"><span class="badge-safe">PATTERN INVALIDE</span>5 symboles avec 🌹 central</div>`; return; }
-        let [h,m,s] = timeVal.split(':').map(Number);
-        let base = new Date(); base.setHours(h,m,s||0);
+        
+        let [h, m, s] = timeVal.split(':').map(Number);
+        let base = new Date();
+        base.setHours(h, m, s || 0);
+        
         let cumul = 0;
-        const html = strat.map(item => { cumul += item.m; let fut = new Date(base.getTime() + cumul*60000); return `<div class="oracle-card"><span class="badge-safe">🔒 SÉCURITÉ X4 MIN</span><div class="pred-cote">🎲 ${item.c}</div><div class="pred-time">${fut.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})}</div></div>`; }).join('');
+        const html = strat.map(item => {
+            cumul += item.m;
+            let future = new Date(base.getTime() + cumul * 60000);
+            return `<div class="oracle-card">
+                        <span class="badge-safe">🔒 SÉCURITÉ X4 MIN</span>
+                        <div class="pred-cote">🎲 ${item.c}</div>
+                        <div class="pred-time">${future.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})}</div>
+                    </div>`;
+        }).join('');
+        
         res.innerHTML = html;
-        // On ne vide pas currentPatternSeq pour permettre de voir ce qui a été saisi, mais on laisse l'utilisateur effacer avec le bouton.
     }
     
     function runCoteStrategy() {
@@ -374,7 +379,7 @@
         resDiv.innerHTML = `<div class="oracle-card"><span class="badge-safe">📡 STRATÉGIE PRO</span><div class="pred-cote">⚡ ${pred}</div><div class="pred-time">DÉCLENCHEMENT : ${future.toLocaleTimeString('fr-FR', {hour:'2-digit', minute:'2-digit', second:'2-digit'})} (+${addMin}m10s)</div></div>`;
     }
 
-    // =============== CHAT GLOBAL ===============
+    // =============== CHAT ===============
     function renderChat() {
         const container = document.getElementById('globalChatMessages');
         if(!container) return;
@@ -410,7 +415,7 @@
         return str.replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); 
     }
 
-    // =============== ADMIN PANEL - CORRECTION AFFICHAGE ===============
+    // =============== ADMIN ===============
     function renderAdminMaster() {
         const container = document.getElementById('advancedMemberList');
         if(!container) return;
@@ -424,14 +429,11 @@
         
         if(!entries.length) { container.innerHTML = `<div style="padding:20px;text-align:center;">Aucun membre</div>`; return; }
         
-        // Construction sans utiliser onclick avec des chaînes échappées de manière risquée.
-        // On utilise data-attributes et des event listeners globaux.
         let html = '';
         entries.forEach(([name, data]) => {
             let cls = data.status==='active'?'badge-active':(data.status==='pending'?'badge-pending':'badge-expired');
             let label = data.status==='active'?'ACTIF ✓':(data.status==='pending'?'EN ATTENTE':'EXPIRÉ');
             let expiryTxt = data.expiry === 'perm' ? '🔒 PERMANENT' : (data.expiry ? new Date(data.expiry).toLocaleString('fr-FR') : 'Non défini');
-            // On encode le nom pour l'utiliser dans data-name
             const safeName = name.replace(/'/g, "&apos;").replace(/"/g, "&quot;");
             html += `<div class="member-proto" data-member-name="${safeName}">
                 <div class="member-header"><span>${escapeHtml(name)}</span><span class="status-badge ${cls}">${label}</span></div>
@@ -446,7 +448,6 @@
         });
         container.innerHTML = html;
         
-        // Attacher les événements
         container.querySelectorAll('.member-proto').forEach(card => {
             const memberName = card.dataset.memberName;
             card.querySelectorAll('button[data-action]').forEach(btn => {
@@ -466,7 +467,6 @@
         });
     }
     
-    // Fonctions globales pour l'admin (appelées via les listeners)
     window.setMemberValidity = function(name, hours) { 
         if(!membersDB[name]) return; 
         let now=Date.now(); 
@@ -570,7 +570,6 @@
         updatePreviewUI(); 
     });
     
-    // Rendre les fonctions globales
     window.authUser = authUser;
     window.addPatternSymbol = addPatternSymbol;
     window.runPatternPrediction = runPatternPrediction;
@@ -584,3 +583,4 @@
 </script>
 </body>
 </html>
+        
